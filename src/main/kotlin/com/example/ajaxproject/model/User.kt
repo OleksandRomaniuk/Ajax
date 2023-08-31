@@ -11,26 +11,18 @@ data class User(
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Int = 0,
-
-    @JsonProperty("firstName")
-    @Column(name = "first_name", length = 25)
-    var firstName: String = "",
-
-    @JsonProperty("secondName")
-    @Column(name = "second_name", length = 25)
-    var secondName: String = "",
+    val id: Int = 0,
 
     @JsonProperty("email")
     @Column(name = "email", length = 100)
-    var email: String = "",
+    val email: String = "",
 
     @JsonProperty("password")
     @Column(name = "password", length = 100)
-    var password: String = "",
+    val password: String = "",
 
     @JsonProperty("role")
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    var role: Role = Role.CUSTOME)
+    val role: Role = Role.CUSTOME)
 

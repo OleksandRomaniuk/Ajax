@@ -32,11 +32,7 @@ class UserController(@Autowired private val userRepository: UserRepository) {
     @PutMapping("/{id}")
     fun updateUserById(@PathVariable("id") userId: Int, @RequestBody user: User): ResponseEntity<User> {
 
-        val existingUser = userRepository.findById(userId).orElse(null)
-
-        if (existingUser == null) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
-        }
+        val existingUser = userRepository.findById(userId).orElse(null) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
         val updatedUser = existingUser.copy( email = user.email)
         userRepository.save(updatedUser)
