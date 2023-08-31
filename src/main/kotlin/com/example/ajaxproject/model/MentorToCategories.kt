@@ -6,7 +6,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "mentorToCategories")
-data class MentorToCategories(
+class MentorToCategories(
     @Id
     @JsonProperty("id")
     @Column(name = "id")

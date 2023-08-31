@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity
 @Table(name = "categories")
-data class Categories(
+class Categories(
     @Id
     @JsonProperty("id")
     @Column(name = "id")
