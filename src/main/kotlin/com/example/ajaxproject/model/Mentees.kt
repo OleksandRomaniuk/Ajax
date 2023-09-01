@@ -10,7 +10,7 @@ class Mentees(
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long = 0,
+    val id: Int = 0,
 
     @JsonProperty("age")
     @Column(name = "age", length = 3)

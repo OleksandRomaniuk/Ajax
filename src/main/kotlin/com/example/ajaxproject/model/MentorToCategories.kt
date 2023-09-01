@@ -11,7 +11,7 @@ class MentorToCategories(
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id:Long = 0,
+    val id:Int = 0,
 
     @JsonProperty("price")
     @Column(name = "price", length = 5)
@@ -27,6 +27,6 @@ class MentorToCategories(
     var course: Categories = Categories(),
 
     @ManyToOne
-@JoinColumn(name = "mentor_id")
-var mentors: Mentors = Mentors()
+    @JoinColumn(name = "mentor_id")
+    var mentors: Mentors = Mentors()
 )

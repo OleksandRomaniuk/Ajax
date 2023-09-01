@@ -10,7 +10,7 @@ class Mentors(
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long = 0,
+    val id: Int = 0,
 
     @JsonProperty("description")
     @Column(name = "description", length = 100)
@@ -29,7 +29,4 @@ class Mentors(
 
     @OneToOne(cascade = [CascadeType.PERSIST])
     @JoinColumn(name = "user_id")
-    var user: User = User(),
-
-
-)
+    var user: User = User())

@@ -1,28 +1,44 @@
 package com.example.ajaxproject.model
 
-import com.example.ajaxproject.model.Enum.Role
+import com.example.ajaxproject.model.enums.Role
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "users")
-class User(
+data class User(
+
     @Id
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long = 0,
+    var id: Long = 0L,
+
+    @JsonProperty("firstName")
+    @Column(name = "first_name", length = 25)
+    var firstName: String = "",
+
+    @JsonProperty("secondName")
+    @Column(name = "second_name", length = 25)
+    var secondName: String = "",
 
     @JsonProperty("email")
     @Column(name = "email", length = 100)
-    val email: String = "",
+    var email: String = "",
 
     @JsonProperty("password")
     @Column(name = "password", length = 100)
-    val password: String = "",
+    var password: String = "",
 
     @JsonProperty("role")
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    val role: Role = Role.CUSTOME)
-
+    var role: Role = Role.CUSTOME
+)
