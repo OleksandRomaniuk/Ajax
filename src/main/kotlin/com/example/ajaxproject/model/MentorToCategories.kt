@@ -11,7 +11,7 @@ class MentorToCategories(
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id:Int = 0,
+    val id:Long = 0,
 
     @JsonProperty("price")
     @Column(name = "price", length = 5)

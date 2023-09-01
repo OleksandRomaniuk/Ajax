@@ -11,7 +11,7 @@ class User(
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Int = 0,
+    var id: Long = 0,
 
     @JsonProperty("email")
     @Column(name = "email", length = 100)

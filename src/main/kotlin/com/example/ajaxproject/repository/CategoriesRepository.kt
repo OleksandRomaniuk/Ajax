@@ -6,4 +6,4 @@ import com.example.ajaxproject.model.User
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
-interface CategoriesRepository : CrudRepository<Categories, Int>
+interface CategoriesRepository : CrudRepository<Categories, Long>
