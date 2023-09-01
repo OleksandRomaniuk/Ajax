@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Versions {
     const val mapstruct = "1.5.5.Final"
     const val springdoc = "2.1.0"
-    const val postgresql = "42.6.0"
 }
 
 plugins {
@@ -14,6 +13,8 @@ plugins {
     kotlin("plugin.spring") version "1.9.0"
     kotlin("plugin.jpa") version "1.9.0"
     kotlin("kapt") version "1.9.0"
+    kotlin("plugin.lombok") version "1.9.10"
+    id("io.freefair.lombok") version "8.1.0"
 }
 
 repositories {

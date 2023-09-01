@@ -27,6 +27,6 @@ class MentorToCategories(
     var course: Categories = Categories(),
 
     @ManyToOne
-@JoinColumn(name = "mentor_id")
-var mentors: Mentors = Mentors()
+    @JoinColumn(name = "mentor_id")
+    var mentors: Mentors = Mentors()
 )

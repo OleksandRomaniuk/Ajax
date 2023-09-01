@@ -29,7 +29,4 @@ class Mentors(
 
     @OneToOne(cascade = [CascadeType.PERSIST])
     @JoinColumn(name = "user_id")
-    var user: User = User(),
-
-
-)
+    var user: User = User())
