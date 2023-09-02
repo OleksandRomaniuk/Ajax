@@ -2,8 +2,7 @@ package com.example.ajaxproject.dto
 
 import com.example.ajaxproject.model.enums.Role
 
-
-public class UserDTO(
+class UserDTO(
     val firstName: String,
     val secondName: String,
     val email: String,

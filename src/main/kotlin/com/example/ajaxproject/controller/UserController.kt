@@ -14,18 +14,6 @@ class UserController @Autowired constructor(
     private val userService: UserServiceImpl
 ) {
 
-    @GetMapping
-    fun getAllUsers(): ResponseEntity<List<User>> {
-        val users = userService.findAll()
-        return ResponseEntity.ok(users)
-    }
-
-    @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<User?> {
-        val user = userService.findById(id)
-        return ResponseEntity.ok(user)
-    }
-
     @PostMapping("/create")
     fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<User> {
         val createdUser = userService.createUser(userDTO)
@@ -44,4 +32,15 @@ class UserController @Autowired constructor(
         return ResponseEntity.noContent().build()
     }
 
+    @GetMapping("/{id}")
+    fun findUserById(@PathVariable id: Long): ResponseEntity<User?> {
+        val user = userService.findUserById(id)
+        return ResponseEntity.ok(user)
+    }
+
+    @GetMapping
+    fun findAllUsers(): ResponseEntity<List<User>> {
+        val users = userService.findAllUsers()
+        return ResponseEntity.ok(users)
+    }
 }

@@ -13,8 +13,6 @@ plugins {
     kotlin("plugin.spring") version "1.9.0"
     kotlin("plugin.jpa") version "1.9.0"
     kotlin("kapt") version "1.9.0"
-    kotlin("plugin.lombok") version "1.9.10"
-    id("io.freefair.lombok") version "8.1.0"
 }
 
 repositories {
