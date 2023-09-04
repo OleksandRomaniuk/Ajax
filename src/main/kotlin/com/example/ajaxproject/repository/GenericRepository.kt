@@ -6,6 +6,4 @@ import java.io.Serializable
 import java.util.*
 
 @NoRepositoryBean
-interface GenericRepository<T, ID : Serializable> : JpaRepository<T, ID> {
-
-}
+interface GenericRepository<T, ID : Serializable> : JpaRepository<T, ID>

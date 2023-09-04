@@ -1,7 +1,16 @@
 package com.example.ajaxproject.model
 
+import com.example.ajaxproject.dto.MentorUpdateDTO
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "mentors")
@@ -14,19 +23,28 @@ class Mentors(
 
     @JsonProperty("description")
     @Column(name = "description", length = 100)
-    val description: String? = null,
+    var description: String? = null,
 
     @JsonProperty("isOnline")
     @Column(name = "isOnline", length = 100)
-    val isOnline: Boolean = false,
+    var isOnline: Boolean = false,
 
     @Column(name = "is_offline_in")
-    val isOfflineIn: Boolean = false,
+    var isOfflineIn: Boolean = false,
 
     @JsonProperty("rating")
     @Column(name = "rating", length = 10)
-    val rating: Double = 0.0,
+    var rating: Double = 0.0,
 
     @OneToOne(cascade = [CascadeType.PERSIST])
     @JoinColumn(name = "user_id")
     var user: User = User())
+
+{
+    fun updateFromDTO(mentorUpdateDTO: MentorUpdateDTO) {
+        this.description = mentorUpdateDTO.description
+        this.isOnline = mentorUpdateDTO.isOnline
+        this.isOfflineIn = mentorUpdateDTO.isOfflineIn
+        this.rating = mentorUpdateDTO.rating
+    }
+}

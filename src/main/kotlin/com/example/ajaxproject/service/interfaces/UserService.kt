@@ -2,6 +2,8 @@ package com.example.ajaxproject.service.interfaces
 
 import com.example.ajaxproject.dto.UserDTO
 import com.example.ajaxproject.model.User
+import com.example.ajaxproject.model.enums.Role
+
 
 interface UserService {
 
@@ -14,5 +16,7 @@ interface UserService {
     fun findUserById(id: Long): User?
 
     fun findAllUsers(): List<User>
+
+    fun findAllUsersByRole(role: Role) : List<User>;
 
 }

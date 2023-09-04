@@ -3,6 +3,7 @@ package com.example.ajaxproject.service
 import com.example.ajaxproject.dto.UserDTO
 import com.example.ajaxproject.mapper.UserMapper
 import com.example.ajaxproject.model.User
+import com.example.ajaxproject.model.enums.Role
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,5 +43,9 @@ class UserServiceImpl @Autowired constructor(
 
     override fun findAllUsers(): List<User> {
         return userRepository.findAll()
+    }
+
+    override fun findAllUsersByRole(role: Role): List<User> {
+        return userRepository.findUserByRole(role)
     }
 }
