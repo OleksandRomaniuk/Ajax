@@ -13,10 +13,10 @@ interface UserService {
 
     fun deleteUser(id: Long)
 
-    fun getUserById(id: Long): User?
+    fun findUserById(id: Long): User?
 
-    fun getAllUsers(): List<User>
+    fun findAllUsers(): List<User>
 
-    fun getAllUsersByRole(role: Role) : List<User>;
+    fun findAllUsersByRole(role: Role) : List<User>;
 
 }

@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
+
+
 @Entity
 @Table(name = "categories")
 class Categories(
@@ -17,6 +19,8 @@ class Categories(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id:Int = 0,
 
+
     @JsonProperty("name")
     @Column(name = "name", length = 10)
-    var name: String? = null)
+    var name: String? = null,
+)

@@ -4,6 +4,7 @@ import com.example.ajaxproject.dto.UserDTO
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.UserServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+
 @RestController
 @RequestMapping("/api/users")
 class UserController @Autowired constructor(
@@ -22,26 +24,31 @@ class UserController @Autowired constructor(
 
     @PostMapping("/create")
     fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<User> {
-        return ResponseEntity.ok(userService.createUser(userDTO))
+        val createdUser = userService.createUser(userDTO)
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser)
     }
 
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: Long, @RequestBody userDTO: UserDTO): ResponseEntity<User> {
-        return ResponseEntity.ok(userService.updateUser(id, userDTO))
+        val updatedUser = userService.updateUser(id, userDTO)
+        return ResponseEntity.ok(updatedUser)
     }
 
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: Long): ResponseEntity<Unit> {
-        return ResponseEntity.ok(userService.deleteUser(id))
+        userService.deleteUser(id)
+        return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/{id}")
-    fun findUserById(@PathVariable id: Long): ResponseEntity<User> {
-        return ResponseEntity.ok(userService.getUserById(id))
+    fun findUserById(@PathVariable id: Long): ResponseEntity<User?> {
+        val user = userService.findUserById(id)
+        return ResponseEntity.ok(user)
     }
 
     @GetMapping
     fun findAllUsers(): ResponseEntity<List<User>> {
-        return ResponseEntity.ok(userService.getAllUsers())
+        val users = userService.findAllUsers()
+        return ResponseEntity.ok(users)
     }
 }

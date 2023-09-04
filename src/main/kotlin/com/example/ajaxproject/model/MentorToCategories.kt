@@ -9,6 +9,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+
+
 @Entity
 @Table(name = "mentorToCategories")
 class MentorToCategories(
@@ -33,4 +35,5 @@ class MentorToCategories(
 
     @ManyToOne
     @JoinColumn(name = "mentor_id")
-    var mentors: Mentors = Mentors())
+    var mentors: Mentors = Mentors()
+)

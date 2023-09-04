@@ -26,4 +26,5 @@ class Mentees(
 
     @OneToOne(cascade = [CascadeType.PERSIST])
     @JoinColumn(name = "user_id")
-    var mentee: User = User())
+    var mentee: User = User()
+)

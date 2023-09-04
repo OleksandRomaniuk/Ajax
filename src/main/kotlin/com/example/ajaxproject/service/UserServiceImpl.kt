@@ -1,7 +1,6 @@
 package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.UserDTO
-import com.example.ajaxproject.exeption.UserNotFoundException
 import com.example.ajaxproject.mapper.UserMapper
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.model.enums.Role
@@ -23,7 +22,7 @@ class UserServiceImpl @Autowired constructor(
 
     override fun updateUser(id: Long, userDTO: UserDTO): User {
         val user = userRepository.findById(id)
-            .orElseThrow { UserNotFoundException("User not found") }
+            .orElseThrow { NoSuchElementException("User not found") }
 
         user.apply {
             email = userDTO.email
@@ -34,20 +33,19 @@ class UserServiceImpl @Autowired constructor(
     }
 
     override fun deleteUser(id: Long) {
-        return userRepository.deleteById(id)
+        userRepository.deleteById(id)
     }
 
-    override fun getUserById(id: Long): User? {
-        return userRepository.findById(id)
-            .orElseThrow { UserNotFoundException("User not found") }
+    override fun findUserById(id: Long): User? {
+        return userRepository.findById(id).orElse(null)
     }
 
-    override fun getAllUsers(): List<User> {
+
+    override fun findAllUsers(): List<User> {
         return userRepository.findAll()
     }
 
-    override fun getAllUsersByRole(role: Role): List<User> {
+    override fun findAllUsersByRole(role: Role): List<User> {
         return userRepository.findUserByRole(role)
     }
-
 }

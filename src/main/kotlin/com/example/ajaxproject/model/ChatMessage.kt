@@ -23,4 +23,5 @@ data class ChatMessage(
 
     @JsonProperty("recipientId")
     @Column(name = "recipientId", length = 100)
-    val recipientId: String? = null,)
+    val recipientId: String? = null, )
+
