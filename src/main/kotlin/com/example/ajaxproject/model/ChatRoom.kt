@@ -2,16 +2,14 @@ package com.example.ajaxproject.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.Column
-import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.Table
-import java.time.LocalDateTime
+import org.springframework.data.mongodb.core.mapping.Document
 
-@Entity
-@Table(name = "chatroom")
+@Document("chat-room")
 data class ChatRoom(
+
     @Id
     @JsonProperty("id")
     @Column(name = "id")
@@ -20,16 +18,8 @@ data class ChatRoom(
 
     @JsonProperty("senderId")
     @Column(name = "senderId", length = 100)
-    val senderId: Int? = null,
+    val senderId: Long? = null,
 
     @JsonProperty("recipientId")
     @Column(name = "recipientId", length = 100)
-    val recipientId: Int? = null,
-
-    @JsonProperty("message")
-    @Column(name = "message", length = 100)
-    val message: String = "",
-
-    @JsonProperty("timeStamp")
-    @Column(name = "timeStamp", length = 100)
-    val timeStamp: LocalDateTime? = null)
+    val recipientId: Long? = null)

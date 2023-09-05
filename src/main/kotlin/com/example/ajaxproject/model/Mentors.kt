@@ -1,6 +1,5 @@
 package com.example.ajaxproject.model
 
-import com.example.ajaxproject.dto.MentorUpdateDTO
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -15,6 +14,7 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "mentors")
 class Mentors(
+
     @Id
     @JsonProperty("id")
     @Column(name = "id")
@@ -40,11 +40,3 @@ class Mentors(
     @JoinColumn(name = "user_id")
     var user: User = User())
 
-{
-    fun updateFromDTO(mentorUpdateDTO: MentorUpdateDTO) {
-        this.description = mentorUpdateDTO.description
-        this.isOnline = mentorUpdateDTO.isOnline
-        this.isOfflineIn = mentorUpdateDTO.isOfflineIn
-        this.rating = mentorUpdateDTO.rating
-    }
-}

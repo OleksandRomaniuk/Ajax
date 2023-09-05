@@ -13,7 +13,7 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "users")
-data class User(
+class User(
 
     @Id
     @JsonProperty("id")
@@ -40,5 +40,4 @@ data class User(
     @JsonProperty("role")
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    var role: Role = Role.CUSTOME
-)
+    var role: Role = Role.CUSTOME)

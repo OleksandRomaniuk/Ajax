@@ -1,9 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-object Versions {
-    const val mapstruct = "1.5.5.Final"
-    const val springdoc = "2.1.0"
-}
 
 plugins {
 
@@ -21,6 +17,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework:spring-messaging:6.0.11")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.1.2")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -28,10 +25,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation("org.mapstruct:mapstruct:${Versions.mapstruct}")
-    kapt("org.mapstruct:mapstruct-processor:${Versions.mapstruct}")
-    api("org.springdoc:springdoc-openapi-starter-webmvc-ui:${Versions.springdoc}")
-    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation("mysql:mysql-connector-java:8.0.33")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
