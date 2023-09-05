@@ -14,6 +14,7 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "mentorToCategories")
 class MentorToCategories(
+
     @Id
     @JsonProperty("id")
     @Column(name = "id")
@@ -23,7 +24,6 @@ class MentorToCategories(
     @JsonProperty("price")
     @Column(name = "price", length = 5)
     val price: Double = 0.0,
-
 
     @JsonProperty("rating")
     @Column(name = "rating", length = 3)

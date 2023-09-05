@@ -37,7 +37,8 @@ class UserServiceImpl @Autowired constructor(
     }
 
     override fun findUserById(id: Long): User? {
-        return userRepository.findById(id).orElse(null)
+        return userRepository.findById(id)
+            .orElseThrow { NoSuchElementException("User not found") }
     }
 
 
@@ -48,4 +49,5 @@ class UserServiceImpl @Autowired constructor(
     override fun findAllUsersByRole(role: Role): List<User> {
         return userRepository.findUserByRole(role)
     }
+
 }

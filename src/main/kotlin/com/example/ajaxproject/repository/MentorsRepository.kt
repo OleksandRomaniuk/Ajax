@@ -1,9 +1,8 @@
 package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.Mentors
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
-interface MentorsRepository : GenericRepository<Mentors, Long>{
-
-    fun findByUserId(userId: Long): Mentors?
-
-}
+@Repository
+interface MentorsRepository : JpaRepository<Mentors, Long>
