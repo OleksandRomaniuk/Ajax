@@ -29,9 +29,7 @@ class ChatServiceImpl @Autowired constructor(
 
         userRepository.findById(recipientId).orElseThrow { UserNotFoundException("Recipient not found") }
 
-        val sortedUserIds = listOf(senderId, recipientId).sorted()
-
-        val roomId = "${sortedUserIds[0]}-${sortedUserIds[1]}"
+        val roomId = roomIdFormat(senderId, recipientId)
 
         return chatRoomRepository.findById(roomId)
             .orElseGet {
@@ -41,6 +39,11 @@ class ChatServiceImpl @Autowired constructor(
             }
     }
 
+    fun roomIdFormat(id1: Long, id2: Long): String {
+        val smallerId = minOf(id1, id2)
+        val higherId = maxOf(id1, id2)
+        return "$smallerId-$higherId"
+    }
 
     override fun getRoom(roomId: String): ChatRoom {
         return chatRoomRepository.findById(roomId)
@@ -63,9 +66,7 @@ class ChatServiceImpl @Autowired constructor(
 
         userRepository.findById(roomDTO.recipientId).orElseThrow { UserNotFoundException("Recipient not found") }
 
-            val sortedUserIds = listOf(roomDTO.senderId, roomDTO.recipientId).sorted()
-
-            val roomId = "${sortedUserIds[0]}-${sortedUserIds[1]}"
+            val roomId = roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
 
             val listOfMessage = chatMessageRepository.findAllByChatRoomId(roomId)
 
