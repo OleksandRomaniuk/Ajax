@@ -1,9 +1,7 @@
 package com.example.ajaxproject.dto
 
-data class SendMessageDTO(
-
+data class PrivateMessageDTO(
     val senderId: Long,
-
     val recipientId: Long,
-
-    val message: String)
+    val message: String
+)
