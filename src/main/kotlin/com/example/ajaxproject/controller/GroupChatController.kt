@@ -3,9 +3,8 @@ package com.example.ajaxproject.controller
 import com.example.ajaxproject.dto.ChatDTO
 import com.example.ajaxproject.dto.CreateChatDto
 import com.example.ajaxproject.dto.GroupChatDTO
-import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.GroupChatMessage
-import com.example.ajaxproject.model.PrivateChatMessage
+import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
 import org.springframework.beans.factory.annotation.Autowired
