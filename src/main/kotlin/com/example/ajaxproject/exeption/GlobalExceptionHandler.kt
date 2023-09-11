@@ -13,10 +13,14 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
     }
 
-
     @ExceptionHandler(NotFoundException::class)
     fun handleUserNotFoundException(ex: NotFoundException): ResponseEntity<Any> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
+    }
+
+    @ExceptionHandler(WrongActionException::class)
+    fun handleUserNotFoundException(ex: WrongActionException): ResponseEntity<Any> {
+        return ResponseEntity.status(HttpStatus.LOCKED).body(ex.message)
     }
 
 }

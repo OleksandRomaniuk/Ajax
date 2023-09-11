@@ -7,8 +7,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document("chat-room")
-data class ChatRoom(
+@Document("private-chat-room")
+data class PrivateChatRoom(
 
     @Id
     @JsonProperty("id")
@@ -22,4 +22,5 @@ data class ChatRoom(
 
     @JsonProperty("recipientId")
     @Column(name = "recipientId", length = 100)
-    val recipientId: Long? = null)
+    val recipientId: Long? = null,
+)
