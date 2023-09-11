@@ -51,8 +51,8 @@ class PrivateChatServiceImpl @Autowired constructor(
 
     override fun getPrivateRoom(roomId: String): PrivateChatRoom? {
 
-        return privateChatRoomRepository.findById(roomId).orElseThrow{NotFoundException("Room ith ID $roomId not found")}
-
+        return privateChatRoomRepository.findById(roomId).
+            orElseThrow{NotFoundException("Room ith ID $roomId not found")}
     }
 
     override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): PrivateChatMessage {
@@ -70,7 +70,8 @@ class PrivateChatServiceImpl @Autowired constructor(
         userRepository.findById(roomDTO.senderId).orElseThrow { NotFoundException("Sender not found") }
         userRepository.findById(roomDTO.recipientId).orElseThrow { NotFoundException("Recipient not found") }
 
-        val listOfMessage = privateChatMessageRepository.findAllByPrivateChatRoomId(roomIdFormat(roomDTO.senderId, roomDTO.recipientId))
+        val listOfMessage = privateChatMessageRepository.findAllByPrivateChatRoomId(
+            roomIdFormat(roomDTO.senderId, roomDTO.recipientId))
 
         if (listOfMessage.isEmpty()) throw NotFoundException("Message between users not found")
 
