@@ -1,7 +1,7 @@
 package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.UserDTO
-import com.example.ajaxproject.exeption.UserNotFoundException
+import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.mapper.UserMapper
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.model.enums.Role
@@ -23,7 +23,7 @@ class UserServiceImpl @Autowired constructor(
 
     override fun updateUser(id: Long, userDTO: UserDTO): User {
         val user = userRepository.findById(id)
-            .orElseThrow { UserNotFoundException("User not found") }
+            .orElseThrow { NotFoundException("User not found") }
 
         user.apply {
             email = userDTO.email
@@ -39,7 +39,7 @@ class UserServiceImpl @Autowired constructor(
 
     override fun getUserById(id: Long): User? {
         return userRepository.findById(id)
-            .orElseThrow { UserNotFoundException("User not found") }
+            .orElseThrow { NotFoundException("User not found") }
     }
 
     override fun getAllUsers(): List<User> {
