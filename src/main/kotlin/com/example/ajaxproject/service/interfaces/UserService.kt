@@ -1,6 +1,6 @@
 package com.example.ajaxproject.service.interfaces
 
-import com.example.ajaxproject.dto.UserDTO
+import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.model.User
 
 interface UserService {

@@ -2,6 +2,7 @@ package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDTO
+import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
@@ -11,6 +12,7 @@ import com.example.ajaxproject.repository.GroupChatMessageRepository
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.GroupChatService
+import com.example.ajaxproject.service.mapper.GroupChatMessageMapper
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -21,7 +23,8 @@ import org.springframework.stereotype.Service
 class GroupChatServiceImpl @Autowired constructor(
     private val groupChatRoomRepository: GroupChatRoomRepository,
     private val userRepository: UserRepository,
-    private val groupChatMessageRepository: GroupChatMessageRepository
+    private val groupChatMessageRepository: GroupChatMessageRepository,
+    private val groupChatMessageMapper: GroupChatMessageMapper
 ) : GroupChatService {
 
     private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
@@ -74,7 +77,7 @@ class GroupChatServiceImpl @Autowired constructor(
         return groupChatRoomRepository.save(chat).chatMembers
 
     }
-    override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessage {
+    override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
 
         val chatMessage = GroupChatMessage(
             id = ObjectId(),
@@ -85,12 +88,15 @@ class GroupChatServiceImpl @Autowired constructor(
 
         logger.info("Message sent to group chat ID: {$groupChatDto.chatId}")
 
-        return groupChatMessageRepository.save(chatMessage)
+        val responseDto = groupChatMessageMapper.toResponseDto(chatMessage)
+
+        return responseDto
 
     }
 
-    override fun getAllGroupMessages(chatId: String): List<GroupChatMessage> {
-       return groupChatMessageRepository.findAll()
+    override fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse> {
+        val messages = groupChatMessageRepository.findAll()
+        return messages.map { groupChatMessageMapper.toResponseDto(it) }
     }
 
     override fun leaveGroupChat(chatId: String, userId: Long): Boolean {
