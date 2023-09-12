@@ -1,6 +1,6 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.UserDTO
+import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.UserServiceImpl
 import org.springframework.beans.factory.annotation.Autowired

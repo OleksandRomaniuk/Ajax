@@ -1,8 +1,8 @@
 package com.example.ajaxproject.service
 
-import com.example.ajaxproject.dto.UserDTO
+import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.exeption.NotFoundException
-import com.example.ajaxproject.mapper.UserMapper
+import com.example.ajaxproject.service.mapper.UserMapper
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService

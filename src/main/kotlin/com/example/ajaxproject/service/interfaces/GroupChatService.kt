@@ -1,8 +1,8 @@
 package com.example.ajaxproject.service.interfaces
 
-import com.example.ajaxproject.dto.CreateChatDto
-import com.example.ajaxproject.dto.GroupChatDTO
-import com.example.ajaxproject.model.GroupChatMessage
+import com.example.ajaxproject.dto.request.CreateChatDto
+import com.example.ajaxproject.dto.request.GroupChatDTO
+import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 
@@ -14,9 +14,9 @@ interface GroupChatService {
 
     fun addUserToChat(chatId:String , userId:Long): List<User>
 
-    fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessage
+    fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse
 
-    fun getAllGroupMessages(chatId: String): List<GroupChatMessage>
+    fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse>
 
     fun leaveGroupChat(chatId: String, userId: Long): Boolean
 

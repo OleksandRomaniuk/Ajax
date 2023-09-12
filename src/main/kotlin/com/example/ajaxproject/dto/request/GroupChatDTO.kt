@@ -1,4 +1,4 @@
-package com.example.ajaxproject.dto
+package com.example.ajaxproject.dto.request
 
 data class GroupChatDTO(
     val senderId: Long,

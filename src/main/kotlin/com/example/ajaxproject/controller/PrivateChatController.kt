@@ -1,7 +1,7 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.RoomDTO
-import com.example.ajaxproject.dto.PrivateMessageDTO
+import com.example.ajaxproject.dto.request.RoomDTO
+import com.example.ajaxproject.dto.request.PrivateMessageDTO
 import com.example.ajaxproject.model.PrivateChatMessage
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.service.interfaces.PrivateChatService

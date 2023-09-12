@@ -1,9 +1,9 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.ChatDTO
-import com.example.ajaxproject.dto.CreateChatDto
-import com.example.ajaxproject.dto.GroupChatDTO
-import com.example.ajaxproject.model.GroupChatMessage
+import com.example.ajaxproject.dto.request.ChatDTO
+import com.example.ajaxproject.dto.request.CreateChatDto
+import com.example.ajaxproject.dto.request.GroupChatDTO
+import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
@@ -38,12 +38,12 @@ class GroupChatController @Autowired constructor(
 
     @PostMapping("/sendGroupMessage")
     fun sendMessage(@RequestBody groupChatDTO: GroupChatDTO
-    ): ResponseEntity<GroupChatMessage> {
+    ): ResponseEntity<GroupChatMessageResponse> {
         return ResponseEntity.ok(
             groupChatService.sendMessageToGroup(groupChatDTO))
     }
     @GetMapping("/getAllMessages/{chatId}")
-    fun getAllMessages(@PathVariable chatId: String): ResponseEntity<List<GroupChatMessage>> {
+    fun getAllMessages(@PathVariable chatId: String): ResponseEntity<List<GroupChatMessageResponse>> {
         return ResponseEntity.ok(groupChatService.getAllGroupMessages(chatId))
     }
     @PostMapping("/leaveChat")
