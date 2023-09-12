@@ -70,7 +70,7 @@ class GroupChatServiceImpl @Autowired constructor(
 
         chat.chatMembers += user
 
-        logger.info("User with ID {}" , userId , " added to chat ID {}" , chatId)
+        logger.info("User with ID {} added to chat ID {}" ,userId , chatId)
 
         return groupChatRoomRepository.save(chat).chatMembers
 
@@ -110,7 +110,7 @@ class GroupChatServiceImpl @Autowired constructor(
 
             groupChatRoomRepository.save(chat)
 
-            logger.info("User with ID {}" , userId , "left chat ID {}" , chatId)
+            logger.info("User with ID {} left chat ID {}" ,userId ,chatId)
 
             return true
 

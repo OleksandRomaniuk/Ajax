@@ -33,7 +33,7 @@ class PrivateChatServiceImpl @Autowired constructor(
 
         val roomId = roomIdFormat(senderId, recipientId)
 
-        logger.info("Create new private room {$roomId}")
+        logger.info("Create new private room {}", roomId)
 
         return privateChatRoomRepository.findById(roomId)
             .orElseGet {
@@ -67,7 +67,7 @@ class PrivateChatServiceImpl @Autowired constructor(
         )
         privateChatMessageRepository.save(privateChatMessage)
 
-        logger.info("Send private message {${privateChatMessage.id}}")
+        logger.info("Send private message {}", privateChatMessage.id)
 
         return privateChatMessage
     }
