@@ -5,9 +5,8 @@ import com.example.ajaxproject.model.GroupChatMessage
 import org.springframework.stereotype.Service
 
 @Service
-class GroupChatMessageMapper{
-
-     fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
+class GroupChatMessageMapper {
+    fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
         return GroupChatMessageResponse(
             id = chatMessage.id,
             senderId = chatMessage.sender.id,

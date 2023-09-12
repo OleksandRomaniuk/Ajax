@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/chat")
 class GroupChatController @Autowired constructor(
-    private val groupChatService: GroupChatService) {
+    private val groupChatService: GroupChatService
+) {
 
     @PostMapping("/create")
     fun createRoom(@RequestBody createChatDto: CreateChatDto): ResponseEntity<GroupChatRoom> {
@@ -37,19 +38,18 @@ class GroupChatController @Autowired constructor(
     }
 
     @PostMapping("/sendGroupMessage")
-    fun sendMessage(@RequestBody groupChatDTO: GroupChatDTO
-    ): ResponseEntity<GroupChatMessageResponse> {
-        return ResponseEntity.ok(
-            groupChatService.sendMessageToGroup(groupChatDTO))
+    fun sendMessage(@RequestBody groupChatDTO: GroupChatDTO): ResponseEntity<GroupChatMessageResponse> {
+        return ResponseEntity.ok(groupChatService.sendMessageToGroup(groupChatDTO))
     }
+
     @GetMapping("/getAllMessages/{chatId}")
     fun getAllMessages(@PathVariable chatId: String): ResponseEntity<List<GroupChatMessageResponse>> {
         return ResponseEntity.ok(groupChatService.getAllGroupMessages(chatId))
     }
+
     @PostMapping("/leaveChat")
-    fun leaveChat(@RequestBody chatDto: ChatDTO
-    ): ResponseEntity<Boolean> { return ResponseEntity.ok(
-            groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
+    fun leaveChat(@RequestBody chatDto: ChatDTO): ResponseEntity<Boolean> {
+        return ResponseEntity.ok(groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
     }
 
 }

@@ -43,19 +43,21 @@ class GroupChatServiceImpl @Autowired constructor(
             chatMembers = listOf(user)
         )
 
-        ArrayList(groupChatRoom.chatMembers).add(user)
+        groupChatRoom.chatMembers + user
+
+        groupChatRoomRepository.save(groupChatRoom)
 
         logger.info("Group chat room created successfully")
 
-        return groupChatRoomRepository.save(groupChatRoom)
+        return groupChatRoom
+
     }
 
     override fun getAllChatMembers(chatId: String): List<User> {
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
-            ?: throw NotFoundException("Chat with ID $chatId not found")
 
-        logger.info("Retrieved chat members for chat ID: $chatId")
+        logger.info("Retrieved chat members for chat ID: {}" , chatId)
 
         return chat.chatMembers
     }
@@ -66,36 +68,33 @@ class GroupChatServiceImpl @Autowired constructor(
 
         val user = userRepository.findById(userId).orElseThrow { NotFoundException("Sender not found") }
 
-        val updatedChatMembers = chat?.chatMembers?.let { ArrayList(it) }
+        chat.chatMembers += user
 
-        updatedChatMembers?.add(user)
-
-        chat?.chatMembers = updatedChatMembers!!
-
-        logger.info("User with ID {$userId} added to chat ID {$chatId}")
+        logger.info("User with ID {}" , userId , " added to chat ID {}" , chatId)
 
         return groupChatRoomRepository.save(chat).chatMembers
 
     }
+
     override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
 
         val chatMessage = GroupChatMessage(
             id = ObjectId(),
-            groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId)!!,
+            groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId),
             sender = userRepository.findById(groupChatDto.senderId).get(),
             message = groupChatDto.message,
         )
 
-        logger.info("Message sent to group chat ID: {$groupChatDto.chatId}")
+        logger.info("Message sent to group chat ID: {}" , groupChatDto.chatId)
 
-        val responseDto = groupChatMessageMapper.toResponseDto(chatMessage)
-
-        return responseDto
+        return groupChatMessageMapper.toResponseDto(chatMessage)
 
     }
 
     override fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse> {
+
         val messages = groupChatMessageRepository.findAll()
+
         return messages.map { groupChatMessageMapper.toResponseDto(it) }
     }
 
@@ -105,20 +104,20 @@ class GroupChatServiceImpl @Autowired constructor(
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
-        if (chat?.adminId !=user.id){
+        if (chat.adminId != user.id) {
 
-            val updatedChatMembers = chat?.chatMembers?.filterNot { it.id == user.id }
-
-            chat?.chatMembers = updatedChatMembers!!
+            chat.chatMembers = chat.chatMembers.filterNot { it.id == user.id }
 
             groupChatRoomRepository.save(chat)
 
-            logger.info("User with ID {$userId} left chat ID {$chatId}")
+            logger.info("User with ID {}" , userId , "left chat ID {}" , chatId)
 
             return true
 
-        }else{
-            logger.warn("Admin attempted to leave chat ID {$chatId}")
+        } else {
+
+            logger.warn("Admin attempted to leave chat ID {}" , chatId)
+
             throw WrongActionException("Admin cant leave a chat")
         }
     }

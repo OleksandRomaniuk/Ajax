@@ -5,8 +5,8 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PrivateChatMessageRepository : MongoRepository<PrivateChatMessage, String>{
+interface PrivateChatMessageRepository : MongoRepository<PrivateChatMessage, String> {
 
-    fun findAllByPrivateChatRoomId(chatRoomId:String): List<PrivateChatMessage>
+    fun findAllByPrivateChatRoomId(chatRoomId: String): List<PrivateChatMessage>
 
 }
