@@ -12,7 +12,7 @@ data class GroupChatRoom(
     @Id
     @JsonProperty("id")
     @Column(name = "id")
-    val id: ObjectId ,
+    val id: ObjectId,
 
     @JsonProperty("adminId")
     @Column(name = "adminId", length = 100)
@@ -20,7 +20,7 @@ data class GroupChatRoom(
 
     @JsonProperty("chatName")
     @Column(name = "chatName")
-    val chatName: String = "" ,
+    val chatName: String = "",
 
     @JsonProperty("chatMembers")
     @Column(name = "chatMembers")

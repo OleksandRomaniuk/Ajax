@@ -2,8 +2,8 @@ package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.GroupChatRoom
 
-interface CustomRoomRepository {
+fun interface CustomRoomRepository {
 
-    fun findChatRoom(chatId:String): GroupChatRoom?
+    fun findChatRoom(chatId: String): GroupChatRoom
 
 }

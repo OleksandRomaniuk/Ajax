@@ -7,11 +7,7 @@ import com.example.ajaxproject.model.PrivateChatRoom
 
 interface PrivateChatService {
     fun createPrivateRoom(senderId: Long, recipientId: Long): PrivateChatRoom
-
     fun getPrivateRoom(roomId: String): PrivateChatRoom?
-
     fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): PrivateChatMessage
-
     fun getAllPrivateMessages(roomDTO: RoomDTO): List<PrivateChatMessage>
-
 }

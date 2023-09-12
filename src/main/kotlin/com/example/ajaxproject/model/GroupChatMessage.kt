@@ -14,7 +14,7 @@ data class GroupChatMessage(
     @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = AUTO)
-    val id: ObjectId ,
+    val id: ObjectId,
 
     @JsonProperty("groupChatRoom")
     @Column(name = "groupChatRoom", length = 100)
