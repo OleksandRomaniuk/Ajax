@@ -11,7 +11,7 @@ class User(
 
     @Id
     @Column(name = "id")
-    var id: ObjectId,
+    var id: String,
 
     @Column(name = "email", length = 100)
     var email: String = "",

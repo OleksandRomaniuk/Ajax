@@ -14,7 +14,7 @@ data class GroupChatRoom(
     val id: ObjectId,
 
     @Column(name = "adminId", length = 100)
-    val adminId: ObjectId,
+    val adminId: String,
 
     @Column(name = "chatName")
     val chatName: String = "",
