@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class UserMapper {
     fun toEntity(userDTO: UserDTO): User {
         return User(
-            id = ObjectId(),
+            id = ObjectId().toHexString(),
             email = userDTO.email,
             password = userDTO.password,
         )
