@@ -1,7 +1,7 @@
 package com.example.ajaxproject.dto.request
 
 data class GroupChatDTO(
-    val senderId: Long,
+    val senderId: String,
     val message: String,
     val chatId: String
 )

@@ -26,17 +26,17 @@ class UserController @Autowired constructor(
     }
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: Long, @RequestBody userDTO: UserDTO): ResponseEntity<User> {
+    fun updateUser(@PathVariable id: String, @RequestBody userDTO: UserDTO): ResponseEntity<User> {
         return ResponseEntity.ok(userService.updateUser(id, userDTO))
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: Long): ResponseEntity<Unit> {
+    fun deleteUser(@PathVariable id: String): ResponseEntity<Unit> {
         return ResponseEntity.ok(userService.deleteUser(id))
     }
 
     @GetMapping("/{id}")
-    fun findUserById(@PathVariable id: Long): ResponseEntity<User> {
+    fun findUserById(@PathVariable id: String): ResponseEntity<User> {
         return ResponseEntity.ok(userService.getUserById(id))
     }
 

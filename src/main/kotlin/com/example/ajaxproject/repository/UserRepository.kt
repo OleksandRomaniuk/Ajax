@@ -1,8 +1,9 @@
 package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.User
-import org.springframework.data.jpa.repository.JpaRepository
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository : JpaRepository<User, Long>
+interface UserRepository : MongoRepository<User, ObjectId> , CustomUserRepository

@@ -33,7 +33,7 @@ class GroupChatController @Autowired constructor(
     }
 
     @PostMapping("/{chatId}/addUser/{userId}")
-    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: Long): ResponseEntity<List<User>> {
+    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: String): ResponseEntity<List<User>> {
         return ResponseEntity.ok(groupChatService.addUserToChat(chatId, userId))
     }
 

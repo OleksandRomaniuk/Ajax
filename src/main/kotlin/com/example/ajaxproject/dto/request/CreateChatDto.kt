@@ -1,6 +1,6 @@
 package com.example.ajaxproject.dto.request
 
 data class CreateChatDto(
-    val adminId: Long,
+    val adminId: String,
     val chatName: String,
 )

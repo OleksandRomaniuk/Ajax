@@ -3,7 +3,6 @@ package com.example.ajaxproject.service
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
-import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
@@ -27,19 +26,18 @@ class GroupChatServiceImpl @Autowired constructor(
     private val groupChatMessageMapper: GroupChatMessageMapper
 ) : GroupChatService {
 
-    private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
+    }
 
     override fun createGroupRoom(createChatDto: CreateChatDto): GroupChatRoom {
 
-        val user = userRepository.findById(createChatDto.adminId).orElseThrow {
-            logger.error("Error creating group chat room")
-            NotFoundException("User not found")
-        }
+        val user = userRepository.findUser(createChatDto.adminId)
 
         val groupChatRoom = GroupChatRoom(
             id = ObjectId(),
             chatName = createChatDto.chatName,
-            adminId = createChatDto.adminId,
+            adminId = user.id,
             chatMembers = listOf(user)
         )
 
@@ -62,11 +60,11 @@ class GroupChatServiceImpl @Autowired constructor(
         return chat.chatMembers
     }
 
-    override fun addUserToChat(chatId: String, userId: Long): List<User> {
+    override fun addUserToChat(chatId: String, userId: String): List<User> {
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
-        val user = userRepository.findById(userId).orElseThrow { NotFoundException("Sender not found") }
+        val user = userRepository.findUser(userId)
 
         chat.chatMembers += user
 
@@ -81,7 +79,7 @@ class GroupChatServiceImpl @Autowired constructor(
         val chatMessage = GroupChatMessage(
             id = ObjectId(),
             groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId),
-            sender = userRepository.findById(groupChatDto.senderId).get(),
+            sender = userRepository.findUser(groupChatDto.senderId),
             message = groupChatDto.message,
         )
 
@@ -98,9 +96,9 @@ class GroupChatServiceImpl @Autowired constructor(
         return messages.map { groupChatMessageMapper.toResponseDto(it) }
     }
 
-    override fun leaveGroupChat(chatId: String, userId: Long): Boolean {
+    override fun leaveGroupChat(chatId: String, userId: String): Boolean {
 
-        val user = userRepository.findById(userId).orElseThrow { NotFoundException("User not found") }
+        val user = userRepository.findUser(userId)
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
