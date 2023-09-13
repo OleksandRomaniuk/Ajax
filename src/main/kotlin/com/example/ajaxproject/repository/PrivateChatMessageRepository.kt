@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface PrivateChatMessageRepository : MongoRepository<PrivateChatMessage, String> {
-
     fun findAllByPrivateChatRoomId(chatRoomId: String): List<PrivateChatMessage>
 
 }

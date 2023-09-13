@@ -21,7 +21,7 @@ class UserServiceImpl @Autowired constructor(
     }
 
     override fun updateUser(id: String, userDTO: UserDTO): User {
-        val user = userRepository.findUser(id)
+        val user = userRepository.findById(id)
 
         user.apply {
             email = userDTO.email
@@ -32,11 +32,11 @@ class UserServiceImpl @Autowired constructor(
     }
 
     override fun deleteUser(id: String) {
-        return userRepository.deleteById(ObjectId(id))
+        return userRepository.deleteById(id)
     }
 
-    override fun getUserById(id: String): User? {
-        return userRepository.findUser(id)
+    override fun getUserById(id: String): User {
+        return userRepository.findById(id)
 
     }
 
