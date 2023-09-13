@@ -28,9 +28,9 @@ class PrivateChatServiceImpl @Autowired constructor(
     override fun createPrivateRoom(senderId: String, recipientId: String): PrivateChatRoom {
 
         // If I had used authentication, this check would not have happened
-        userRepository.findById(senderId)
+        userRepository.findUser(senderId)
 
-        userRepository.findById(recipientId)
+        userRepository.findUser(recipientId)
 
         val roomId = roomIdFormat(senderId, recipientId)
 
@@ -64,7 +64,7 @@ class PrivateChatServiceImpl @Autowired constructor(
             id = ObjectId(),
             privateChatRoom = createPrivateRoom(privateMessageDTO.senderId, privateMessageDTO.recipientId),
             message = privateMessageDTO.message,
-            sender = userRepository.findById(privateMessageDTO.senderId),
+            sender = userRepository.findUser(privateMessageDTO.senderId),
         )
         privateChatMessageRepository.save(privateChatMessage)
 
@@ -74,8 +74,8 @@ class PrivateChatServiceImpl @Autowired constructor(
     }
 
     override fun getAllPrivateMessages(roomDTO: RoomDTO): List<PrivateChatMessage> {
-        userRepository.findById(roomDTO.senderId)
-        userRepository.findById(roomDTO.recipientId)
+        userRepository.findUser(roomDTO.senderId)
+        userRepository.findUser(roomDTO.recipientId)
 
         val listOfMessage = privateChatMessageRepository.findAllByPrivateChatRoomId(
             roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
