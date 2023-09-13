@@ -7,11 +7,11 @@ interface UserService {
 
     fun createUser(userDTO: UserDTO): User
 
-    fun updateUser(id: Long, userDTO: UserDTO): User
+    fun updateUser(id: String, userDTO: UserDTO): User
 
-    fun deleteUser(id: Long)
+    fun deleteUser(id: String)
 
-    fun getUserById(id: Long): User?
+    fun getUserById(id: String): User?
 
     fun getAllUsers(): List<User>
 

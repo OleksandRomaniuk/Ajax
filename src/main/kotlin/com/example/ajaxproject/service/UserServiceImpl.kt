@@ -1,11 +1,11 @@
 package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.UserDTO
-import com.example.ajaxproject.exeption.NotFoundException
-import com.example.ajaxproject.service.mapper.UserMapper
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
+import com.example.ajaxproject.service.mapper.UserMapper
+import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -20,9 +20,8 @@ class UserServiceImpl @Autowired constructor(
         return userRepository.save(user)
     }
 
-    override fun updateUser(id: Long, userDTO: UserDTO): User {
-        val user = userRepository.findById(id)
-            .orElseThrow { NotFoundException("User not found") }
+    override fun updateUser(id: String, userDTO: UserDTO): User {
+        val user = userRepository.findUser(id)
 
         user.apply {
             email = userDTO.email
@@ -32,13 +31,13 @@ class UserServiceImpl @Autowired constructor(
         return userRepository.save(user)
     }
 
-    override fun deleteUser(id: Long) {
-        return userRepository.deleteById(id)
+    override fun deleteUser(id: String) {
+        return userRepository.deleteById(ObjectId(id))
     }
 
-    override fun getUserById(id: Long): User? {
-        return userRepository.findById(id)
-            .orElseThrow { NotFoundException("User not found") }
+    override fun getUserById(id: String): User? {
+        return userRepository.findUser(id)
+
     }
 
     override fun getAllUsers(): List<User> {
