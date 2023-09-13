@@ -19,9 +19,9 @@ data class PrivateChatRoom(
 
     @JsonProperty("senderId")
     @Column(name = "senderId", length = 100)
-    val senderId: ObjectId,
+    val senderId: String,
 
     @JsonProperty("recipientId")
     @Column(name = "recipientId", length = 100)
-    val recipientId: ObjectId,
+    val recipientId: String,
 )

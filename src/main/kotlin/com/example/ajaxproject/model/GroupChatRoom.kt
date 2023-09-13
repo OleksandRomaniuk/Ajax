@@ -16,7 +16,7 @@ data class GroupChatRoom(
 
     @JsonProperty("adminId")
     @Column(name = "adminId", length = 100)
-    val adminId: ObjectId,
+    val adminId: String,
 
     @JsonProperty("chatName")
     @Column(name = "chatName")

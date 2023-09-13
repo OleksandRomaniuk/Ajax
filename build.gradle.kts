@@ -29,6 +29,8 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.slf4j:slf4j-api:2.0.9")
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation("org.mockito:mockito-core:2.1.0")
 
 }
 group = "com.arsiu"

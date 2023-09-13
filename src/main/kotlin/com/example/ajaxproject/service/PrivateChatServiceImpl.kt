@@ -41,8 +41,8 @@ class PrivateChatServiceImpl @Autowired constructor(
                 privateChatRoomRepository.save(
                     PrivateChatRoom(
                         id = roomId,
-                        senderId = ObjectId(senderId),
-                        recipientId = ObjectId(recipientId)
+                        senderId = senderId,
+                        recipientId = recipientId
                     )
                 )
             }

@@ -12,7 +12,7 @@ class User(
     @Id
     @JsonProperty("id")
     @Column(name = "id")
-    var id: ObjectId,
+    var id: String,
 
     @JsonProperty("email")
     @Column(name = "email", length = 100)
