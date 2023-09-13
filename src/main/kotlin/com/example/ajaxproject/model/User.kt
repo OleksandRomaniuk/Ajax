@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.Column
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import org.bson.types.ObjectId
 
 @Table(name = "users")
 class User(
@@ -11,7 +12,7 @@ class User(
     @Id
     @JsonProperty("id")
     @Column(name = "id")
-    var id: String,
+    var id: ObjectId,
 
     @JsonProperty("email")
     @Column(name = "email", length = 100)

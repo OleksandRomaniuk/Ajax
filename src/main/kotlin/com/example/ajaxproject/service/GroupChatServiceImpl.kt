@@ -32,7 +32,7 @@ class GroupChatServiceImpl @Autowired constructor(
 
     override fun createGroupRoom(createChatDto: CreateChatDto): GroupChatRoom {
 
-        val user = userRepository.findById(createChatDto.adminId)
+        val user = userRepository.findUser(createChatDto.adminId)
 
         val groupChatRoom = GroupChatRoom(
             id = ObjectId(),
@@ -64,7 +64,7 @@ class GroupChatServiceImpl @Autowired constructor(
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
-        val user = userRepository.findById(userId)
+        val user = userRepository.findUser(userId)
 
         chat.chatMembers += user
 
@@ -79,7 +79,7 @@ class GroupChatServiceImpl @Autowired constructor(
         val chatMessage = GroupChatMessage(
             id = ObjectId(),
             groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId),
-            sender = userRepository.findById(groupChatDto.senderId),
+            sender = userRepository.findUser(groupChatDto.senderId),
             message = groupChatDto.message,
         )
 
