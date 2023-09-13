@@ -13,16 +13,13 @@ import jakarta.persistence.Table
 class User(
 
     @Id
-    @JsonProperty("id")
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long = 0L,
 
-    @JsonProperty("email")
     @Column(name = "email", length = 100)
     var email: String = "",
 
-    @JsonProperty("password")
     @Column(name = "password", length = 100)
     var password: String = "",
 )

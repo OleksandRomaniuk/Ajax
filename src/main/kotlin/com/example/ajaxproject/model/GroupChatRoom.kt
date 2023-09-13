@@ -10,19 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class GroupChatRoom(
 
     @Id
-    @JsonProperty("id")
     @Column(name = "id")
     val id: ObjectId,
 
-    @JsonProperty("adminId")
     @Column(name = "adminId", length = 100)
     val adminId: Long? = null,
 
-    @JsonProperty("chatName")
     @Column(name = "chatName")
     val chatName: String = "",
 
-    @JsonProperty("chatMembers")
     @Column(name = "chatMembers")
     var chatMembers: List<User>,
 )
