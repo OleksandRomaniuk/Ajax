@@ -1,25 +1,24 @@
 package com.example.ajaxproject.service
 
-import com.example.ajaxproject.dto.request.RoomDTO
 import com.example.ajaxproject.dto.request.PrivateMessageDTO
+import com.example.ajaxproject.dto.request.RoomDTO
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.model.PrivateChatMessage
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.repository.PrivateChatMessageRepository
 import com.example.ajaxproject.repository.PrivateChatRoomRepository
-import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.PrivateChatService
+import com.example.ajaxproject.service.interfaces.UserService
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class PrivateChatServiceImpl @Autowired constructor(
+class PrivateChatServiceImpl(
     private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val privateChatMessageRepository: PrivateChatMessageRepository,
-    private val userRepository: UserRepository,
+    private val userService: UserService,
 ) : PrivateChatService {
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
@@ -28,9 +27,9 @@ class PrivateChatServiceImpl @Autowired constructor(
     override fun createPrivateRoom(senderId: String, recipientId: String): PrivateChatRoom {
 
         // If I had used authentication, this check would not have happened
-        userRepository.findUser(senderId)
+        userService.getUserById(senderId)
 
-        userRepository.findUser(recipientId)
+        userService.getUserById(recipientId)
 
         val roomId = roomIdFormat(senderId, recipientId)
 
@@ -54,7 +53,7 @@ class PrivateChatServiceImpl @Autowired constructor(
         return "$smallerId-$higherId"
     }
 
-    override fun getPrivateRoom(roomId: String): PrivateChatRoom? {
+    override fun getPrivateRoom(roomId: String): PrivateChatRoom {
         return privateChatRoomRepository.findById(roomId)
             .orElseThrow { NotFoundException("Room ith ID $roomId not found") }
     }
@@ -64,7 +63,7 @@ class PrivateChatServiceImpl @Autowired constructor(
             id = ObjectId(),
             privateChatRoom = createPrivateRoom(privateMessageDTO.senderId, privateMessageDTO.recipientId),
             message = privateMessageDTO.message,
-            sender = userRepository.findUser(privateMessageDTO.senderId),
+            senderId = privateMessageDTO.senderId
         )
         privateChatMessageRepository.save(privateChatMessage)
 
@@ -74,8 +73,9 @@ class PrivateChatServiceImpl @Autowired constructor(
     }
 
     override fun getAllPrivateMessages(roomDTO: RoomDTO): List<PrivateChatMessage> {
-        userRepository.findUser(roomDTO.senderId)
-        userRepository.findUser(roomDTO.recipientId)
+
+        userService.getUserById(roomDTO.senderId)
+        userService.getUserById(roomDTO.recipientId)
 
         val listOfMessage = privateChatMessageRepository.findAllByPrivateChatRoomId(
             roomIdFormat(roomDTO.senderId, roomDTO.recipientId)

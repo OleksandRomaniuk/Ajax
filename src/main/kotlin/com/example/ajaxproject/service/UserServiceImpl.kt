@@ -6,11 +6,10 @@ import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
 import com.example.ajaxproject.service.mapper.UserMapper
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class UserServiceImpl @Autowired constructor(
+class UserServiceImpl(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper
 ) : UserService {
@@ -21,17 +20,13 @@ class UserServiceImpl @Autowired constructor(
     }
 
     override fun updateUser(id: String, userDTO: UserDTO): User {
-        val user = userRepository.findById(id)
-
-        if (user.isPresent) {
-            val existingUser = user.get()
-
-            userDTO.email.let { existingUser.email = it }
-            userDTO.password.let { existingUser.password = it }
-
-            return userRepository.save(existingUser)
-        } else {
-            throw NotFoundException("User with ID $id not found")
+        getUserById(id).copy(
+            id = id,
+            email = userDTO.email,
+            password = userDTO.password,
+        ).also {
+            userRepository.save(it)
+            return it
         }
     }
 
@@ -39,8 +34,8 @@ class UserServiceImpl @Autowired constructor(
         return userRepository.deleteById(id)
     }
 
-    override fun getUserById(id: String): User? {
-        return userRepository.findUser(id)
+    override fun getUserById(id: String): User {
+        return userRepository.findById(id).orElseThrow { NotFoundException("User not found") }
 
     }
 

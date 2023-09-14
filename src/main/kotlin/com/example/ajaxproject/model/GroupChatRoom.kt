@@ -1,7 +1,5 @@
 package com.example.ajaxproject.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.persistence.Column
 import jakarta.persistence.Id
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
@@ -10,15 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class GroupChatRoom(
 
     @Id
-    @Column(name = "id")
     val id: ObjectId,
 
-    @Column(name = "adminId", length = 100)
     val adminId: String,
-
-    @Column(name = "chatName")
-    val chatName: String = "",
-
-    @Column(name = "chatMembers")
+    val chatName: String,
     var chatMembers: List<User>,
 )
