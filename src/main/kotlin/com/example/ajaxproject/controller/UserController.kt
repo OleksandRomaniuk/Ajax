@@ -4,9 +4,15 @@ import com.example.ajaxproject.dto.UserDTO
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.UserServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/users")
@@ -14,34 +20,28 @@ class UserController @Autowired constructor(
     private val userService: UserServiceImpl
 ) {
 
-    @GetMapping
-    fun getAllUsers(): ResponseEntity<List<User>> {
-        val users = userService.findAll()
-        return ResponseEntity.ok(users)
-    }
-
-    @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<User?> {
-        val user = userService.findById(id)
-        return ResponseEntity.ok(user)
-    }
-
     @PostMapping("/create")
     fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<User> {
-        val createdUser = userService.createUser(userDTO)
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser)
+        return ResponseEntity.ok(userService.createUser(userDTO))
     }
 
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: Long, @RequestBody userDTO: UserDTO): ResponseEntity<User> {
-        val updatedUser = userService.updateUser(id, userDTO)
-        return ResponseEntity.ok(updatedUser)
+        return ResponseEntity.ok(userService.updateUser(id, userDTO))
     }
 
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: Long): ResponseEntity<Unit> {
-        userService.deleteUser(id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.ok(userService.deleteUser(id))
     }
 
+    @GetMapping("/{id}")
+    fun findUserById(@PathVariable id: Long): ResponseEntity<User> {
+        return ResponseEntity.ok(userService.getUserById(id))
+    }
+
+    @GetMapping
+    fun findAllUsers(): ResponseEntity<List<User>> {
+        return ResponseEntity.ok(userService.getAllUsers())
+    }
 }

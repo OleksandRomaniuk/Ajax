@@ -1,0 +1,22 @@
+package com.example.ajaxproject.service.interfaces
+
+import com.example.ajaxproject.dto.UserDTO
+import com.example.ajaxproject.model.User
+import com.example.ajaxproject.model.enums.Role
+
+
+interface UserService {
+
+    fun createUser(userDTO: UserDTO): User
+
+    fun updateUser(id: Long, userDTO: UserDTO): User
+
+    fun deleteUser(id: Long)
+
+    fun getUserById(id: Long): User?
+
+    fun getAllUsers(): List<User>
+
+    fun getAllUsersByRole(role: Role) : List<User>;
+
+}
