@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document("private-chat-room")
@@ -15,8 +16,8 @@ data class PrivateChatRoom(
     val id: String = "",
 
     @Column(name = "senderId", length = 100)
-    val senderId: Long? = null,
+    val senderId: String,
 
     @Column(name = "recipientId", length = 100)
-    val recipientId: Long? = null,
+    val recipientId: String,
 )

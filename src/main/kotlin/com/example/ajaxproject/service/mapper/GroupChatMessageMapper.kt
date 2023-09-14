@@ -9,7 +9,7 @@ class GroupChatMessageMapper {
     fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
         return GroupChatMessageResponse(
             id = chatMessage.id,
-            senderId = chatMessage.sender.id,
+            senderId = chatMessage.sender.id.toString(),
             roomId = chatMessage.groupChatRoom.id,
             message = chatMessage.message
         )
