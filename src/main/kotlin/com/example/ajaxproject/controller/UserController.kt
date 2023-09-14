@@ -39,7 +39,6 @@ class UserController @Autowired constructor(
     fun findUserById(@PathVariable id: String): ResponseEntity<User> {
         return ResponseEntity.ok(userService.getUserById(id))
     }
-
     @GetMapping
     fun findAllUsers(): ResponseEntity<List<User>> {
         return ResponseEntity.ok(userService.getAllUsers())

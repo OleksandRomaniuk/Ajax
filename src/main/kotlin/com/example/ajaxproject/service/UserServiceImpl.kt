@@ -42,5 +42,4 @@ class UserServiceImpl(
     override fun getAllUsers(): List<User> {
         return userRepository.findAll()
     }
-
 }
