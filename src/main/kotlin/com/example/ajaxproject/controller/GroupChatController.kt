@@ -51,5 +51,4 @@ class GroupChatController @Autowired constructor(
     fun leaveChat(@RequestBody chatDto: ChatDTO): ResponseEntity<Boolean> {
         return ResponseEntity.ok(groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
     }
-
 }

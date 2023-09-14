@@ -9,7 +9,6 @@ import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.GroupChatMessageRepository
 import com.example.ajaxproject.repository.GroupChatRoomRepository
-import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.GroupChatService
 import com.example.ajaxproject.service.interfaces.UserService
 import com.example.ajaxproject.service.mapper.GroupChatMessageMapper
@@ -121,5 +120,4 @@ class GroupChatServiceImpl(
             throw WrongActionException("Admin cant leave a chat")
         }
     }
-
 }
