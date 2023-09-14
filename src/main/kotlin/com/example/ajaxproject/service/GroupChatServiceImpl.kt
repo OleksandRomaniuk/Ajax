@@ -11,17 +11,17 @@ import com.example.ajaxproject.repository.GroupChatMessageRepository
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.GroupChatService
+import com.example.ajaxproject.service.interfaces.UserService
 import com.example.ajaxproject.service.mapper.GroupChatMessageMapper
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class GroupChatServiceImpl @Autowired constructor(
+class GroupChatServiceImpl(
     private val groupChatRoomRepository: GroupChatRoomRepository,
-    private val userRepository: UserRepository,
+    private val userService: UserService,
     private val groupChatMessageRepository: GroupChatMessageRepository,
     private val groupChatMessageMapper: GroupChatMessageMapper
 ) : GroupChatService {
@@ -32,7 +32,7 @@ class GroupChatServiceImpl @Autowired constructor(
 
     override fun createGroupRoom(createChatDto: CreateChatDto): GroupChatRoom {
 
-        val user = userRepository.findUser(createChatDto.adminId)
+        val user = userService.getUserById(createChatDto.adminId)
 
         val groupChatRoom = GroupChatRoom(
             id = ObjectId(),
@@ -64,7 +64,7 @@ class GroupChatServiceImpl @Autowired constructor(
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
-        val user = userRepository.findUser(userId)
+        val user = userService.getUserById(userId)
 
         chat.chatMembers += user
 
@@ -79,11 +79,13 @@ class GroupChatServiceImpl @Autowired constructor(
         val chatMessage = GroupChatMessage(
             id = ObjectId(),
             groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId),
-            sender = userRepository.findUser(groupChatDto.senderId),
+            senderId = groupChatDto.senderId,
             message = groupChatDto.message,
         )
 
         logger.info("Message sent to group chat ID: {}" , groupChatDto.chatId)
+
+        groupChatMessageRepository.save(chatMessage)
 
         return groupChatMessageMapper.toResponseDto(chatMessage)
 
@@ -98,7 +100,7 @@ class GroupChatServiceImpl @Autowired constructor(
 
     override fun leaveGroupChat(chatId: String, userId: String): Boolean {
 
-        val user = userRepository.findUser(userId)
+        val user = userService.getUserById(userId)
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
