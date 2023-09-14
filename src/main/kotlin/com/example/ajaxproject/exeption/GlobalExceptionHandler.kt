@@ -22,5 +22,4 @@ class GlobalExceptionHandler {
     fun handleUserNotFoundException(ex: WrongActionException): ResponseEntity<Any> {
         return ResponseEntity.status(HttpStatus.LOCKED).body(ex.message)
     }
-
 }
