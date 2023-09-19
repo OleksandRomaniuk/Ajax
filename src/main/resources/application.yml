@@ -7,6 +7,24 @@ spring:
 
 
 
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: ora.romaniuk@gmail.com
+    password: fjxi gawn pgjl huxy
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            required: true
+
+
+  main:
+    allow-bean-definition-overriding: true
+
+
+
 
 
 

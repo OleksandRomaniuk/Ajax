@@ -5,4 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository : MongoRepository<User, String> , CustomUserRepository
+interface UserRepository : MongoRepository<User, String> , CustomUserRepository{
+
+    fun findByEmail(email:String): User;
+}

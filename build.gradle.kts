@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.spring") version "1.9.0"
     kotlin("plugin.jpa") version "1.9.0"
-    kotlin("kapt") version "1.9.0"
+    kotlin("plugin.allopen") version "1.9.0"
 }
 
 repositories {
@@ -29,9 +29,11 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.slf4j:slf4j-api:2.0.9")
-    // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation("org.mockito:mockito-core:2.1.0")
-
+    implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
+    implementation("com.github.migangqui:spring-email-api-kotlin:1.2.0")
+// https://mvnrepository.com/artifact/jakarta.mail/jakarta.mail-api
+    implementation("com.sun.mail:jakarta.mail:2.0.1")
 }
 group = "com.arsiu"
 version = "0.0.1-SNAPSHOT"

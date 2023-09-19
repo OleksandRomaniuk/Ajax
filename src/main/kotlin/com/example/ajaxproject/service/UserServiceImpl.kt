@@ -5,18 +5,25 @@ import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
-import com.example.ajaxproject.service.mapper.UserMapper
+import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service
 class UserServiceImpl(
-    private val userRepository: UserRepository,
-    private val userMapper: UserMapper
+    private val userRepository: UserRepository
 ) : UserService {
 
     override fun createUser(userDTO: UserDTO): User {
-        val user = userMapper.toEntity(userDTO)
+        val user = toEntity(userDTO)
         return userRepository.save(user)
+    }
+
+    fun toEntity(userDTO: UserDTO): User {
+        return User(
+            id = ObjectId().toHexString(),
+            email = userDTO.email,
+            password = userDTO.password,
+        )
     }
 
     override fun updateUser(id: String, userDTO: UserDTO): User {

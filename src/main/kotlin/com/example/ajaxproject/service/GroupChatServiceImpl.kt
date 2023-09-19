@@ -1,5 +1,6 @@
 package com.example.ajaxproject.service
 
+import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
@@ -11,18 +12,16 @@ import com.example.ajaxproject.repository.GroupChatMessageRepository
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.GroupChatService
 import com.example.ajaxproject.service.interfaces.UserService
-import com.example.ajaxproject.service.mapper.GroupChatMessageMapper
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class GroupChatServiceImpl(
+class GroupChatServiceImpl (
     private val groupChatRoomRepository: GroupChatRoomRepository,
     private val userService: UserService,
-    private val groupChatMessageRepository: GroupChatMessageRepository,
-    private val groupChatMessageMapper: GroupChatMessageMapper
+    private val groupChatMessageRepository: GroupChatMessageRepository
 ) : GroupChatService {
 
     companion object {
@@ -72,7 +71,7 @@ class GroupChatServiceImpl(
         return groupChatRoomRepository.save(chat).chatMembers
 
     }
-
+    @Notification
     override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
 
         val chatMessage = GroupChatMessage(
@@ -86,7 +85,7 @@ class GroupChatServiceImpl(
 
         groupChatMessageRepository.save(chatMessage)
 
-        return groupChatMessageMapper.toResponseDto(chatMessage)
+        return toResponseDto(chatMessage)
 
     }
 
@@ -94,7 +93,7 @@ class GroupChatServiceImpl(
 
         val messages = groupChatMessageRepository.findAll()
 
-        return messages.map { groupChatMessageMapper.toResponseDto(it) }
+        return messages.map { toResponseDto(it) }
     }
 
     override fun leaveGroupChat(chatId: String, userId: String): Boolean {
@@ -119,5 +118,16 @@ class GroupChatServiceImpl(
 
             throw WrongActionException("Admin cant leave a chat")
         }
+    }
+    fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
+        return GroupChatMessageResponse(
+            id = chatMessage.id,
+            senderId = chatMessage.senderId,
+            roomId = chatMessage.groupChatRoom.id,
+            message = chatMessage.message
+        )
+    }
+    override fun findAllChatUser(chatId: String) :List<User> {
+        return groupChatRoomRepository.findChatRoom(chatId).chatMembers
     }
 }
