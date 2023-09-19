@@ -56,9 +56,7 @@ class DeviceAuthorizationInvocationHandler(
     private val groupChatRoomRepository: GroupChatRoomRepository,
     private val emailSenderService: EmailSenderService,
     private val originalBean: KClass<*>
-
 ) : InvocationHandler {
-
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         val methodParams = args ?: emptyArray()
         val result = method.invoke(bean, *methodParams)
@@ -73,7 +71,6 @@ class DeviceAuthorizationInvocationHandler(
             if (hasNotificationAnnotation)
                 createNotification(userRequest)
         }
-
         return result
     }
 
