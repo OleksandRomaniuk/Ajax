@@ -1,10 +1,10 @@
 package com.example.ajaxproject.pbp
 
 import com.example.ajaxproject.config.Notification
-import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.dto.request.EmailDTO
-import com.example.ajaxproject.service.interfaces.EmailSenderService
+import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.repository.GroupChatRoomRepository
+import com.example.ajaxproject.service.interfaces.EmailSenderService
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
 
 @Component
@@ -45,7 +44,7 @@ class NotificationAnnotationBeanPostProcessor(
             Proxy.newProxyInstance(
                 beanClass.java.classLoader,
                 beanClass.java.interfaces,
-                DeviceAuthorizationInvocationHandler(bean, groupChatRoomRepository, emailSenderService,beanClass)
+                DeviceAuthorizationInvocationHandler(bean, groupChatRoomRepository, emailSenderService, beanClass)
             )
         } ?: bean
     }
@@ -64,20 +63,18 @@ class DeviceAuthorizationInvocationHandler(
         val methodParams = args ?: emptyArray()
         val result = method.invoke(bean, *methodParams)
 
-        if (args?.any { it is  GroupChatDTO} == true && hasNotificationAnnotation(originalBean, method)) {
+        if (args?.any { it is GroupChatDTO } == true) {
             val userRequest = args.find { it is GroupChatDTO } as GroupChatDTO
-            createNotification(userRequest)
+            val hasNotificationAnnotation = originalBean.memberFunctions.any { beanMethod ->
+                beanMethod.name == method.name &&
+                        beanMethod.javaClass.typeParameters.contentEquals(method.javaClass.typeParameters) &&
+                        beanMethod.annotations.any { it is Notification }
+            }
+            if (hasNotificationAnnotation)
+                createNotification(userRequest)
         }
 
         return result
-    }
-
-    private fun hasNotificationAnnotation(originalBean: KClass<*>, method: Method): Boolean {
-        return originalBean.memberFunctions.any { beanMethod ->
-            beanMethod.name == method.name &&
-                    beanMethod.javaClass.typeParameters.contentEquals(method.javaClass.typeParameters) &&
-                    beanMethod.findAnnotation<Notification>() != null
-        }
     }
 
     private fun createNotification(groupChatDTO: GroupChatDTO) {
@@ -95,7 +92,7 @@ class DeviceAuthorizationInvocationHandler(
                 subject = "Testing post bean processor",
                 body = "New message in chat $chatName"
             )
-           emailSenderService.send(emailDTO)
+            emailSenderService.send(emailDTO)
         }
     }
 
