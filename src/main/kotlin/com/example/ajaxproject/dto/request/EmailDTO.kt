@@ -1,6 +1,6 @@
-package com.example.ajaxproject.email
+package com.example.ajaxproject.dto.request
 
-data class Email(
+data class EmailDTO(
     val from: String,
     val to: String,
     val subject: String? = null,

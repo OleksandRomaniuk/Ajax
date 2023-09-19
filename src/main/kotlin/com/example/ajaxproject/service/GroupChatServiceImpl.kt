@@ -127,7 +127,4 @@ class GroupChatServiceImpl (
             message = chatMessage.message
         )
     }
-    override fun findAllChatUser(chatId: String) :List<User> {
-        return groupChatRoomRepository.findChatRoom(chatId).chatMembers
-    }
 }

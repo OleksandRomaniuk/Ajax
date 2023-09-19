@@ -1,7 +1,9 @@
-package com.example.ajaxproject.email
+package com.example.ajaxproject.service
 
-
+import com.example.ajaxproject.dto.request.EmailDTO
+import com.example.ajaxproject.dto.responce.SendEmailResponce
 import com.example.ajaxproject.pbp.NotificationAnnotationBeanPostProcessor
+import com.example.ajaxproject.service.interfaces.EmailSenderService
 import jakarta.mail.internet.MimeMessage
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -12,23 +14,23 @@ import org.springframework.stereotype.Service
 @Service("javaMailEmailSenderService")
 internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender) : EmailSenderService {
 
-    override fun send(email: Email): SendEmailResult {
+    override fun send(emailDTO: EmailDTO): SendEmailResponce {
         return runCatching {
-            javaMailSender.send(generateMailMessage(email))
+            javaMailSender.send(generateMailMessage(emailDTO))
             logger.debug("Email sent successfully")
-            SendEmailResult(status = 200)
+            SendEmailResponce(status = 200)
         }.getOrElse { exception ->
             logger.warn("An error has occurred sending email", exception)
-            SendEmailResult(status = 500, cause = exception.message)
+            SendEmailResponce(status = 500, cause = exception.message)
         }
     }
+    private fun generateMailMessage(emailDTO: EmailDTO): MimeMessage {
 
-    private fun generateMailMessage(email: Email): MimeMessage {
         val helper = MimeMessageHelper(javaMailSender.createMimeMessage())
-        helper.setFrom(email.from)
-        helper.setTo(email.to)
-        helper.setSubject(email.subject!!)
-        helper.setText(email.body, true)
+        helper.setFrom(emailDTO.from)
+        helper.setTo(emailDTO.to)
+        helper.setSubject(emailDTO.subject!!)
+        helper.setText(emailDTO.body, true)
 
         return helper.mimeMessage
     }

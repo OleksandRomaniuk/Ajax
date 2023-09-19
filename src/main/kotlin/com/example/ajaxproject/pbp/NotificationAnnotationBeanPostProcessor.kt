@@ -2,8 +2,8 @@ package com.example.ajaxproject.pbp
 
 import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.GroupChatDTO
-import com.example.ajaxproject.email.Email
-import com.example.ajaxproject.email.EmailSenderService
+import com.example.ajaxproject.dto.request.EmailDTO
+import com.example.ajaxproject.service.interfaces.EmailSenderService
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import org.bson.types.ObjectId
 import org.slf4j.Logger
@@ -89,13 +89,13 @@ class DeviceAuthorizationInvocationHandler(
         logger.info("Emails sent to users: {}", userList)
 
         for (user in userList) {
-            val email = Email(
+            val emailDTO = EmailDTO(
                 from = "ora.romaniuk@gmail.com",
                 to = user.email,
                 subject = "Testing post bean processor",
                 body = "New message in chat $chatName"
             )
-           emailSenderService.send(email)
+           emailSenderService.send(emailDTO)
         }
     }
 
