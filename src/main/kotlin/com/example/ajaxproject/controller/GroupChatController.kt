@@ -4,6 +4,7 @@ import com.example.ajaxproject.dto.request.ChatDTO
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
+import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
@@ -28,22 +29,22 @@ class GroupChatController @Autowired constructor(
     }
 
     @GetMapping("/{chatId}/users")
-    fun getAllChatUsers(@PathVariable chatId: String): ResponseEntity<List<User>> {
+    fun getAllChatUsers(@PathVariable chatId: String): ResponseEntity<List<String>> {
         return ResponseEntity.ok(groupChatService.getAllChatMembers(chatId))
     }
 
     @PostMapping("/{chatId}/addUser/{userId}")
-    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: String): ResponseEntity<List<User>> {
+    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: String): ResponseEntity<List<String>> {
         return ResponseEntity.ok(groupChatService.addUserToChat(chatId, userId))
     }
 
     @PostMapping("/sendGroupMessage")
-    fun sendMessage(@RequestBody groupChatDTO: GroupChatDTO): ResponseEntity<GroupChatMessageResponse> {
+    fun sendMessage(@RequestBody groupChatDTO: GroupChatDTO): ResponseEntity<GroupChatMessage> {
         return ResponseEntity.ok(groupChatService.sendMessageToGroup(groupChatDTO))
     }
 
     @GetMapping("/getAllMessages/{chatId}")
-    fun getAllMessages(@PathVariable chatId: String): ResponseEntity<List<GroupChatMessageResponse>> {
+    fun getAllMessages(@PathVariable chatId: String): ResponseEntity<List<GroupChatMessage>> {
         return ResponseEntity.ok(groupChatService.getAllGroupMessages(chatId))
     }
 

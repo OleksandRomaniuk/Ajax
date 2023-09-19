@@ -10,7 +10,7 @@ data class GroupChatMessage(
     @Id
     val id: ObjectId,
 
-    val groupChatRoom: GroupChatRoom,
+    val groupChatRoomId: String,
     val senderId: String,
     val message: String,
 )

@@ -15,5 +15,4 @@ class GroupChatRoomRepositoryImpl(
         val chatQuery = Query.query(Criteria.where("_id").`is`(chatId))
         return mongoTemplate.findOne(chatQuery, GroupChatRoom::class.java)!!
     }
-
 }

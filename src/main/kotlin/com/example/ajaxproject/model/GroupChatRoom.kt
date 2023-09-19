@@ -12,5 +12,5 @@ data class GroupChatRoom(
 
     val adminId: String,
     val chatName: String,
-    var chatMembers: List<User>,
+    var chatMembers: List<String>,
 )

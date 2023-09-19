@@ -2,16 +2,13 @@ package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDTO
-import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
-import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.GroupChatMessageRepository
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.GroupChatService
 import com.example.ajaxproject.service.interfaces.UserService
-import com.example.ajaxproject.service.mapper.GroupChatMessageMapper
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,7 +19,6 @@ class GroupChatServiceImpl(
     private val groupChatRoomRepository: GroupChatRoomRepository,
     private val userService: UserService,
     private val groupChatMessageRepository: GroupChatMessageRepository,
-    private val groupChatMessageMapper: GroupChatMessageMapper
 ) : GroupChatService {
 
     companion object {
@@ -37,7 +33,7 @@ class GroupChatServiceImpl(
             id = ObjectId(),
             chatName = createChatDto.chatName,
             adminId = user.id,
-            chatMembers = listOf(user)
+            chatMembers = listOf(user.id)
         )
 
         groupChatRoom.chatMembers + user
@@ -47,10 +43,9 @@ class GroupChatServiceImpl(
         logger.info("Group chat room created successfully")
 
         return groupChatRoom
-
     }
 
-    override fun getAllChatMembers(chatId: String): List<User> {
+    override fun getAllChatMembers(chatId: String): List<String> {
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
@@ -59,25 +54,24 @@ class GroupChatServiceImpl(
         return chat.chatMembers
     }
 
-    override fun addUserToChat(chatId: String, userId: String): List<User> {
+    override fun addUserToChat(chatId: String, userId: String): List<String> {
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
 
         val user = userService.getUserById(userId)
 
-        chat.chatMembers += user
+        chat.chatMembers += user.id
 
         logger.info("User with ID {} added to chat ID {}" ,userId , chatId)
 
         return groupChatRoomRepository.save(chat).chatMembers
-
     }
 
-    override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
+    override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessage {
 
         val chatMessage = GroupChatMessage(
             id = ObjectId(),
-            groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId),
+            groupChatRoomId = groupChatDto.chatId,
             senderId = groupChatDto.senderId,
             message = groupChatDto.message,
         )
@@ -86,15 +80,12 @@ class GroupChatServiceImpl(
 
         groupChatMessageRepository.save(chatMessage)
 
-        return groupChatMessageMapper.toResponseDto(chatMessage)
-
+        return chatMessage
     }
 
-    override fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse> {
+    override fun getAllGroupMessages(chatId: String): List<GroupChatMessage> {
 
-        val messages = groupChatMessageRepository.findAll()
-
-        return messages.map { groupChatMessageMapper.toResponseDto(it) }
+        return groupChatMessageRepository.findAll()
     }
 
     override fun leaveGroupChat(chatId: String, userId: String): Boolean {
@@ -105,7 +96,7 @@ class GroupChatServiceImpl(
 
         if (chat.adminId != user.id) {
 
-            chat.chatMembers = chat.chatMembers.filterNot { it.id == user.id }
+            chat.chatMembers = chat.chatMembers.filterNot { it == user.id }
 
             groupChatRoomRepository.save(chat)
 
