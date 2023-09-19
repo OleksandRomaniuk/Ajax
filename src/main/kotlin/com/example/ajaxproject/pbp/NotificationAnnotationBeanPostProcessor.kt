@@ -86,9 +86,9 @@ class DeviceAuthorizationInvocationHandler(
 
         val userList = groupChatRoomRepository.findById(ObjectId(groupChatDTO.chatId)).get().chatMembers
 
-        LOGGER.info("Emails sent to users: {}", userList)
+        logger.info("Emails sent to users: {}", userList)
 
-       for (user in userList) {
+        for (user in userList) {
             val email = Email(
                 from = "ora.romaniuk@gmail.com",
                 to = user.email,
@@ -97,12 +97,9 @@ class DeviceAuthorizationInvocationHandler(
             )
            emailSenderService.send(email)
         }
-
-
     }
 
-
     companion object {
-        private val LOGGER: Logger = LoggerFactory.getLogger(LoggingBeanPostProcessor::class.java)
+        private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }
 }
