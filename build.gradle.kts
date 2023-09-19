@@ -31,8 +31,6 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.9")
     testImplementation("org.mockito:mockito-core:2.1.0")
     implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
-    implementation("com.github.migangqui:spring-email-api-kotlin:1.2.0")
-// https://mvnrepository.com/artifact/jakarta.mail/jakarta.mail-api
     implementation("com.sun.mail:jakarta.mail:2.0.1")
 }
 group = "com.arsiu"
