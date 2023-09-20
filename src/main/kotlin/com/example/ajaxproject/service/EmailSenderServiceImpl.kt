@@ -34,6 +34,7 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
 
         return helper.mimeMessage
     }
+
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }

@@ -71,6 +71,7 @@ class GroupChatServiceImpl (
         return groupChatRoomRepository.save(chat).chatMembers
 
     }
+
     @Notification
     override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
 

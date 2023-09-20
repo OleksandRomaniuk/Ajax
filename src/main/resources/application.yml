@@ -18,13 +18,3 @@ spring:
         smtp:
           starttls:
             required: true
-
-
-  main:
-    allow-bean-definition-overriding: true
-
-
-
-
-
-

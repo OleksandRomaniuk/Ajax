@@ -57,6 +57,7 @@ class DeviceAuthorizationInvocationHandler(
     private val emailSenderService: EmailSenderService,
     private val originalBean: KClass<*>
 ) : InvocationHandler {
+
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         val methodParams = args ?: emptyArray()
         val result = method.invoke(bean, *methodParams)
@@ -80,8 +81,6 @@ class DeviceAuthorizationInvocationHandler(
 
         val userList = groupChatRoomRepository.findById(ObjectId(groupChatDTO.chatId)).get().chatMembers
 
-        logger.info("Emails sent to users: {}", userList)
-
         for (user in userList) {
             val emailDTO = EmailDTO(
                 from = "ora.romaniuk@gmail.com",
@@ -91,6 +90,7 @@ class DeviceAuthorizationInvocationHandler(
             )
             emailSenderService.send(emailDTO)
         }
+        logger.info("Emails sent to users: {}", userList)
     }
 
     companion object {
