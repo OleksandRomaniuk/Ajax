@@ -51,24 +51,31 @@ class GroupChatServiceImpl (
 
     override fun getAllChatMembers(chatId: String): List<User> {
 
-        val chat = groupChatRoomRepository.findChatRoom(chatId)
+        val chatMembers = groupChatRoomRepository.findChatRoom(chatId).chatMembers
 
         logger.info("Retrieved chat members for chat ID: {}" , chatId)
 
-        return chat.chatMembers
+        return chatMembers
     }
 
     override fun addUserToChat(chatId: String, userId: String): List<User> {
 
         val chat = groupChatRoomRepository.findChatRoom(chatId)
-
         val user = userService.getUserById(userId)
 
+        val existingUser = chat.chatMembers.find { it.id == userId }
+
+        if (existingUser != null) {
+            logger.info("User with ID {} is already present in chat ID {}", userId, chatId)
+            throw WrongActionException("User is already present in this chat")
+        }
+
         chat.chatMembers += user
+        logger.info("User with ID {} added to chat ID {}", userId, chatId)
 
-        logger.info("User with ID {} added to chat ID {}" ,userId , chatId)
+        val updatedChatRoom = groupChatRoomRepository.save(chat)
 
-        return groupChatRoomRepository.save(chat).chatMembers
+        return updatedChatRoom.chatMembers
 
     }
     @Notification
@@ -91,7 +98,7 @@ class GroupChatServiceImpl (
 
     override fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse> {
 
-        val messages = groupChatMessageRepository.findAll()
+        val messages = groupChatMessageRepository.findAllMessagesInChat(chatId)
 
         return messages.map { toResponseDto(it) }
     }
@@ -119,6 +126,7 @@ class GroupChatServiceImpl (
             throw WrongActionException("Admin cant leave a chat")
         }
     }
+
     fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
         return GroupChatMessageResponse(
             id = chatMessage.id,
