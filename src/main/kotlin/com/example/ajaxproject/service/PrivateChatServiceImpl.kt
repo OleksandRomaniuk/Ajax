@@ -20,6 +20,7 @@ class PrivateChatServiceImpl(
     private val privateChatMessageRepository: PrivateChatMessageRepository,
     private val userService: UserService,
 ) : PrivateChatService {
+
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
     }
