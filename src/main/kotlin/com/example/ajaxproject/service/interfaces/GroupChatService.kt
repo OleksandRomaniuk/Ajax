@@ -7,6 +7,7 @@ import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 
 interface GroupChatService {
+
     fun createGroupRoom(createChatDto: CreateChatDto): GroupChatRoom
 
     fun getAllChatMembers(chatId: String): List<User>
