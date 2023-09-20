@@ -1,7 +1,6 @@
 package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.UserDTO
-import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
@@ -42,7 +41,7 @@ class UserServiceImpl(
     }
 
     override fun getUserById(id: String): User {
-        return userRepository.findById(id).orElseThrow { NotFoundException("User not found") }
+        return userRepository.findUserById(id)
 
     }
 
