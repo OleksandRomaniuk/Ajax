@@ -6,6 +6,7 @@ import com.example.ajaxproject.repository.GroupChatRoomRepository
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -23,17 +24,14 @@ class GroupChatRoomRepositoryImpl(
 
     override fun validateAndCleanChatMembers(chatRoomId: String) {
 
-        val chatRoom =
-            mongoTemplate.findOne(Query.query(Criteria.where("_id").`is`(chatRoomId)), GroupChatRoom::class.java)
-                ?: return
+        val query = Query.query(Criteria.where("_id").`is`(chatRoomId))
+        val chatRoom = mongoTemplate.findOne(query, GroupChatRoom::class.java) ?: return
 
         val validUserIds = chatRoom.chatMembers.filter { isValidUser(it.id) }
 
         if (validUserIds.size != chatRoom.chatMembers.size) {
-
-            chatRoom.chatMembers = validUserIds
-
-            mongoTemplate.save(chatRoom)
+            val update = Update().set("chatMembers", validUserIds)
+            mongoTemplate.updateFirst(query, update, GroupChatRoom::class.java)
         }
     }
 

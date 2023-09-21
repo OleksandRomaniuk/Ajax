@@ -36,7 +36,7 @@ class PrivateChatServiceImpl(
         logger.info("Create new private room {}", roomId)
 
         return privateChatRoomRepository.findChatRoomById(roomId)
-            ?: return privateChatRoomRepository.save(
+            ?: privateChatRoomRepository.save(
                 PrivateChatRoom(
                     id = roomId,
                     senderId = senderId,
@@ -52,7 +52,7 @@ class PrivateChatServiceImpl(
     }
 
     override fun getPrivateRoom(roomId: String): PrivateChatRoom? {
-        return privateChatRoomRepository.findChatRoomById(roomId)
+        return privateChatRoomRepository.findChatRoomById(roomId) ?: throw NotFoundException("Room with $roomId not fount")
     }
 
     override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): PrivateChatMessage {
