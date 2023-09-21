@@ -1,29 +1,27 @@
-version: '3'
+version: "3.8"
 services:
   mongo:
     image: mongo
+    container_name: mongodb
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ajax
-      MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - mongo-data:/data/db
-
-  spring-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
+      - mongo:/data
+  ajax-app:
     depends_on:
       - mongo
-      - mysql
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ajax
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_APPLICATION_JSON: '{
+              "spring.data.mongodb.database":"ajax",
+              "spring.data.mongodb.port":"27017",
+              "spring.data.mongodb.host":"mongo"
+      }'
+    container_name: "docker-app"
+    ports:
+      - "8080:8080"
 
 volumes:
-  mongo-data:
+  mongo:
