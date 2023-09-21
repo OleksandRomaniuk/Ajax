@@ -20,13 +20,13 @@ class PrivateChatServiceImpl(
     private val privateChatMessageRepository: PrivateChatMessageRepository,
     private val userService: UserService,
 ) : PrivateChatService {
+
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
     }
 
     override fun createPrivateRoom(senderId: String, recipientId: String): PrivateChatRoom {
 
-        // If I had used authentication, this check would not have happened
         userService.getUserById(senderId)
 
         userService.getUserById(recipientId)
@@ -35,16 +35,14 @@ class PrivateChatServiceImpl(
 
         logger.info("Create new private room {}", roomId)
 
-        return privateChatRoomRepository.findById(roomId)
-            .orElseGet {
-                privateChatRoomRepository.save(
-                    PrivateChatRoom(
-                        id = roomId,
-                        senderId = senderId,
-                        recipientId = recipientId
-                    )
+        return privateChatRoomRepository.findChatRoomById(roomId)
+            ?: privateChatRoomRepository.save(
+                PrivateChatRoom(
+                    id = roomId,
+                    senderId = senderId,
+                    recipientId = recipientId
                 )
-            }
+            )
     }
 
     fun roomIdFormat(id1: String, id2: String): String {
@@ -53,9 +51,8 @@ class PrivateChatServiceImpl(
         return "$smallerId-$higherId"
     }
 
-    override fun getPrivateRoom(roomId: String): PrivateChatRoom {
-        return privateChatRoomRepository.findById(roomId)
-            .orElseThrow { NotFoundException("Room ith ID $roomId not found") }
+    override fun getPrivateRoom(roomId: String): PrivateChatRoom? {
+        return privateChatRoomRepository.findChatRoomById(roomId) ?: throw NotFoundException("Room with $roomId not fount")
     }
 
     override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): PrivateChatMessage {
