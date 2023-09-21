@@ -120,6 +120,7 @@ class GroupChatServiceImpl (
             throw WrongActionException("Admin cant leave a chat")
         }
     }
+
     fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
         return GroupChatMessageResponse(
             id = chatMessage.id,
