@@ -8,7 +8,6 @@ import com.example.ajaxproject.service.interfaces.EmailSenderService
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.config.BeanPostProcessor
 import org.springframework.cglib.proxy.InvocationHandler
@@ -21,11 +20,9 @@ import kotlin.reflect.full.memberFunctions
 
 @Component
 class NotificationAnnotationBeanPostProcessor(
-    @Qualifier("javaMailEmailSenderService") private val emailSenderService: EmailSenderService
+    @Qualifier("javaMailEmailSenderService") private val emailSenderService: EmailSenderService,
+    private val groupChatRoomRepository: GroupChatRoomRepository
 ) : BeanPostProcessor {
-
-    @Autowired
-    private lateinit var groupChatRoomRepository: GroupChatRoomRepository
 
     private val beans = mutableMapOf<String, KClass<*>>()
 
