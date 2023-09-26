@@ -14,5 +14,4 @@ interface UserService {
     fun getUserById(id: String): User
 
     fun getAllUsers(): List<User>
-
 }
