@@ -24,16 +24,16 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
             SendEmailResponce(status = 500, cause = exception.message)
         }
     }
-
     private fun generateMailMessage(emailDTO: EmailDTO): MimeMessage {
-        return MimeMessageHelper(javaMailSender.createMimeMessage()).apply {
-            setFrom(emailDTO.from)
-            setTo(emailDTO.to)
-            setSubject(emailDTO.subject!!)
-            setText(emailDTO.body, true)
-        }.mimeMessage
-    }
 
+        val helper = MimeMessageHelper(javaMailSender.createMimeMessage())
+        helper.setFrom(emailDTO.from)
+        helper.setTo(emailDTO.to)
+        emailDTO.subject?.let { helper.setSubject(it) }
+        helper.setText(emailDTO.body, true)
+
+        return helper.mimeMessage
+    }
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }

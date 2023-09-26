@@ -5,7 +5,6 @@ import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.EmailSenderService
-import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -23,6 +22,7 @@ class NotificationAnnotationBeanPostProcessor(
     @Qualifier("javaMailEmailSenderService") private val emailSenderService: EmailSenderService,
     private val groupChatRoomRepository: GroupChatRoomRepository
 ) : BeanPostProcessor {
+
 
     private val beans = mutableMapOf<String, KClass<*>>()
 
@@ -54,7 +54,6 @@ class DeviceAuthorizationInvocationHandler(
     private val emailSenderService: EmailSenderService,
     private val originalBean: KClass<*>
 ) : InvocationHandler {
-
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         val methodParams = args ?: emptyArray()
         val result = method.invoke(bean, *methodParams)
@@ -76,7 +75,9 @@ class DeviceAuthorizationInvocationHandler(
 
         val chatName = groupChatRoomRepository.findChatRoom(groupChatDTO.chatId).chatName
 
-        val userList = groupChatRoomRepository.findById(ObjectId(groupChatDTO.chatId)).get().chatMembers
+        val userList = groupChatRoomRepository.findChatRoom(groupChatDTO.chatId).chatMembers
+
+        logger.info("Emails sent to users: {}", userList)
 
         for (user in userList) {
             val emailDTO = EmailDTO(
@@ -87,8 +88,6 @@ class DeviceAuthorizationInvocationHandler(
             )
             emailSenderService.send(emailDTO)
         }
-
-        logger.info("Emails sent to users: {}", userList)
     }
 
     companion object {
