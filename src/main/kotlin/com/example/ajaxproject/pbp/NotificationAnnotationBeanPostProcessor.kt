@@ -55,20 +55,19 @@ class NotificationInvocationHandler(
     private val originalBean: KClass<*>
 ) : InvocationHandler {
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
-        val methodParams = args ?: emptyArray()
-        val result = method.invoke(bean, *methodParams)
 
-        if (args?.any { it is GroupChatDTO } == true) {
-            val userRequest = args.find { it is GroupChatDTO } as GroupChatDTO
-            val hasNotificationAnnotation = originalBean.memberFunctions.any { beanMethod ->
-                beanMethod.name == method.name &&
-                        beanMethod.javaClass.typeParameters.contentEquals(method.javaClass.typeParameters) &&
-                        beanMethod.annotations.any { it is Notification }
-            }
-            if (hasNotificationAnnotation)
-                createNotification(userRequest)
+        val methodParams = args ?: emptyArray()
+        val hasNotificationAnnotation = originalBean.memberFunctions.any { beanMethod ->
+            beanMethod.name == method.name &&
+                    beanMethod.annotations.any { it is Notification }
         }
-        return result
+        if (hasNotificationAnnotation) {
+            val userRequest = args?.find { it is GroupChatDTO } as? GroupChatDTO
+            if (userRequest != null) {
+                createNotification(userRequest)
+            }
+        }
+        return method.invoke(bean, *methodParams)
     }
 
     private fun createNotification(groupChatDTO: GroupChatDTO) {
