@@ -41,14 +41,14 @@ class NotificationAnnotationBeanPostProcessor(
             Proxy.newProxyInstance(
                 beanClass.java.classLoader,
                 beanClass.java.interfaces,
-                DeviceAuthorizationInvocationHandler(bean, groupChatRoomRepository, emailSenderService, beanClass)
+                NotificationInvocationHandler(bean, groupChatRoomRepository, emailSenderService, beanClass)
             )
         } ?: bean
     }
 }
 
 @Suppress("SpreadOperator")
-class DeviceAuthorizationInvocationHandler(
+class NotificationInvocationHandler(
     private val bean: Any,
     private val groupChatRoomRepository: GroupChatRoomRepository,
     private val emailSenderService: EmailSenderService,
