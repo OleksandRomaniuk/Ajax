@@ -77,8 +77,6 @@ class NotificationInvocationHandler(
 
         val userList = groupChatRoomRepository.findChatRoom(groupChatDTO.chatId).chatMembers
 
-        logger.info("Emails sent to users: {}", userList)
-
         for (user in userList) {
             val emailDTO = EmailDTO(
                 from = "ora.romaniuk@gmail.com",
@@ -88,6 +86,8 @@ class NotificationInvocationHandler(
             )
             emailSenderService.send(emailDTO)
         }
+        logger.info("Emails sent to users: {}", userList)
+
     }
 
     companion object {
