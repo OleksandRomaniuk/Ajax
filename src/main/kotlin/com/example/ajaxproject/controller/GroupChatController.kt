@@ -48,7 +48,7 @@ class GroupChatController @Autowired constructor(
     }
 
     @PostMapping("/leaveChat")
-    fun leaveChat(@RequestBody chatDto: ChatDTO): ResponseEntity<Boolean> {
+    fun leaveChat(@RequestBody chatDto: GroupChatDTO): ResponseEntity<Boolean> {
         return ResponseEntity.ok(groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
     }
 }

@@ -28,6 +28,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:2.1.0")
     implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
     implementation("com.sun.mail:jakarta.mail:2.0.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 }
 
 group = "com.example"
