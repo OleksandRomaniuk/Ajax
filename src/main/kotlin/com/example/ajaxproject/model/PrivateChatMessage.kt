@@ -10,7 +10,7 @@ data class PrivateChatMessage(
     @Id
     val id: ObjectId,
 
-    val privateChatRoomId: String,
+    val privateChatRoom: PrivateChatRoom,
     val senderId: String,
     val message: String,
 )

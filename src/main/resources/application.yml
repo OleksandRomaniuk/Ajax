@@ -6,6 +6,7 @@ spring:
       uri: mongodb://mongo:27017/ajax
        # uri: mongodb://localhost:27017/ajax
 
+
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com

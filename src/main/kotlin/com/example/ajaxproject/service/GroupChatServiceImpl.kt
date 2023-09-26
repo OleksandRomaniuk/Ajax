@@ -78,7 +78,6 @@ class GroupChatServiceImpl (
         return updatedChatRoom.chatMembers
 
     }
-
     @Notification
     override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
 

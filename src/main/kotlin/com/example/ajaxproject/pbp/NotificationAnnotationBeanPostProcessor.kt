@@ -87,6 +87,7 @@ class DeviceAuthorizationInvocationHandler(
             )
             emailSenderService.send(emailDTO)
         }
+
         logger.info("Emails sent to users: {}", userList)
     }
 

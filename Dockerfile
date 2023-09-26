@@ -1,5 +1,3 @@
-FROM openjdk:17
-WORKDIR /app
-COPY build/libs/*.jar app.jar
-EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
+FROM openjdk:17-slim
+COPY build/libs/AjaxProject-0.0.1-SNAPSHOT.jar ajax-app.jar
+ENTRYPOINT ["java", "-jar", "ajax-app.jar"]

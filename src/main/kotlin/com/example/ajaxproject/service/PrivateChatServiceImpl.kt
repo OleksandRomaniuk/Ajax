@@ -59,7 +59,7 @@ class PrivateChatServiceImpl(
     override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): PrivateChatMessage {
         val privateChatMessage = PrivateChatMessage(
             id = ObjectId(),
-            privateChatRoomId = createPrivateRoom(privateMessageDTO.senderId, privateMessageDTO.recipientId).id,
+            privateChatRoom = createPrivateRoom(privateMessageDTO.senderId, privateMessageDTO.recipientId),
             message = privateMessageDTO.message,
             senderId = privateMessageDTO.senderId
         )

@@ -1,9 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-
-
 plugins {
-
     id("org.springframework.boot") version "3.1.3"
     id("io.spring.dependency-management") version "1.1.3"
     id("io.gitlab.arturbosch.detekt") version "1.23.1"
@@ -26,7 +23,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation("mysql:mysql-connector-java:8.0.33")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.slf4j:slf4j-api:2.0.9")
     testImplementation("org.mockito:mockito-core:2.1.0")

@@ -19,7 +19,6 @@ class GlobalExceptionHandler {
     fun handleUserNotFoundException(ex: NotFoundException): ResponseEntity<Any> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
     }
-
     @ExceptionHandler(MailException::class)
     fun handleEmailException(ex: MailException): ResponseEntity<Any> {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ex.message)

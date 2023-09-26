@@ -18,7 +18,7 @@ class UserServiceImpl(
         return userRepository.save(user)
     }
 
-    private fun toEntity(userDTO: UserDTO): User {
+    fun toEntity(userDTO: UserDTO): User {
         return User(
             id = ObjectId().toHexString(),
             email = userDTO.email,
