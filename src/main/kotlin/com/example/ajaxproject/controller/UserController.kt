@@ -2,7 +2,7 @@ package com.example.ajaxproject.controller
 
 import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.model.User
-import com.example.ajaxproject.service.UserServiceImpl
+import com.example.ajaxproject.service.interfaces.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/users")
 class UserController @Autowired constructor(
-    private val userService: UserServiceImpl
+    private val userService: UserService,
 ) {
 
     @PostMapping("/create")

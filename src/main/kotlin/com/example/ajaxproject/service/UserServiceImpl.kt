@@ -18,7 +18,7 @@ class UserServiceImpl(
         return userRepository.save(user)
     }
 
-    fun toEntity(userDTO: UserDTO): User {
+    private fun toEntity(userDTO: UserDTO): User {
         return User(
             id = ObjectId().toHexString(),
             email = userDTO.email,
@@ -42,11 +42,12 @@ class UserServiceImpl(
     }
 
     override fun getUserById(id: String): User {
-        return userRepository.findById(id).orElseThrow { NotFoundException("User not found") }
+        return userRepository.findUserById(id) ?: throw NotFoundException("User id not found")
 
     }
 
     override fun getAllUsers(): List<User> {
         return userRepository.findAll()
     }
+
 }
