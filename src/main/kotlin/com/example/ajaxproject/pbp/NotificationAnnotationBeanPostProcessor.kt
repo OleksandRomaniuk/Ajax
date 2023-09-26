@@ -5,6 +5,7 @@ import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.EmailSenderService
+import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -22,7 +23,6 @@ class NotificationAnnotationBeanPostProcessor(
     @Qualifier("javaMailEmailSenderService") private val emailSenderService: EmailSenderService,
     private val groupChatRoomRepository: GroupChatRoomRepository
 ) : BeanPostProcessor {
-
 
     private val beans = mutableMapOf<String, KClass<*>>()
 
@@ -76,7 +76,7 @@ class DeviceAuthorizationInvocationHandler(
 
         val chatName = groupChatRoomRepository.findChatRoom(groupChatDTO.chatId).chatName
 
-        val userList = groupChatRoomRepository.findChatRoom(groupChatDTO.chatId).chatMembers
+        val userList = groupChatRoomRepository.findById(ObjectId(groupChatDTO.chatId)).get().chatMembers
 
         for (user in userList) {
             val emailDTO = EmailDTO(
