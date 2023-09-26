@@ -52,7 +52,8 @@ class PrivateChatServiceImpl(
     }
 
     override fun getPrivateRoom(roomId: String): PrivateChatRoom? {
-        return privateChatRoomRepository.findChatRoomById(roomId) ?: throw NotFoundException("Room with $roomId not fount")
+        return privateChatRoomRepository.findChatRoomById(roomId) ?:
+            throw NotFoundException("Room with $roomId not fount")
     }
 
     override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): PrivateChatMessage {

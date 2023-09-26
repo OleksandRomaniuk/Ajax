@@ -29,7 +29,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
     implementation("com.sun.mail:jakarta.mail:2.0.1")
 }
-group = "com.arsiu"
+
+group = "com.example"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
