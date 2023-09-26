@@ -7,7 +7,8 @@ import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.EmailSenderService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.BeanFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.config.BeanPostProcessor
 import org.springframework.cglib.proxy.InvocationHandler
 import org.springframework.cglib.proxy.Proxy
@@ -19,10 +20,8 @@ import kotlin.reflect.full.memberFunctions
 
 @Component
 class NotificationAnnotationBeanPostProcessor(
-    @Qualifier("javaMailEmailSenderService") private val emailSenderService: EmailSenderService,
-    private val groupChatRoomRepository: GroupChatRoomRepository
+    private val beanFactory: BeanFactory,
 ) : BeanPostProcessor {
-
 
     private val beans = mutableMapOf<String, KClass<*>>()
 
@@ -41,7 +40,7 @@ class NotificationAnnotationBeanPostProcessor(
             Proxy.newProxyInstance(
                 beanClass.java.classLoader,
                 beanClass.java.interfaces,
-                NotificationInvocationHandler(bean, groupChatRoomRepository, emailSenderService, beanClass)
+                NotificationInvocationHandler(bean, beanFactory, beanClass)
             )
         } ?: bean
     }
@@ -50,31 +49,35 @@ class NotificationAnnotationBeanPostProcessor(
 @Suppress("SpreadOperator")
 class NotificationInvocationHandler(
     private val bean: Any,
-    private val groupChatRoomRepository: GroupChatRoomRepository,
-    private val emailSenderService: EmailSenderService,
+    private val beanFactory: BeanFactory,
     private val originalBean: KClass<*>
 ) : InvocationHandler {
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
-
         val methodParams = args ?: emptyArray()
-        val hasNotificationAnnotation = originalBean.memberFunctions.any { beanMethod ->
-            beanMethod.name == method.name &&
-                    beanMethod.annotations.any { it is Notification }
-        }
-        if (hasNotificationAnnotation) {
-            val userRequest = args?.find { it is GroupChatDTO } as? GroupChatDTO
-            if (userRequest != null) {
-                createNotification(userRequest)
+        val result = method.invoke(bean, *methodParams)
+
+        if (args?.any { it is GroupChatDTO } == true) {
+            val userRequest = args.find { it is GroupChatDTO } as GroupChatDTO
+            val hasNotificationAnnotation = originalBean.memberFunctions.any { beanMethod ->
+                beanMethod.name == method.name &&
+                        beanMethod.javaClass.typeParameters.contentEquals(method.javaClass.typeParameters) &&
+                        beanMethod.annotations.any { it is Notification }
             }
+            if (hasNotificationAnnotation)
+                createNotification(userRequest)
         }
-        return method.invoke(bean, *methodParams)
+        return result
     }
 
     private fun createNotification(groupChatDTO: GroupChatDTO) {
-
+        // Use beanFactory to obtain the required objects
+        val groupChatRoomRepository = beanFactory.getBean(GroupChatRoomRepository::class.java)
         val chatName = groupChatRoomRepository.findChatRoom(groupChatDTO.chatId).chatName
-
         val userList = groupChatRoomRepository.findChatRoom(groupChatDTO.chatId).chatMembers
+
+        val emailSenderService = beanFactory.getBean(EmailSenderService::class.java)
+
+        logger.info("Emails sent to users: {}", userList)
 
         for (user in userList) {
             val emailDTO = EmailDTO(
@@ -85,8 +88,6 @@ class NotificationInvocationHandler(
             )
             emailSenderService.send(emailDTO)
         }
-        logger.info("Emails sent to users: {}", userList)
-
     }
 
     companion object {

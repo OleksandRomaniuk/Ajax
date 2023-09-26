@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 
-@Service("javaMailEmailSenderService")
+@Service
 internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender) : EmailSenderService {
 
     override fun send(emailDTO: EmailDTO): SendEmailResponce {
