@@ -10,11 +10,17 @@ import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.GroupChatMessageRepository
 import com.example.ajaxproject.repository.GroupChatRoomRepository
+import com.example.ajaxproject.repository.impl.DayMessages
 import com.example.ajaxproject.service.interfaces.GroupChatService
 import com.example.ajaxproject.service.interfaces.UserService
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service
@@ -96,12 +102,10 @@ class GroupChatServiceImpl (
 
     }
 
-    override fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse> {
-
-        val messages = groupChatMessageRepository.findAllMessagesInChat(chatId)
-
-        return messages.map { toResponseDto(it) }
+    override fun findAllMessagesByDay(groupChatRoomId: String ,pageable: Pageable): Page<DayMessages> {
+        return groupChatMessageRepository.findAllMessagesByDay(groupChatRoomId,pageable)
     }
+
 
     override fun leaveGroupChat(chatId: String, userId: String): Boolean {
 
