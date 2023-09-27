@@ -1,12 +1,10 @@
 package com.example.ajaxproject.dto.request
 
-
-data class GroupChatDTO(
+data class GroupChatIdentifiable(
     val senderId: String,
     val message: String,
     override val chatId: String
-) : ChatDTO
-
-interface ChatDTO {
+) : Identifiable
+interface Identifiable {
     val chatId: String
 }

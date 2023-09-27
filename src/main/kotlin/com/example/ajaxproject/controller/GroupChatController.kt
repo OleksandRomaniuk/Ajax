@@ -1,8 +1,7 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.request.ChatDTO
 import com.example.ajaxproject.dto.request.CreateChatDto
-import com.example.ajaxproject.dto.request.GroupChatDTO
+import com.example.ajaxproject.dto.request.GroupChatIdentifiable
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
@@ -38,7 +37,7 @@ class GroupChatController @Autowired constructor(
     }
 
     @PostMapping("/sendGroupMessage")
-    fun sendMessage(@RequestBody groupChatDTO: GroupChatDTO): ResponseEntity<GroupChatMessageResponse> {
+    fun sendMessage(@RequestBody groupChatDTO: GroupChatIdentifiable): ResponseEntity<GroupChatMessageResponse> {
         return ResponseEntity.ok(groupChatService.sendMessageToGroup(groupChatDTO))
     }
 
@@ -48,7 +47,7 @@ class GroupChatController @Autowired constructor(
     }
 
     @PostMapping("/leaveChat")
-    fun leaveChat(@RequestBody chatDto: GroupChatDTO): ResponseEntity<Boolean> {
+    fun leaveChat(@RequestBody chatDto: GroupChatIdentifiable): ResponseEntity<Boolean> {
         return ResponseEntity.ok(groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
     }
 }

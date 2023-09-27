@@ -1,7 +1,7 @@
 package com.example.ajaxproject.pbp
 
 import com.example.ajaxproject.config.Notification
-import com.example.ajaxproject.dto.request.ChatDTO
+import com.example.ajaxproject.dto.request.Identifiable
 import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.EmailSenderService
@@ -62,36 +62,39 @@ class NotificationInvocationHandler(
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         val result = method.invoke(bean, *args.orEmpty())
 
-        if (args?.any { it is ChatDTO } == true) {
-            createNotification(args.find { it is ChatDTO } as ChatDTO)
+        if (args?.any { it is Identifiable } == true) {
+            createNotification(args.find { it is Identifiable } as Identifiable)
         }
         return result
     }
 
-    private fun createNotification(chatDTO: ChatDTO) = runBlocking {
+    private fun createNotification(identifiable: Identifiable) = runBlocking {
+
         val groupChatRoomRepository = beanFactory.getBean(GroupChatRoomRepository::class.java)
-        val chatName = groupChatRoomRepository.findChatRoom(chatDTO.chatId).chatName
-        val userList = groupChatRoomRepository.findChatRoom(chatDTO.chatId).chatMembers
+        val chat = groupChatRoomRepository.findChatRoom(identifiable.chatId)
+        val chatName = chat.chatName
+        val userList = chat.chatMembers
 
         val emailSenderService = beanFactory.getBean(EmailSenderService::class.java)
 
-        val deferredEmails = userList.map { user ->
-            CoroutineScope(Dispatchers.Default).async {
-                val emailDTO = EmailDTO(
-                    from = "ora.romaniuk@gmail.com",
-                    to = user.email,
-                    subject = "Testing post bean processor",
-                    body = "New message in chat $chatName"
-                )
-                emailSenderService.send(emailDTO)
+        userList.asSequence()
+            .map { user -> buildEmail(user.email , chatName) }
+            .map { email ->
+                CoroutineScope(Dispatchers.Default).async {
+                    emailSenderService.send(email)
+                }
             }
-        }
-
-        deferredEmails.forEach { it.await() }
+            .toList()
+            .forEach { it.await() }
 
         logger.info("Emails sent to users: {}", userList)
     }
-
+    private fun buildEmail(email: String , chatName: String): EmailDTO = EmailDTO(
+        from = "ora.romaniuk@gmail.com",
+        to = email,
+        subject = "Testing post bean processor",
+        body = "New message in chat $chatName"
+    )
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }

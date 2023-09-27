@@ -2,7 +2,7 @@ package com.example.ajaxproject.service
 
 import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.CreateChatDto
-import com.example.ajaxproject.dto.request.GroupChatDTO
+import com.example.ajaxproject.dto.request.GroupChatIdentifiable
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
@@ -79,7 +79,7 @@ class GroupChatServiceImpl (
 
     }
     @Notification
-    override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
+    override fun sendMessageToGroup(groupChatDto: GroupChatIdentifiable): GroupChatMessageResponse {
 
         val chatMessage = GroupChatMessage(
             id = ObjectId(),
