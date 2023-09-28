@@ -5,10 +5,6 @@ import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.dto.request.Identifiable
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.EmailSenderService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.BeanFactory
@@ -18,6 +14,7 @@ import org.springframework.cglib.proxy.Proxy
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.lang.reflect.Method
+import java.util.concurrent.ExecutorService
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberFunctions
 
@@ -68,7 +65,7 @@ class NotificationInvocationHandler(
         return result
     }
 
-    private fun createNotification(identifiable: Identifiable) = runBlocking {
+    private fun createNotification(identifiable: Identifiable) {
 
         val groupChatRoomRepository = beanFactory.getBean(GroupChatRoomRepository::class.java)
         val chat = groupChatRoomRepository.findChatRoom(identifiable.chatId)
@@ -77,15 +74,15 @@ class NotificationInvocationHandler(
 
         val emailSenderService = beanFactory.getBean(EmailSenderService::class.java)
 
+        val executorService = beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
+
         userList.asSequence()
-            .map { user -> buildEmail(user.email , chatName) }
-            .map { email ->
-                CoroutineScope(Dispatchers.Default).async {
+            .map { user -> buildEmail(user.email, chatName) }
+            .forEach { email ->
+                executorService.submit {
                     emailSenderService.send(email)
                 }
             }
-            .toList()
-            .forEach { it.await() }
 
         logger.info("Emails sent to users: {}", userList)
     }

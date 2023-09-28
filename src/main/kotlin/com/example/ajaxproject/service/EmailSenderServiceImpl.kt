@@ -2,7 +2,6 @@ package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.dto.responce.SendEmailResponce
-import com.example.ajaxproject.pbp.NotificationAnnotationBeanPostProcessor
 import com.example.ajaxproject.service.interfaces.EmailSenderService
 import jakarta.mail.internet.MimeMessage
 import org.slf4j.Logger
@@ -34,6 +33,6 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
         }.mimeMessage
     }
     companion object {
-        private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
+        private val logger: Logger = LoggerFactory.getLogger(EmailSenderServiceImpl::class.java)
     }
 }
