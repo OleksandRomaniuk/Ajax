@@ -5,9 +5,6 @@ import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
-import com.example.ajaxproject.repository.impl.DayMessages
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 interface GroupChatService {
 
@@ -19,7 +16,7 @@ interface GroupChatService {
 
     fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse
 
-     fun findAllMessagesByDay(groupChatRoomId: String, pageable: Pageable): Page<DayMessages>
+    fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse>
 
     fun leaveGroupChat(chatId: String, userId: String): Boolean
 }

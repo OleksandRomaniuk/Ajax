@@ -2,26 +2,18 @@ package com.example.ajaxproject.controller
 
 import com.example.ajaxproject.dto.request.ChatDTO
 import com.example.ajaxproject.dto.request.CreateChatDto
-import com.example.ajaxproject.dto.request.GetAllMessagesByDayRequestDto
 import com.example.ajaxproject.dto.request.GroupChatDTO
-import com.example.ajaxproject.dto.responce.DayMessagesDto
-import com.example.ajaxproject.dto.responce.GetAllMessagesByDayResponseDto
-import com.example.ajaxproject.dto.responce.GroupChatMessageDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
-import com.example.ajaxproject.repository.impl.DayMessages
 import com.example.ajaxproject.service.interfaces.GroupChatService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -50,23 +42,9 @@ class GroupChatController @Autowired constructor(
         return ResponseEntity.ok(groupChatService.sendMessageToGroup(groupChatDTO))
     }
 
-    @GetMapping("/by-day")
-    fun getAllMessagesByDay(@RequestBody requestDto: GetAllMessagesByDayRequestDto): ResponseEntity<Page<DayMessagesDto>> {
-        val messages = groupChatService.findAllMessagesByDay(requestDto.chatRoomId, requestDto.pageable)
-
-        val dayMessagesDtoList = messages.map { message ->
-            val groupChatMessageDto = GroupChatMessageDto(message)
-            val day
-            DayMessagesDto(day, listOf(groupChatMessageDto))
-        }
-
-        val responseDto = GetAllMessagesByDayResponseDto(
-            content = dayMessagesDtoList,
-            totalPages = messages.totalPages,
-            totalElements = messages.totalElements
-        )
-
-        return ResponseEntity.ok(responseDto)
+    @GetMapping("/getAllMessages/{chatId}")
+    fun getAllMessages(@PathVariable chatId: String): ResponseEntity<List<GroupChatMessageResponse>> {
+        return ResponseEntity.ok(groupChatService.getAllGroupMessages(chatId))
     }
 
     @PostMapping("/leaveChat")
