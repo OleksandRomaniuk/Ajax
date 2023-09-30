@@ -4,6 +4,7 @@ import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
+import com.example.ajaxproject.dto.responce.OffsetPaginateResponse
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
@@ -135,4 +136,11 @@ class GroupChatServiceImpl (
             message = chatMessage.message
         )
     }
+
+    override fun getGroupChatMessagesByOffsetPagination(offset: Int, limit: Int): OffsetPaginateResponse {
+        val groupChatMessagesByOffsetPagination = groupChatMessageRepository.getGroupChatMessagesByOffsetPagination(offset, limit)
+        return OffsetPaginateResponse(groupChatMessagesByOffsetPagination.first, groupChatMessagesByOffsetPagination.second)
+    }
+
+
 }
