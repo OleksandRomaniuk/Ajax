@@ -1,10 +1,11 @@
 package com.example.ajaxproject.dto.responce
 
-import org.bson.types.ObjectId
+import java.util.*
 
 data class GroupChatMessageResponse(
-    val id: ObjectId,
+    val id: String,
     val senderId: String,
-    val roomId: ObjectId,
-    val message: String
+    val roomId: String,
+    val message: String,
+    val date: Date
 )

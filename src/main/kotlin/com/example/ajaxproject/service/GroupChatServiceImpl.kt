@@ -17,6 +17,7 @@ import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class GroupChatServiceImpl (
@@ -34,7 +35,7 @@ class GroupChatServiceImpl (
         val user = userService.getUserById(createChatDto.adminId)
 
         val groupChatRoom = GroupChatRoom(
-            id = ObjectId(),
+            id = ObjectId().toHexString(),
             chatName = createChatDto.chatName,
             adminId = user.id,
             chatMembers = listOf(user)
@@ -83,10 +84,11 @@ class GroupChatServiceImpl (
     override fun sendMessageToGroup(groupChatDto: GroupChatDTO): GroupChatMessageResponse {
 
         val chatMessage = GroupChatMessage(
-            id = ObjectId(),
-            groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId),
+            id = ObjectId().toHexString(),
+            groupChatRoom = groupChatDto.chatId,
             senderId = groupChatDto.senderId,
             message = groupChatDto.message,
+            date = Date()
         )
 
         logger.info("Message sent to group chat ID: {}" , groupChatDto.chatId)
@@ -132,15 +134,17 @@ class GroupChatServiceImpl (
         return GroupChatMessageResponse(
             id = chatMessage.id,
             senderId = chatMessage.senderId,
-            roomId = chatMessage.groupChatRoom.id,
-            message = chatMessage.message
+            roomId = chatMessage.groupChatRoom,
+            message = chatMessage.message,
+            date = chatMessage.date
         )
     }
 
-    override fun getGroupChatMessagesByOffsetPagination(offset: Int, limit: Int): OffsetPaginateResponse {
-        val groupChatMessagesByOffsetPagination = groupChatMessageRepository.getGroupChatMessagesByOffsetPagination(offset, limit)
-        return OffsetPaginateResponse(groupChatMessagesByOffsetPagination.first, groupChatMessagesByOffsetPagination.second)
+    override fun getMessagesByChatRoomIdWithPagination(chatRoomId: String, limit:Int, offset:Int): OffsetPaginateResponse {
+        val messagesByOffsetPagination = groupChatMessageRepository.findMessagesByChatRoomIdWithPagination(chatRoomId, offset, offset)
+        return OffsetPaginateResponse(messagesByOffsetPagination.first, messagesByOffsetPagination.second)
     }
+
 
 
 }

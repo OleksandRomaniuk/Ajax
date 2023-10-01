@@ -53,9 +53,13 @@ class GroupChatController @Autowired constructor(
     fun leaveChat(@RequestBody chatDto: ChatDTO): ResponseEntity<Boolean> {
         return ResponseEntity.ok(groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
     }
-    @GetMapping(params = ["offset", "limit"], value = ["/offsetPagination"])
-    fun getGroupChatMessagesByOffsetPagination(
+
+    @GetMapping("/messages")
+    fun getMessagesByChatRoomId(
+        @RequestParam chatRoomId: String,
         @RequestParam(defaultValue = "0") offset: Int,
         @RequestParam(defaultValue = "50") limit: Int
-    ): OffsetPaginateResponse = groupChatService.getGroupChatMessagesByOffsetPagination(offset, limit)
+    ): OffsetPaginateResponse = groupChatService.getMessagesByChatRoomIdWithPagination(chatRoomId, limit, offset)
+
+
 }
