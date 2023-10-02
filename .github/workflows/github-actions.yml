@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  checks:
     runs-on: ubuntu-latest
 
     steps:
