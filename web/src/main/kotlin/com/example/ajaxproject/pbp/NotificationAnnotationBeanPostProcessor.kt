@@ -51,7 +51,7 @@ class NotificationAnnotationBeanPostProcessor(
         }
     }
 }
-
+@Suppress("SpreadOperator")
 class NotificationInvocationHandler(
     private val bean: Any,
     private val beanFactory: BeanFactory

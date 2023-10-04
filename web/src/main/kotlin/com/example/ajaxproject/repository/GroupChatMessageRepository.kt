@@ -8,5 +8,6 @@ interface GroupChatMessageRepository{
 
     fun findAllMessagesInChat(groupChatRoomId: String): List<GroupChatMessage>
 
-     fun findMessagesByChatRoomIdWithPagination(chatRoomId: String, offset: Int, limit: Int): Pair<List<GroupChatMessage>, Long>
+     fun findMessagesByChatRoomIdWithPagination(chatRoomId: String, offset: Int, limit: Int)
+        :Pair<List<GroupChatMessage>, Long>
 }
