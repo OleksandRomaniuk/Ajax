@@ -22,12 +22,16 @@ jobs:
           java-version: '17'
 
       - name: Setup Protobuf
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y protobuf-compiler
+        run: | 
+          docker run -d --name mongo -p 27017:27017 \
+            -e MONGO_INITDB_ROOT_USERNAME=root \
+            -e MONGO_INITDB_ROOT_PASSWORD=root \
+            -e MONGO_INITDB_DATABASE=mongo-db \
+            mongo:latest
 
       - name: Start mongodb
         run: docker run -d --name mongo -p 27017:27017 mongo:latest
+
 
       - name: Start nats
         run: docker run -d --name nats -p 4222:4222 nats:latest
