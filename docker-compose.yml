@@ -12,8 +12,6 @@ services:
     image: nats:latest
     ports:
       - "4222:4222"
-      - "8222:8222"
-      - "6222:6222"
 
   ajax-app:
     depends_on:
