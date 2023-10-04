@@ -1,6 +1,6 @@
 package com.example.ajaxproject.model
 
-import jakarta.persistence.Id
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document("users")

@@ -141,9 +141,12 @@ class GroupChatServiceImpl (
         )
     }
 
-    override fun getMessagesByChatRoomIdWithPagination(chatRoomId: String, limit:Int, offset:Int): OffsetPaginateResponse {
-        val messagesByOffsetPagination = groupChatMessageRepository.findMessagesByChatRoomIdWithPagination(chatRoomId, offset, offset)
-        return OffsetPaginateResponse(messagesByOffsetPagination.first, messagesByOffsetPagination.second)
+    override fun getMessagesByChatRoomIdWithPagination(chatRoomId: String, limit:Int, offset:Int)
+            : OffsetPaginateResponse {
+                 val messagesByOffsetPagination = groupChatMessageRepository
+                        .findMessagesByChatRoomIdWithPagination(chatRoomId, offset, offset)
+                            return OffsetPaginateResponse(
+                                messagesByOffsetPagination.first, messagesByOffsetPagination.second)
     }
 
 
