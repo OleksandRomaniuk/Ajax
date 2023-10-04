@@ -3,8 +3,11 @@ package com.example.ajaxproject.service.interfaces
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
+import com.example.ajaxproject.dto.responce.OffsetPaginateResponse
+import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
+import org.springframework.data.domain.Page
 
 interface GroupChatService {
 
@@ -19,4 +22,6 @@ interface GroupChatService {
     fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse>
 
     fun leaveGroupChat(chatId: String, userId: String): Boolean
+
+    fun getMessagesByChatRoomIdWithPagination(chatRoomId: String, limit:Int, offset:Int): OffsetPaginateResponse
 }

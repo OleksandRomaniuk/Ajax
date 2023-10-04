@@ -4,6 +4,7 @@ import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
+import com.example.ajaxproject.dto.responce.OffsetPaginateResponse
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
@@ -16,6 +17,7 @@ import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class GroupChatServiceImpl (
@@ -33,7 +35,7 @@ class GroupChatServiceImpl (
         val user = userService.getUserById(createChatDto.adminId)
 
         val groupChatRoom = GroupChatRoom(
-            id = ObjectId(),
+            id = ObjectId().toHexString(),
             chatName = createChatDto.chatName,
             adminId = user.id,
             chatMembers = listOf(user)
@@ -83,10 +85,11 @@ class GroupChatServiceImpl (
     override fun sendMessageToGroup(groupChatDto: GroupChatDto): GroupChatMessageResponse {
 
         val chatMessage = GroupChatMessage(
-            id = ObjectId(),
-            groupChatRoom = groupChatRoomRepository.findChatRoom(groupChatDto.chatId),
+            id = ObjectId().toHexString(),
+            groupChatRoom = groupChatDto.chatId,
             senderId = groupChatDto.senderId,
             message = groupChatDto.message,
+            date = Date()
         )
 
         logger.info("Message sent to group chat ID: {}" , groupChatDto.chatId)
@@ -132,8 +135,17 @@ class GroupChatServiceImpl (
         return GroupChatMessageResponse(
             id = chatMessage.id,
             senderId = chatMessage.senderId,
-            roomId = chatMessage.groupChatRoom.id,
-            message = chatMessage.message
+            roomId = chatMessage.groupChatRoom,
+            message = chatMessage.message,
+            date = chatMessage.date
         )
     }
+
+    override fun getMessagesByChatRoomIdWithPagination(chatRoomId: String, limit:Int, offset:Int): OffsetPaginateResponse {
+        val messagesByOffsetPagination = groupChatMessageRepository.findMessagesByChatRoomIdWithPagination(chatRoomId, offset, offset)
+        return OffsetPaginateResponse(messagesByOffsetPagination.first, messagesByOffsetPagination.second)
+    }
+
+
+
 }

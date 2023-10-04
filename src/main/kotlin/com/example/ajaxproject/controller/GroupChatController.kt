@@ -3,6 +3,7 @@ package com.example.ajaxproject.controller
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
+import com.example.ajaxproject.dto.responce.OffsetPaginateResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -50,4 +52,13 @@ class GroupChatController @Autowired constructor(
     fun leaveChat(@RequestBody chatDto: GroupChatDto): ResponseEntity<Boolean> {
         return ResponseEntity.ok(groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
     }
+
+    @GetMapping("/messages")
+    fun getMessagesByChatRoomId(
+        @RequestParam chatRoomId: String,
+        @RequestParam(defaultValue = "0") offset: Int,
+        @RequestParam(defaultValue = "50") limit: Int
+    ): OffsetPaginateResponse = groupChatService.getMessagesByChatRoomIdWithPagination(chatRoomId, limit, offset)
+
+
 }
