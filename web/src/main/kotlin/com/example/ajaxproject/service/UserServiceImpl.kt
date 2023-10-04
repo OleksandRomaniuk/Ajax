@@ -3,9 +3,9 @@ package com.example.ajaxproject.service
 import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.model.User
+import com.example.ajaxproject.model.toUserDTO
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
-import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,14 +13,14 @@ class UserServiceImpl(
     private val userRepository: UserRepository
 ) : UserService {
 
-    override fun createUser(userDTO: UserDTO): User {
+    override fun createUser(userDTO: UserDTO): UserDTO {
         val user = toEntity(userDTO)
-        return userRepository.save(user)
+        return userRepository.save(user).toUserDTO()
     }
 
     fun toEntity(userDTO: UserDTO): User {
         return User(
-            id = ObjectId().toHexString(),
+            id = userDTO.id,
             email = userDTO.email,
             password = userDTO.password,
         )
@@ -49,5 +49,4 @@ class UserServiceImpl(
     override fun getAllUsers(): List<User> {
         return userRepository.findAll()
     }
-
 }

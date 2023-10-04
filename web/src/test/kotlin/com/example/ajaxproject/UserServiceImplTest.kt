@@ -1,3 +1,5 @@
+package com.example.ajaxproject
+/*
 //import com.example.ajaxproject.dto.request.UserDTO
 //import com.example.ajaxproject.model.User
 //import com.example.ajaxproject.repository.UserRepository
@@ -112,3 +114,4 @@
 //        assertEquals(2, allUsers.size)
 //    }
 //}
+*/

@@ -5,7 +5,7 @@ import com.example.ajaxproject.model.User
 
 interface UserService {
 
-    fun createUser(userDTO: UserDTO): User
+    fun createUser(userDTO: UserDTO): UserDTO
 
     fun updateUser(id: String, userDTO: UserDTO): User
 
@@ -14,4 +14,5 @@ interface UserService {
     fun getUserById(id: String): User
 
     fun getAllUsers(): List<User>
+
 }

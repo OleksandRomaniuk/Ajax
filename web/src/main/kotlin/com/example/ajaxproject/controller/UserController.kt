@@ -21,7 +21,7 @@ class UserController @Autowired constructor(
 ) {
 
     @PostMapping("/create")
-    fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<User> {
+    fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO> {
         return ResponseEntity.ok(userService.createUser(userDTO))
     }
 

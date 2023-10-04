@@ -1,6 +1,7 @@
 rootProject.name = "AjaxProject"
 
 include(
-    "web"
+    "web",
+    "nats"
 )
 
