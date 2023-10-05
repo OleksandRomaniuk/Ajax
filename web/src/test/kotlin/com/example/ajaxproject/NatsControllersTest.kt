@@ -98,13 +98,14 @@ class NatsControllersTest {
 
         val newId = ObjectId().toHexString()
 
-        val save = userRepository.save(
+        userRepository.save(
             com.example.ajaxproject.model.User(
                 id = newId,
                 email = "Test",
                 password = "Test"
             )
         )
+
         val protoUser = User.newBuilder().apply {
             id = newId
             email = "Test"
@@ -117,11 +118,7 @@ class NatsControllersTest {
             successBuilder.setUser(protoUser)
         }.build()
 
-        val actual = doRequest(
-            NatsSubject.GET_USER_BY_ID,
-            request,
-            GetByIdUserResponse.parser()
-        )
+        val actual = doRequest(NatsSubject.GET_USER_BY_ID, request, GetByIdUserResponse.parser())
 
         assertThat(actual).isEqualTo(expectedResponse)
     }
