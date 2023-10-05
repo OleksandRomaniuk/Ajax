@@ -16,6 +16,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import java.time.Duration
 
+private const val  USER_ID = "651c6a8763d50fb3f7f1ec7b"
 @SpringBootTest
 @ActiveProfiles("local")
 class NatsControllersTest {
@@ -34,14 +35,13 @@ class NatsControllersTest {
         mongoTemplate.remove<User>()
     }
 
-    private val userId = "651c6a8763d50fb3f7f1ec7b"
     private val userToSave = com.example.ajaxproject.model.User(
-        id = userId,
+        id = USER_ID,
         email = "email",
         password = "password",
     )
     private val protoUser = User.newBuilder().apply {
-        setId(userId)
+        setId(USER_ID)
         setEmail("email")
         setPassword("password")
     }.build()
@@ -94,7 +94,7 @@ class NatsControllersTest {
     @Test
     fun `Should return success response for get user by ID`() {
 
-        val request = GetByIdUserRequest.newBuilder().setUserId(userId).build()
+        val request = GetByIdUserRequest.newBuilder().setUserId(USER_ID).build()
 
         val expectedResponse = GetByIdUserResponse.newBuilder().apply {
             successBuilder.setUser(protoUser)
