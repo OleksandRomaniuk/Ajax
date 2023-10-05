@@ -8,10 +8,10 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":nats"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation(project(":nats"))
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.nats:jnats:2.16.14")

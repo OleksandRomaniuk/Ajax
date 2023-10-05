@@ -18,8 +18,7 @@ class DeleteUserNatsController(
     override val parser: Parser<DeleteUserRequest> = DeleteUserRequest.parser()
 
     override fun handle(request: DeleteUserRequest): DeleteUserResponse = runCatching {
-        val userId = request.userId
-        userService.deleteUser(userId)
+        userService.deleteUser(request.userId)
         buildSuccessResponse()
     }.getOrElse { exception ->
         buildFailureResponse(exception.javaClass.simpleName, exception.toString())

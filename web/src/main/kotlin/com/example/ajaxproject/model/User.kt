@@ -11,6 +11,7 @@ data class User(
     val email: String = "",
     val password: String = "",
 )
+
 fun User.toUserDTO(): UserDTO {
     return UserDTO(
         id = this.id,
@@ -18,6 +19,7 @@ fun User.toUserDTO(): UserDTO {
         password = this.password
     )
 }
+
 fun User.toProtoUser(): com.example.ajaxproject.User {
     return com.example.ajaxproject.User.newBuilder()
         .setId(this.id)

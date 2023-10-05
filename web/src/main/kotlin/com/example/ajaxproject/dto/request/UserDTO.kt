@@ -8,17 +8,19 @@ data class UserDTO(
     val email: String,
     val password: String,
 )
+
 fun User.toUserRequest(): UserDTO {
     return UserDTO(
-        id = this.id,
-        email = this.email,
-        password = this.password,
-    )
+        id = id,
+        email = email,
+        password = password,
+        )
 }
+
 fun UserDTO.toProtoUser(): User {
     return User.newBuilder()
-        .setId(this.id)
-        .setEmail(this.email)
-        .setPassword(this.password)
+        .setId(id)
+        .setEmail(email)
+        .setPassword(password)
         .build()
 }

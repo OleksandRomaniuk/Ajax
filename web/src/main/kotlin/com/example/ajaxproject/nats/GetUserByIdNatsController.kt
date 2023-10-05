@@ -20,8 +20,7 @@ class GetUserByIdNatsController(
     override val parser: Parser<GetByIdUserRequest> = GetByIdUserRequest.parser()
 
     override fun handle(request: GetByIdUserRequest): GetByIdUserResponse = runCatching {
-        val userId = request.userId
-        val getUserById = userService.getUserById(userId)
+        val getUserById = userService.getUserById(request.userId)
         buildSuccessResponse(getUserById.toProtoUser())
     }.getOrElse { exception ->
         buildFailureResponse(exception.javaClass.simpleName, exception.toString())

@@ -42,9 +42,9 @@ class NatsControllersTest {
         password = "password",
     )
     private val protoUser = User.newBuilder().apply {
-        setId(userId)
-        setEmail("email")
-        setPassword("password")
+        id = userId
+        email = "email"
+        password = "password"
     }.build()
 
     @Test
@@ -104,6 +104,7 @@ class NatsControllersTest {
 
         assertThat(actual).isEqualTo(expectedResponse)
     }
+
     private fun <RequestT : GeneratedMessageV3, ResponseT : GeneratedMessageV3> doRequest(
         subject: String,
         payload: RequestT,
