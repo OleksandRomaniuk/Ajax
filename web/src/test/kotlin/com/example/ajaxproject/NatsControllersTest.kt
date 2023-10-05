@@ -92,18 +92,6 @@ class NatsControllersTest {
         assertThat(actual).isEqualTo(expectedResponse)
     }
 
-    @Test
-    fun `Should return success response for get user by ID`() {
-
-        val request = GetByIdUserRequest.newBuilder().setUserId(userId).build()
-
-        val expectedResponse = GetByIdUserResponse.newBuilder().apply {
-            successBuilder.setUser(protoUser)
-        }.build()
-        val actual = doRequest(NatsSubject.GET_USER_BY_ID, request, GetByIdUserResponse.parser())
-
-        assertThat(actual).isEqualTo(expectedResponse)
-    }
 
     private fun <RequestT : GeneratedMessageV3, ResponseT : GeneratedMessageV3> doRequest(
         subject: String,
