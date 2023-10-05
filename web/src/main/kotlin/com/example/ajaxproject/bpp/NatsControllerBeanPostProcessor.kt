@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class NatsControllerBeanPostProcessor(private val connection: Connection) : BeanPostProcessor {
+
     override fun postProcessBeforeInitialization(bean: Any, beanName: String): Any {
         if (bean is NatsController<*, *>) {
             bean.initializeNatsController(connection)
@@ -19,15 +20,18 @@ class NatsControllerBeanPostProcessor(private val connection: Connection) : Bean
 }
 
 private fun <RequestT : GeneratedMessageV3, ResponseT : GeneratedMessageV3>
-        NatsController<RequestT, ResponseT>.initializeNatsController(connection: Connection) {
-             createDispatcher(connection).apply {
-                 subscribe(subject)
-             }
+        NatsController<RequestT, ResponseT>.initializeNatsController(
+    connection: Connection
+) {
+    createDispatcher(connection).apply {
+        subscribe(subject)
+    }
 }
 
 private fun <RequestT : GeneratedMessageV3, ResponseT : GeneratedMessageV3>
-        NatsController<RequestT, ResponseT>.createDispatcher(connection: Connection)
-        : Dispatcher = connection.createDispatcher { message: Message ->
+        NatsController<RequestT, ResponseT>.createDispatcher(
+    connection: Connection
+): Dispatcher = connection.createDispatcher { message: Message ->
     val parsedData = parser.parseFrom(message.data)
     val response = handle(parsedData)
     connection.publish(message.replyTo, response.toByteArray())

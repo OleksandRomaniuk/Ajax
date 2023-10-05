@@ -28,7 +28,7 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
         return MimeMessageHelper(javaMailSender.createMimeMessage()).apply {
             setFrom(emailDTO.from)
             setTo(emailDTO.to)
-            setSubject(emailDTO.subject!!)
+            emailDTO.subject?.let { setSubject(it) }
             setText(emailDTO.body, true)
         }.mimeMessage
     }
