@@ -18,7 +18,6 @@ import java.time.Duration
 
 private const val  USER_ID = "651c6a8763d50fb3f7f1ec7b"
 @SpringBootTest
-@ActiveProfiles("local")
 class NatsControllersTest {
 
     @Autowired

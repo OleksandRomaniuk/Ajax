@@ -43,9 +43,9 @@ class GroupChatMessageRepositoryImpl(
         val aggregationResults =
             mongoTemplate.aggregate(aggregation, "group-chat-message", GroupChatMessage::class.java)
         val messages = aggregationResults.mappedResults
-        val totalCount = aggregationResults.uniqueMappedResult as? Long ?: 0L
+        val totalCount = aggregationResults.uniqueMappedResult?: 0L
 
-        return Pair(messages, totalCount)
+        return Pair(messages, totalCount as Long)
     }
 
 }
