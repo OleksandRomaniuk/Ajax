@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.remove
 import org.springframework.test.context.ActiveProfiles
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import org.bson.types.ObjectId
 import java.time.Duration
 
 @SpringBootTest
@@ -93,12 +94,27 @@ class NatsControllersTest {
     }
 
     @Test
-    fun `Should return success response for get user by ID`() {
+    fun `should return success response for get user by ID`() {
 
-        val request = GetByIdUserRequest.newBuilder().setUserId(userId).build()
+        val newId = ObjectId().toHexString()
+
+        val save = userRepository.save(
+            com.example.ajaxproject.model.User(
+                id = newId,
+                email = "Test",
+                password = "Test"
+            )
+        )
+        val protoUser = User.newBuilder().apply {
+            id = newId
+            email = "Test"
+            password = "Test"
+        }.build()
+
+        val request = GetByIdUserRequest.newBuilder().setUserId(newId).build()
 
         val expectedResponse = GetByIdUserResponse.newBuilder().apply {
-            successBuilder.setUser(protoUser).build()
+            successBuilder.setUser(protoUser)
         }.build()
 
         val actual = doRequest(
