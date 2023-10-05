@@ -3,8 +3,8 @@ spring:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   data:
     mongodb:
-    # uri: mongodb://localhost:27017/ajax
-      uri: mongodb://mongo:27017/ajax
+      uri: mongodb://localhost:27017/ajax
+       # uri: mongodb://localhost:27017/ajax
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
@@ -17,5 +17,4 @@ spring:
           starttls:
             required: true
 nats:
-  url:
-    nats://localhost:4222
+  url: nats://localhost:4222
