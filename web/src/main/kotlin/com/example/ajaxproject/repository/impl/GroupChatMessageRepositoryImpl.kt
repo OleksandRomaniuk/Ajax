@@ -4,11 +4,15 @@ import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.repository.GroupChatMessageRepository
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.aggregation.Aggregation.*
+import org.springframework.data.mongodb.core.aggregation.Aggregation.match
+import org.springframework.data.mongodb.core.aggregation.Aggregation.sort
+import org.springframework.data.mongodb.core.aggregation.Aggregation.skip
+import org.springframework.data.mongodb.core.aggregation.Aggregation.limit
+import org.springframework.data.mongodb.core.aggregation.Aggregation.count
+import org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Flux
 
 @Repository
 class GroupChatMessageRepositoryImpl(
@@ -44,26 +48,4 @@ class GroupChatMessageRepositoryImpl(
         return Pair(messages, totalCount as Long)
     }
 
-    override fun findAllMessagesInChatFlux(groupChatRoomId: String): Flux<GroupChatMessage> {
-        val query = Query.query(Criteria.where("groupChatRoom").`is`(groupChatRoomId))
-        return mongoTemplate.find(query, GroupChatMessage::class.java)
-            .flatMapMany { Flux.fromIterable(it) }
-    }
-
-    override fun findMessagesByChatRoomIdWithPaginationFlux(
-        chatRoomId: String,
-        offset: Int,
-        limit: Int
-    ): Flux<GroupChatMessage> {
-        val aggregation = newAggregation(
-            match(Criteria.where("groupChatRoom").`is`(chatRoomId)),
-            sort(Sort.by(Sort.Order.desc("date"))),
-            skip(offset.toLong()),
-            limit(limit.toLong())
-        )
-
-        val aggregationResults = mongoTemplate.aggregate(aggregation, "group-chat-message", GroupChatMessage::class.java)
-        val messages = aggregationResults.mappedResults.filterNotNull()
-        return Flux.fromIterable(messages)
-    }
 }
