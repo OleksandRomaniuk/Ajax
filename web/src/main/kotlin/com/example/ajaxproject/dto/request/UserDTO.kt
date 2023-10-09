@@ -1,6 +1,26 @@
 package com.example.ajaxproject.dto.request
 
+
+import com.example.ajaxproject.User
+
 data class UserDTO(
-    var email: String = "",
-    var password: String = ""
+    val id: String,
+    val email: String,
+    val password: String,
 )
+
+fun User.toUserRequest(): UserDTO {
+    return UserDTO(
+        id = id,
+        email = email,
+        password = password,
+        )
+}
+
+fun UserDTO.toProtoUser(): User {
+    return User.newBuilder()
+        .setId(id)
+        .setEmail(email)
+        .setPassword(password)
+        .build()
+}

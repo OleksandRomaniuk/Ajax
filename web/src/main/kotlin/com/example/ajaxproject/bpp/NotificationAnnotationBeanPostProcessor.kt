@@ -1,4 +1,4 @@
-package com.example.ajaxproject.pbp
+package com.example.ajaxproject.bpp
 
 import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.EmailDTO

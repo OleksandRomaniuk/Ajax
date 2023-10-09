@@ -1,7 +1,7 @@
 package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.EmailDTO
-import com.example.ajaxproject.dto.responce.SendEmailResponce
+import com.example.ajaxproject.dto.responce.SendEmailResponse
 import com.example.ajaxproject.service.interfaces.EmailSenderService
 import jakarta.mail.internet.MimeMessage
 import org.slf4j.Logger
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service
 @Service
 internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender) : EmailSenderService {
 
-    override fun send(emailDTO: EmailDTO): SendEmailResponce {
+    override fun send(emailDTO: EmailDTO): SendEmailResponse {
         return runCatching {
             javaMailSender.send(generateMailMessage(emailDTO))
             logger.debug("Email sent successfully")
-            SendEmailResponce(status = 200)
+            SendEmailResponse(status = 200)
         }.getOrElse { exception ->
             logger.warn("An error has occurred sending email", exception)
-            SendEmailResponce(status = 500, cause = exception.message)
+            SendEmailResponse(status = 500, cause = exception.message)
         }
     }
     private fun generateMailMessage(emailDTO: EmailDTO): MimeMessage {
@@ -28,7 +28,7 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
         return MimeMessageHelper(javaMailSender.createMimeMessage()).apply {
             setFrom(emailDTO.from)
             setTo(emailDTO.to)
-            setSubject(emailDTO.subject!!)
+            emailDTO.subject?.let { setSubject(it) }
             setText(emailDTO.body, true)
         }.mimeMessage
     }
