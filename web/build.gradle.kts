@@ -18,8 +18,11 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:3.24.3")
     implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
     implementation("com.sun.mail:jakarta.mail:2.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    implementation("io.projectreactor:reactor-core:3.5.10")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
+
 }
 
 tasks.withType<Test> {
