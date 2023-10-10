@@ -3,48 +3,49 @@ package com.example.ajaxproject.repository.impl
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
-import org.springframework.data.mongodb.core.MongoTemplate
+import com.mongodb.client.result.DeleteResult
+import org.springframework.data.domain.Pageable
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @Repository
 class UserRepositoryImpl(
-    private val mongoTemplate: MongoTemplate
+    private val reactiveMongoTemplate: ReactiveMongoTemplate
 ) : UserRepository {
 
-    override fun findUserById(userId: String): User {
-        val userQuery = Query.query(Criteria.where("_id").`is`(userId))
-        return mongoTemplate.findOne(userQuery, User::class.java)!!
+    override fun findAll(page: Pageable): Flux<User> {
+        return reactiveMongoTemplate.findAll(User::class.java)
     }
 
-    override fun findAll(): List<User> {
-        return mongoTemplate.findAll(User::class.java)
+    override fun save(user: User): Mono<User> {
+        return reactiveMongoTemplate.save(user)
     }
 
-    override fun deleteById(userId: String) {
+    override fun findById(id: String): Mono<User> {
+        return reactiveMongoTemplate.findById(id, User::class.java)
+    }
 
+    override fun findByEmail(email: String): Mono<User> {
+        val userQuery = Query.query(Criteria.where("email").`is`(email))
+        return reactiveMongoTemplate.findOne(userQuery, User::class.java)
+    }
+
+    override fun deleteById(userId: String): Mono<DeleteResult> {
         validateAndCleanChatMembersForUser(userId)
-
-        mongoTemplate.findAndRemove(Query.query(Criteria.where("_id").`is`(userId)), User::class.java)
+        val query = Query().addCriteria(Criteria.where("_id").`is`(userId))
+        return reactiveMongoTemplate.remove(query, User::class.java)
     }
+
 
     fun validateAndCleanChatMembersForUser(userIdToRemove: String) {
-
         val query = Query.query(Criteria.where("chatMembers._id").`is`(userIdToRemove))
-
         val update = Update().pull("chatMembers", Query(Criteria.where("_id").`is`(userIdToRemove)))
-
-        mongoTemplate.updateMulti(query, update, GroupChatRoom::class.java)
-    }
-
-    override fun save(user: User): User = mongoTemplate.save(user)
-
-    override fun findByEmail(email: String): User? {
-
-        val userQuery = Query.query(Criteria.where("email").`is`(email))
-
-        return mongoTemplate.findOne(userQuery, User::class.java)
+        reactiveMongoTemplate.updateMulti(query, update, GroupChatRoom::class.java)
+            .subscribe()
     }
 }

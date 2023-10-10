@@ -16,6 +16,13 @@ fun User.toUserRequest(): UserDTO {
         password = password,
         )
 }
+fun UserDTO.toUser(): com.example.ajaxproject.model.User{
+    return com.example.ajaxproject.model.User(
+        id = id,
+        email = email,
+        password = password,
+    )
+}
 
 fun UserDTO.toProtoUser(): User {
     return User.newBuilder()

@@ -1,16 +1,20 @@
 package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.User
+import com.mongodb.client.result.DeleteResult
+import org.springframework.data.domain.Pageable
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 interface UserRepository{
 
-    fun save(user: User): User
+    fun findAll(page: Pageable): Flux<User>
 
-    fun findByEmail(email: String): User?
+    fun save(user: User): Mono<User>
 
-    fun findUserById(userId: String): User?
+    fun findById(id: String): Mono<User>
 
-    fun findAll(): List<User>
+    fun findByEmail(email: String): Mono<User>
 
-    fun deleteById(userId: String)
+    fun deleteById(userId: String): Mono<DeleteResult>
 }

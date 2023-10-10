@@ -32,15 +32,15 @@ class GroupChatServiceImpl (
 
     override fun createGroupRoom(createChatDto: CreateChatDto): GroupChatRoom {
 
-        val user = userService.getUserById(createChatDto.adminId)
+        val user = userService.getById(createChatDto.adminId)
 
         val groupChatRoom = GroupChatRoom(
             id = ObjectId().toHexString(),
             chatName = createChatDto.chatName,
-            adminId = user.id,
+            adminId = user.id, // Set the adminId from the user
             chatMembers = listOf(user)
         )
-
+        Mono.just(groupChatRoom)
         groupChatRoom.chatMembers + user
 
         groupChatRoomRepository.save(groupChatRoom)
