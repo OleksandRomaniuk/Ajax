@@ -14,35 +14,28 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
+import reactor.core.publisher.Mono
+import reactor.core.publisher.Flux
+
 @Service
 class PrivateChatServiceImpl(
     private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val privateChatMessageRepository: PrivateChatMessageRepository,
-    private val userService: UserService,
+    private val userService: UserService
 ) : PrivateChatService {
 
     companion object {
-        private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
+        private val logger: Logger = LoggerFactory.getLogger(PrivateChatServiceImpl::class.java)
     }
 
-    override fun createPrivateRoom(senderId: String, recipientId: String): PrivateChatRoom {
-
-        userService.getUserById(senderId)
-
-        userService.getUserById(recipientId)
-
-        val roomId = roomIdFormat(senderId, recipientId)
-
-        logger.info("Create new private room {}", roomId)
-
-        return privateChatRoomRepository.findChatRoomById(roomId)
-            ?: privateChatRoomRepository.save(
-                PrivateChatRoom(
-                    id = roomId,
-                    senderId = senderId,
-                    recipientId = recipientId
-                )
-            )
+    override fun createPrivateRoom(senderId: String, recipientId: String): Mono<PrivateChatRoom> {
+        return userService.getById(senderId)
+            .then(userService.getById(recipientId))
+            .then(Mono.defer {
+                val roomId = roomIdFormat(senderId, recipientId)
+                privateChatRoomRepository.findChatRoomById(roomId)
+                    .switchIfEmpty(privateChatRoomRepository.save(PrivateChatRoom(id = roomId, senderId = senderId, recipientId = recipientId)))
+            })
     }
 
     fun roomIdFormat(id1: String, id2: String): String {
@@ -51,41 +44,40 @@ class PrivateChatServiceImpl(
         return "$smallerId-$higherId"
     }
 
-    override fun getPrivateRoom(roomId: String): PrivateChatRoom? {
-        return privateChatRoomRepository.findChatRoomById(roomId) ?:
-            throw NotFoundException("Room with $roomId not fount")
+    override fun getPrivateRoom(roomId: String): Mono<PrivateChatRoom> {
+        return privateChatRoomRepository.findChatRoomById(roomId)
+            .switchIfEmpty(Mono.error(NotFoundException("Room with $roomId not found")))
     }
 
-    override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): PrivateChatMessage {
-        val privateChatMessage = PrivateChatMessage(
-            id = ObjectId(),
-            privateChatRoom = createPrivateRoom(privateMessageDTO.senderId, privateMessageDTO.recipientId),
-            message = privateMessageDTO.message,
-            senderId = privateMessageDTO.senderId
-        )
-        privateChatMessageRepository.save(privateChatMessage)
-
-        logger.info("Send private message {}", privateChatMessage.id)
-
-        return privateChatMessage
+    override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): Mono<PrivateChatMessage> {
+        return createPrivateRoom(privateMessageDTO.senderId, privateMessageDTO.recipientId)
+            .flatMap { room ->
+                val privateChatMessage = PrivateChatMessage(
+                    id = ObjectId(),
+                    privateChatRoom = room,
+                    message = privateMessageDTO.message,
+                    senderId = privateMessageDTO.senderId
+                )
+                privateChatMessageRepository.save(privateChatMessage)
+                    .doOnSuccess { logger.info("Send private message {}", it.id) }
+            }
     }
 
-    override fun getAllPrivateMessages(roomDTO: RoomDTO): List<PrivateChatMessage> {
-
-        userService.getUserById(roomDTO.senderId)
-        userService.getUserById(roomDTO.recipientId)
-
-        val listOfMessage = privateChatMessageRepository.findAllByPrivateChatRoomId(
-            roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
-        )
-
-        if (listOfMessage.isEmpty()) {
-            logger.warn("Empty chat list")
-            throw NotFoundException("Message between users not found")
-        }
-
-        logger.info("List of all messages for chat")
-
-        return listOfMessage
+    override fun getAllPrivateMessages(roomDTO: RoomDTO): Flux<PrivateChatMessage> {
+        return userService.getById(roomDTO.senderId)
+            .then(userService.getById(roomDTO.recipientId))
+            .thenMany(privateChatMessageRepository.findAllByPrivateChatRoomId(roomIdFormat(roomDTO.senderId, roomDTO.recipientId)))
+            .collectList()
+            .flatMap { listOfMessage ->
+                if (listOfMessage.isEmpty()) {
+                    logger.warn("Empty chat list")
+                    Mono.error(NotFoundException("Message between users not found"))
+                } else {
+                    logger.info("List of all messages for chat")
+                    Mono.just(listOfMessage)
+                }
+            }
+            .flatMapMany { Flux.fromIterable(it) }
     }
 }
+

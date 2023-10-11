@@ -1,13 +1,14 @@
 package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.GroupChatRoom
+import reactor.core.publisher.Mono
 
 
 interface GroupChatRoomRepository{
 
-    fun findChatRoom(chatId: String): GroupChatRoom
+    fun findChatRoom(chatId: String): Mono<GroupChatRoom>
 
-    fun save(chat: GroupChatRoom): GroupChatRoom
+    fun save(chat: GroupChatRoom): Mono<GroupChatRoom>
 
-    fun validateAndCleanChatMembers(chatRoomId: String)
+    fun validateAndCleanChatMembers(chatRoomId: String): Mono<Void>
 }

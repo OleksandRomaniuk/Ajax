@@ -4,7 +4,6 @@ import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.CreateChatDto
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
-import com.example.ajaxproject.dto.responce.OffsetPaginateResponse
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
@@ -17,6 +16,8 @@ import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.util.*
 
 @Service
@@ -30,60 +31,49 @@ class GroupChatServiceImpl (
         private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
     }
 
-    override fun createGroupRoom(createChatDto: CreateChatDto): GroupChatRoom {
-
-        val user = userService.getById(createChatDto.adminId)
-
-        val groupChatRoom = GroupChatRoom(
-            id = ObjectId().toHexString(),
-            chatName = createChatDto.chatName,
-            adminId = user.id, // Set the adminId from the user
-            chatMembers = listOf(user)
-        )
-        Mono.just(groupChatRoom)
-        groupChatRoom.chatMembers + user
-
-        groupChatRoomRepository.save(groupChatRoom)
-
-        logger.info("Group chat room created successfully")
-
-        return groupChatRoom
-
+    override fun createGroupRoom(createChatDto: CreateChatDto): Mono<GroupChatRoom> {
+        return userService.getById(createChatDto.adminId)
+            .flatMap { user ->
+                val groupChatRoom = GroupChatRoom(
+                    id = ObjectId().toHexString(),
+                    chatName = createChatDto.chatName,
+                    adminId = user.id,
+                    chatMembers = listOf(user)
+                )
+                groupChatRoomRepository.save(groupChatRoom)
+                    .doOnSuccess { logger.info("Group chat room created successfully") }
+            }
     }
 
-    override fun getAllChatMembers(chatId: String): List<User> {
-
-        val chatMembers = groupChatRoomRepository.findChatRoom(chatId).chatMembers
-
-        logger.info("Retrieved chat members for chat ID: {}" , chatId)
-
-        return chatMembers
+    override fun getAllChatMembers(chatId: String): Flux<User> {
+        return groupChatRoomRepository.findChatRoom(chatId)
+            .flatMapMany { chatRoom ->
+                Flux.fromIterable(chatRoom.chatMembers)
+            }
+            .doOnComplete { logger.info("Retrieved chat members for chat ID: $chatId") }
     }
 
-    override fun addUserToChat(chatId: String, userId: String): List<User> {
-
-        val chat = groupChatRoomRepository.findChatRoom(chatId)
-        val user = userService.getUserById(userId)
-
-        val existingUser = chat.chatMembers.find { it.id == userId }
-
-        if (existingUser != null) {
-            logger.info("User with ID {} is already present in chat ID {}", userId, chatId)
-            throw WrongActionException("User is already present in this chat")
-        }
-
-        chat.chatMembers += user
-        logger.info("User with ID {} added to chat ID {}", userId, chatId)
-
-        val updatedChatRoom = groupChatRoomRepository.save(chat)
-
-        return updatedChatRoom.chatMembers
-
+    override fun addUserToChat(chatId: String, userId: String): Mono<User> {
+        return groupChatRoomRepository.findChatRoom(chatId)
+            .flatMap { chat ->
+                userService.getById(userId)
+                    .flatMap { user ->
+                        val existingUser = chat.chatMembers.find { it.id == userId }
+                        if (existingUser != null) {
+                            logger.info("User with ID $userId is already present in chat ID $chatId")
+                            Mono.just(existingUser)
+                        } else {
+                            chat.chatMembers += user
+                            logger.info("User with ID $userId added to chat ID $chatId")
+                            groupChatRoomRepository.save(chat)
+                                .thenReturn(user)
+                        }
+                    }
+            }
     }
 
     @Notification
-    override fun sendMessageToGroup(groupChatDto: GroupChatDto): GroupChatMessageResponse {
-
+    override fun sendMessageToGroup(groupChatDto: GroupChatDto): Mono<GroupChatMessageResponse> {
         val chatMessage = GroupChatMessage(
             id = ObjectId().toHexString(),
             groupChatRoom = groupChatDto.chatId,
@@ -92,43 +82,32 @@ class GroupChatServiceImpl (
             date = Date()
         )
 
-        logger.info("Message sent to group chat ID: {}" , groupChatDto.chatId)
-
-        groupChatMessageRepository.save(chatMessage)
-
-        return toResponseDto(chatMessage)
-
+        return groupChatMessageRepository.save(chatMessage)
+            .doOnSuccess { logger.info("Message sent to group chat ID: ${groupChatDto.chatId}") }
+            .map { toResponseDto(it) }
     }
 
-    override fun getAllGroupMessages(chatId: String): List<GroupChatMessageResponse> {
-
-        val messages = groupChatMessageRepository.findAllMessagesInChat(chatId)
-
-        return messages.map { toResponseDto(it) }
+    override fun getAllGroupMessages(chatId: String): Flux<GroupChatMessageResponse> {
+        return groupChatMessageRepository.findAllMessagesInChat(chatId)
+            .map { toResponseDto(it) }
     }
 
-    override fun leaveGroupChat(chatId: String, userId: String): Boolean {
-
-        val user = userService.getUserById(userId)
-
-        val chat = groupChatRoomRepository.findChatRoom(chatId)
-
-        if (chat.adminId != user.id) {
-
-            chat.chatMembers = chat.chatMembers.filterNot { it.id == user.id }
-
-            groupChatRoomRepository.save(chat)
-
-            logger.info("User with ID {} left chat ID {}" ,userId ,chatId)
-
-            return true
-
-        } else {
-
-            logger.warn("Admin attempted to leave chat ID {}" , chatId)
-
-            throw WrongActionException("Admin cant leave a chat")
-        }
+    override fun leaveGroupChat(chatId: String, userId: String): Mono<Boolean> {
+        return userService.getById(userId)
+            .flatMap { user ->
+                groupChatRoomRepository.findChatRoom(chatId)
+                    .flatMap { chat ->
+                        if (chat.adminId != user.id) {
+                            chat.chatMembers = chat.chatMembers.filterNot { it.id == user.id }
+                            groupChatRoomRepository.save(chat)
+                                .doOnSuccess { logger.info("User with ID $userId left chat ID $chatId") }
+                                .thenReturn(true)
+                        } else {
+                            logger.warn("Admin attempted to leave chat ID $chatId")
+                            Mono.error(WrongActionException("Admin can't leave a chat"))
+                        }
+                    }
+            }
     }
 
     fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
@@ -140,15 +119,5 @@ class GroupChatServiceImpl (
             date = chatMessage.date
         )
     }
-
-    override fun getMessagesByChatRoomIdWithPagination(chatRoomId: String, limit:Int, offset:Int)
-            : OffsetPaginateResponse {
-                 val messagesByOffsetPagination = groupChatMessageRepository
-                        .findMessagesByChatRoomIdWithPagination(chatRoomId, offset, offset)
-                            return OffsetPaginateResponse(
-                                messagesByOffsetPagination.first, messagesByOffsetPagination.second)
-    }
-
-
-
 }
+

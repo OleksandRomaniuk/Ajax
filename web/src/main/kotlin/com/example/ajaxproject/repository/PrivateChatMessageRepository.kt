@@ -1,10 +1,12 @@
 package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.PrivateChatMessage
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 interface PrivateChatMessageRepository{
 
-    fun findAllByPrivateChatRoomId(chatRoomId: String): List<PrivateChatMessage>
+    fun findAllByPrivateChatRoomId(chatRoomId: String): Flux<PrivateChatMessage>
 
-    fun save(privateChatMessage: PrivateChatMessage): PrivateChatMessage
+    fun save(privateChatMessage: PrivateChatMessage): Mono<PrivateChatMessage>
 }

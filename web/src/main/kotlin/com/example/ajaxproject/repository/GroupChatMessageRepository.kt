@@ -1,13 +1,12 @@
 package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.GroupChatMessage
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 interface GroupChatMessageRepository{
 
-    fun save(chatMessage: GroupChatMessage): GroupChatMessage
+    fun save(chatMessage: GroupChatMessage): Mono<GroupChatMessage>
 
-    fun findAllMessagesInChat(groupChatRoomId: String): List<GroupChatMessage>
-
-     fun findMessagesByChatRoomIdWithPagination(chatRoomId: String, offset: Int, limit: Int)
-        :Pair<List<GroupChatMessage>, Long>
+    fun findAllMessagesInChat(groupChatRoomId: String): Flux<GroupChatMessage>
 }

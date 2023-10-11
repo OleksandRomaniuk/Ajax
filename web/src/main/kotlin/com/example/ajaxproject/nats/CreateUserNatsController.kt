@@ -21,7 +21,7 @@ class CreateUserNatsController(
     override val parser: Parser<CreateUserRequest> = CreateUserRequest.parser()
 
     override fun handle(request: CreateUserRequest): CreateUserResponse = runCatching {
-        val saveUser = userService.createUser(request.user.toUserRequest())
+        val saveUser = userService.create(request.user.toUserRequest())
         buildSuccessResponse(saveUser.toProtoUser())
     }.getOrElse { exception ->
         buildFailureResponse(exception.javaClass.simpleName, exception.toString())
