@@ -15,7 +15,7 @@ class PrivateChatMessageRepositoryImpl(
 ) : PrivateChatMessageRepository {
 
     override fun findAllByPrivateChatRoomId(chatRoomId: String): Flux<PrivateChatMessage> {
-        val query = Query(Criteria.where("privateChatRoom.chatRoomId").`is`(chatRoomId))
+        val query = Query(Criteria.where("privateChatRoom").`is`(chatRoomId))
         return reactiveMongoTemplate.find(query, PrivateChatMessage::class.java)
     }
 

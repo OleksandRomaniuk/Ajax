@@ -1,3 +1,4 @@
+/*
 package com.example.ajaxproject.bpp
 
 import com.example.ajaxproject.config.Notification
@@ -96,3 +97,4 @@ class NotificationInvocationHandler(
         private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }
 }
+*/

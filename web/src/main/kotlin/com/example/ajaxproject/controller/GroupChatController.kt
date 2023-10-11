@@ -1,7 +1,8 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.request.CreateChatDto
+import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
+import com.example.ajaxproject.dto.request.LeaveChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
@@ -18,11 +19,11 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api/chat")
-class GroupChatController @Autowired constructor(
+class GroupChatController(
     private val groupChatService: GroupChatService
 ) {
     @PostMapping("/create")
-    fun createRoom(@RequestBody createChatDto: CreateChatDto): Mono<GroupChatRoom> {
+    fun createRoom(@RequestBody createChatDto: CreateChatDTO): Mono<GroupChatRoom> {
         return groupChatService.createGroupRoom(createChatDto)
     }
 
@@ -47,7 +48,7 @@ class GroupChatController @Autowired constructor(
     }
 
     @PostMapping("/leaveChat")
-    fun leaveChat(@RequestBody chatDto: GroupChatDto): Mono<Boolean> {
-        return groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId)
+    fun leaveChat(@RequestBody leaveChatDTO: LeaveChatDTO): Mono<Boolean> {
+        return groupChatService.leaveGroupChat(leaveChatDTO.userId, leaveChatDTO.chatId)
     }
 }

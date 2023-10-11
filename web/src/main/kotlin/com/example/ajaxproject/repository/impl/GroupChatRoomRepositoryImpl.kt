@@ -53,9 +53,6 @@ class GroupChatRoomRepositoryImpl(
             }
     }
 
-
-
-
     private fun isValidUser(userId: String): Mono<Boolean> {
         return reactiveMongoTemplate.exists(Query.query(Criteria.where("_id").`is`(userId)), User::class.java)
     }

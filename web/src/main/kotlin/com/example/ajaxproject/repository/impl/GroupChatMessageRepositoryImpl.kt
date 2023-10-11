@@ -19,7 +19,7 @@ class GroupChatMessageRepositoryImpl(
     }
 
     override fun findAllMessagesInChat(groupChatRoomId: String): Flux<GroupChatMessage> {
-        val query = Criteria.where("groupChatRoomId").`is`(groupChatRoomId)
+        val query = Criteria.where("groupChatRoom").`is`(groupChatRoomId)
         return reactiveMongoTemplate.find(Query.query(query), GroupChatMessage::class.java)
     }
 }

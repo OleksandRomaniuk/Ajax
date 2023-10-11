@@ -1,3 +1,4 @@
+/*
 package com.example.ajaxproject.nats
 
 import com.example.ajaxproject.GetByIdUserRequest
@@ -36,3 +37,4 @@ class GetUserByIdNatsController(
             failureBuilder.setMessage("User find by id failed by $exception: $message")
         }.build()
 }
+*/

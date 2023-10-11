@@ -1,7 +1,7 @@
 package com.example.ajaxproject.service
 
 import com.example.ajaxproject.config.Notification
-import com.example.ajaxproject.dto.request.CreateChatDto
+import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.exeption.WrongActionException
@@ -31,7 +31,7 @@ class GroupChatServiceImpl (
         private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
     }
 
-    override fun createGroupRoom(createChatDto: CreateChatDto): Mono<GroupChatRoom> {
+    override fun createGroupRoom(createChatDto: CreateChatDTO): Mono<GroupChatRoom> {
         return userService.getById(createChatDto.adminId)
             .flatMap { user ->
                 val groupChatRoom = GroupChatRoom(
@@ -81,18 +81,16 @@ class GroupChatServiceImpl (
             message = groupChatDto.message,
             date = Date()
         )
-
         return groupChatMessageRepository.save(chatMessage)
             .doOnSuccess { logger.info("Message sent to group chat ID: ${groupChatDto.chatId}") }
             .map { toResponseDto(it) }
     }
 
     override fun getAllGroupMessages(chatId: String): Flux<GroupChatMessageResponse> {
-        return groupChatMessageRepository.findAllMessagesInChat(chatId)
-            .map { toResponseDto(it) }
+        return groupChatMessageRepository.findAllMessagesInChat(chatId).map { toResponseDto(it) }
     }
 
-    override fun leaveGroupChat(chatId: String, userId: String): Mono<Boolean> {
+    override fun leaveGroupChat(userId: String , chatId: String): Mono<Boolean> {
         return userService.getById(userId)
             .flatMap { user ->
                 groupChatRoomRepository.findChatRoom(chatId)

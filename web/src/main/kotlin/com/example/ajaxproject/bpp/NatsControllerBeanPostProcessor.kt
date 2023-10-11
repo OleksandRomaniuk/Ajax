@@ -1,3 +1,4 @@
+/*
 package com.example.ajaxproject.bpp
 
 import com.example.ajaxproject.nats.NatsController
@@ -36,3 +37,4 @@ private fun <RequestT : GeneratedMessageV3, ResponseT : GeneratedMessageV3>
     val response = handle(parsedData)
     connection.publish(message.replyTo, response.toByteArray())
 }
+*/

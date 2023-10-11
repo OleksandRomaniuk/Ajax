@@ -1,12 +1,12 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.request.UserDTO
+import com.example.ajaxproject.dto.request.UserResponse
+import com.example.ajaxproject.dto.request.UserRequest
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.UserService
 import com.mongodb.client.result.DeleteResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,22 +27,14 @@ class UserController @Autowired constructor(
 ) {
 
     @PostMapping("/create")
-    fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<Mono<User>> {
-        val userMono = userService.create(userDTO)
-        return ResponseEntity.ok(userMono)
-    }
+    fun createUser(@RequestBody userRequest: UserRequest): Mono<User> = userService.create(userRequest)
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: String, @RequestBody userDTO: UserDTO): ResponseEntity<Mono<User>> {
-        val updatedUserMono = userService.updateUser(userDTO.copy(id = id))
-        return ResponseEntity.ok(updatedUserMono)
-    }
+    fun updateUser(@PathVariable id: String, @RequestBody userResponse: UserResponse): Mono<User> =
+        userService.updateUser(userResponse.copy(id = id))
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: String): ResponseEntity<Mono<DeleteResult>> {
-        val deletedUserMono = userService.deleteUser(id)
-        return ResponseEntity.ok(deletedUserMono)
-    }
+    fun deleteUser(@PathVariable id: String): Mono<DeleteResult> = userService.deleteUser(id)
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -53,6 +45,5 @@ class UserController @Autowired constructor(
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getById(@PathVariable id: String): Mono<User> =
-        userService.getById(id)
+    fun getById(@PathVariable id: String): Mono<User> = userService.getById(id)
 }

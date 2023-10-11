@@ -1,6 +1,6 @@
 package com.example.ajaxproject.service.interfaces
 
-import com.example.ajaxproject.dto.request.CreateChatDto
+import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono
 
 interface GroupChatService {
 
-    fun createGroupRoom(createChatDto: CreateChatDto): Mono<GroupChatRoom>
+    fun createGroupRoom(createChatDto: CreateChatDTO): Mono<GroupChatRoom>
 
     fun getAllChatMembers(chatId: String): Flux<User>
 
@@ -20,5 +20,5 @@ interface GroupChatService {
 
     fun getAllGroupMessages(chatId: String): Flux<GroupChatMessageResponse>
 
-    fun leaveGroupChat(chatId: String, userId: String): Mono<Boolean>
+    fun leaveGroupChat(userId: String, chatId: String): Mono<Boolean>
 }

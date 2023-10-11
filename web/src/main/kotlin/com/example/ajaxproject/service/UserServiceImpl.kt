@@ -1,6 +1,7 @@
 package com.example.ajaxproject.service
 
-import com.example.ajaxproject.dto.request.UserDTO
+import com.example.ajaxproject.dto.request.UserResponse
+import com.example.ajaxproject.dto.request.UserRequest
 import com.example.ajaxproject.dto.request.toUser
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.exeption.WrongActionException
@@ -18,20 +19,20 @@ class UserServiceImpl(
     private val userRepository: UserRepository
 ) : UserService {
 
-    override fun create(userDTO: UserDTO): Mono<User> {
-        return userRepository.save(userDTO.toUser())
+    override fun create(userRequest: UserRequest): Mono<User> {
+        return userRepository.save(userRequest.toUser())
             .onErrorMap(WrongActionException::class.java) {
                 WrongActionException("Duplicate user error")
             }
     }
 
-    override fun updateUser(userDTO: UserDTO): Mono<User> {
-        return userRepository.findById(userDTO.id)
+    override fun updateUser(userResponse: UserResponse): Mono<User> {
+        return userRepository.findById(userResponse.id)
             .switchIfEmpty(Mono.error(NotFoundException("User not found")))
             .flatMap { existingUser ->
                 val updatedUser = existingUser.copy(
-                    email = userDTO.email,
-                    password = userDTO.password
+                    email = userResponse.email,
+                    password = userResponse.password
                 )
                 userRepository.save(updatedUser)
             }

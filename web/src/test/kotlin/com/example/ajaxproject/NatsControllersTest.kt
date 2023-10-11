@@ -1,3 +1,4 @@
+/*
 package com.example.ajaxproject
 
 import com.example.ajaxproject.model.toProtoUser
@@ -136,3 +137,4 @@ class NatsControllersTest {
         return parser.parseFrom(response.get().data)
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.example.ajaxproject.nats
 
 import com.example.ajaxproject.GetAllUsersRequest
@@ -37,3 +38,4 @@ class GetAllUsersNatsController(
                 .setMessage("users find failed by $exception: $message")
         }.build()
 }
+*/

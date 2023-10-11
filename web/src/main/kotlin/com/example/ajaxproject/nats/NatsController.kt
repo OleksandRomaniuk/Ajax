@@ -1,5 +1,6 @@
 package com.example.ajaxproject.nats
 
+import com.example.ajaxproject.CreateUserResponse
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Parser
 import io.nats.client.Connection
@@ -12,5 +13,5 @@ interface NatsController<RequestT : GeneratedMessageV3, ResponseT : GeneratedMes
 
     val parser: Parser<RequestT>
 
-    fun handle(request: RequestT): ResponseT
+    fun handle(request: RequestT): CreateUserResponse?
 }

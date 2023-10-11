@@ -1,3 +1,4 @@
+/*
 package com.example.ajaxproject.nats
 
 import com.example.ajaxproject.DeleteUserRequest
@@ -34,3 +35,4 @@ class DeleteUserNatsController(
             failureBuilder.setMessage("User delete failed by $exception: $message")
         }.build()
 }
+*/

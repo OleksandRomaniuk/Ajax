@@ -54,7 +54,7 @@ class PrivateChatServiceImpl(
             .flatMap { room ->
                 val privateChatMessage = PrivateChatMessage(
                     id = ObjectId(),
-                    privateChatRoom = room,
+                    privateChatRoom = room.id,
                     message = privateMessageDTO.message,
                     senderId = privateMessageDTO.senderId
                 )
