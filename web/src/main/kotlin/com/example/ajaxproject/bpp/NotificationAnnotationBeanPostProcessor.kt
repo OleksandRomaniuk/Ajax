@@ -70,7 +70,7 @@ class NotificationInvocationHandler(
 
         val groupChatRoomRepository = beanFactory.getBean(GroupChatRoomRepository::class.java)
         val emailSenderService = beanFactory.getBean(EmailSenderService::class.java)
-        val executorService = beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
+        beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
 
         val chatMono = groupChatRoomRepository.findChatRoom(identifiable.chatId)
 

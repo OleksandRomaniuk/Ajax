@@ -2,6 +2,7 @@ package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.dto.responce.SendEmailResponse
+import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.service.interfaces.EmailSenderService
 import jakarta.mail.internet.MimeMessage
 import org.slf4j.Logger
@@ -20,7 +21,7 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
                 javaMailSender.send(generateMailMessage(emailDTO))
                 logger.debug("Email sent successfully")
                 sink.success(SendEmailResponse(status = 200))
-            } catch (exception: Exception) {
+            } catch (exception: WrongActionException) {
                 logger.warn("An error has occurred sending email", exception)
                 sink.success(SendEmailResponse(status = 500, cause = exception.message))
             }
