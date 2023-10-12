@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("/api/chat")
 class GroupChatController(
-    private val groupChatService: GroupChatService
+   val groupChatService: GroupChatService
 ) {
     @PostMapping("/create")
     fun createRoom(@RequestBody createChatDto: CreateChatDTO): Mono<GroupChatRoom> {

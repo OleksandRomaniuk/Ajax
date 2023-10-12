@@ -84,10 +84,12 @@ class NotificationInvocationHandler(
                     buildEmail(user.email, chat.chatName)
                 }
             }
-            .subscribe { email ->
-                executorService.submit {
-                    emailSenderService.send(email)
-                }
+            .flatMap { email ->
+                emailSenderService.send(email)
+            }
+            .subscribe { sendEmailResponse ->
+                // Handle the response if needed
+                logger.info("Email sent. Response status: ${sendEmailResponse.status}")
             }
 
         logger.info("Emails sent to users: {}", userListFlux)
