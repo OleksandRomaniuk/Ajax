@@ -7,7 +7,6 @@ import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping

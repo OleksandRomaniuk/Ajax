@@ -9,20 +9,24 @@ import org.slf4j.LoggerFactory
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
 @Service
 internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender) : EmailSenderService {
 
-    override fun send(emailDTO: EmailDTO): SendEmailResponse {
-        return runCatching {
-            javaMailSender.send(generateMailMessage(emailDTO))
-            logger.debug("Email sent successfully")
-            SendEmailResponse(status = 200)
-        }.getOrElse { exception ->
-            logger.warn("An error has occurred sending email", exception)
-            SendEmailResponse(status = 500, cause = exception.message)
+    override fun send(emailDTO: EmailDTO): Mono<SendEmailResponse> {
+        return Mono.create { sink ->
+            try {
+                javaMailSender.send(generateMailMessage(emailDTO))
+                logger.debug("Email sent successfully")
+                sink.success(SendEmailResponse(status = 200))
+            } catch (exception: Exception) {
+                logger.warn("An error has occurred sending email", exception)
+                sink.success(SendEmailResponse(status = 500, cause = exception.message))
+            }
         }
     }
+
     private fun generateMailMessage(emailDTO: EmailDTO): MimeMessage {
 
         return MimeMessageHelper(javaMailSender.createMimeMessage()).apply {

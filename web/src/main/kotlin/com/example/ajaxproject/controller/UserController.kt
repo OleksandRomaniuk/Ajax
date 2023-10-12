@@ -1,6 +1,6 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.request.UserResponse
+import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.dto.request.UserRequest
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.UserService
@@ -30,7 +30,7 @@ class UserController @Autowired constructor(
     fun createUser(@RequestBody userRequest: UserRequest): Mono<User> = userService.create(userRequest)
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: String, @RequestBody userResponse: UserResponse): Mono<User> =
+    fun updateUser(@PathVariable id: String, @RequestBody userResponse: UserDTO): Mono<User> =
         userService.updateUser(userResponse.copy(id = id))
 
     @DeleteMapping("/{id}")

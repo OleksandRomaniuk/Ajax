@@ -13,9 +13,8 @@ import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-
-import reactor.core.publisher.Mono
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @Service
 class PrivateChatServiceImpl(
@@ -34,7 +33,15 @@ class PrivateChatServiceImpl(
             .then(Mono.defer {
                 val roomId = roomIdFormat(senderId, recipientId)
                 privateChatRoomRepository.findChatRoomById(roomId)
-                    .switchIfEmpty(privateChatRoomRepository.save(PrivateChatRoom(id = roomId, senderId = senderId, recipientId = recipientId)))
+                    .switchIfEmpty(
+                        privateChatRoomRepository.save(
+                            PrivateChatRoom(
+                                id = roomId,
+                                senderId = senderId,
+                                recipientId = recipientId
+                            )
+                        )
+                    )
             })
     }
 
@@ -66,7 +73,11 @@ class PrivateChatServiceImpl(
     override fun getAllPrivateMessages(roomDTO: RoomDTO): Flux<PrivateChatMessage> {
         return userService.getById(roomDTO.senderId)
             .then(userService.getById(roomDTO.recipientId))
-            .thenMany(privateChatMessageRepository.findAllByPrivateChatRoomId(roomIdFormat(roomDTO.senderId, roomDTO.recipientId)))
+            .thenMany(
+                privateChatMessageRepository.findAllByPrivateChatRoomId(
+                    roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
+                )
+            )
             .collectList()
             .flatMap { listOfMessage ->
                 if (listOfMessage.isEmpty()) {

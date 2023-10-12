@@ -1,14 +1,14 @@
 package com.example.ajaxproject.service
 
-import com.example.ajaxproject.dto.request.UserResponse
+import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.dto.request.UserRequest
-import com.example.ajaxproject.dto.request.toUser
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
 import com.mongodb.client.result.DeleteResult
+import org.bson.types.ObjectId
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -20,13 +20,34 @@ class UserServiceImpl(
 ) : UserService {
 
     override fun create(userRequest: UserRequest): Mono<User> {
-        return userRepository.save(userRequest.toUser())
+        return userRepository.save(
+            User(
+                ObjectId().toHexString(),
+                userRequest.email,
+                userRequest.password
+            )
+        )
             .onErrorMap(WrongActionException::class.java) {
                 WrongActionException("Duplicate user error")
             }
     }
 
-    override fun updateUser(userResponse: UserResponse): Mono<User> {
+    override fun save(userDTO: UserDTO): Mono<User> {
+        return userRepository.save(toEntity(userDTO))
+            .onErrorMap(WrongActionException::class.java) {
+                WrongActionException("Duplicate user error")
+            }
+    }
+
+    fun toEntity(userDTO: UserDTO): User {
+        return User(
+            id = userDTO.id,
+            email = userDTO.email,
+            password = userDTO.password,
+        )
+    }
+
+    override fun updateUser(userResponse: UserDTO): Mono<User> {
         return userRepository.findById(userResponse.id)
             .switchIfEmpty(Mono.error(NotFoundException("User not found")))
             .flatMap { existingUser ->

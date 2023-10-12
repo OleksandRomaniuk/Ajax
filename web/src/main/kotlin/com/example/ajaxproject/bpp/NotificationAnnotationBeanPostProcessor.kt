@@ -1,4 +1,3 @@
-/*
 package com.example.ajaxproject.bpp
 
 import com.example.ajaxproject.config.Notification
@@ -14,6 +13,7 @@ import org.springframework.cglib.proxy.InvocationHandler
 import org.springframework.cglib.proxy.Proxy
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import java.lang.reflect.Method
 import java.util.concurrent.ExecutorService
 import kotlin.reflect.KClass
@@ -69,23 +69,28 @@ class NotificationInvocationHandler(
     private fun createNotification(identifiable: Identifiable) {
 
         val groupChatRoomRepository = beanFactory.getBean(GroupChatRoomRepository::class.java)
-        val chat = groupChatRoomRepository.findChatRoom(identifiable.chatId)
-        val chatName = chat.chatName
-        val userList = chat.chatMembers
-
         val emailSenderService = beanFactory.getBean(EmailSenderService::class.java)
-
         val executorService = beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
 
-        userList.asSequence()
-            .map { user -> buildEmail(user.email, chatName) }
-            .forEach { email ->
+        val chatMono = groupChatRoomRepository.findChatRoom(identifiable.chatId)
+
+        val userListFlux = chatMono.flatMapMany { chat ->
+            Flux.fromIterable(chat.chatMembers)
+        }
+
+        userListFlux
+            .flatMap { user ->
+                chatMono.map { chat ->
+                    buildEmail(user.email, chat.chatName)
+                }
+            }
+            .subscribe { email ->
                 executorService.submit {
                     emailSenderService.send(email)
                 }
             }
 
-        logger.info("Emails sent to users: {}", userList)
+        logger.info("Emails sent to users: {}", userListFlux)
     }
     private fun buildEmail(email: String , chatName: String): EmailDTO = EmailDTO(
         from = "ora.romaniuk@gmail.com",
@@ -97,4 +102,3 @@ class NotificationInvocationHandler(
         private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }
 }
-*/
