@@ -2,7 +2,6 @@ package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.dto.responce.SendEmailResponse
-import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.service.interfaces.EmailSenderService
 import jakarta.mail.internet.MimeMessage
 import org.slf4j.Logger
@@ -16,15 +15,13 @@ import reactor.core.publisher.Mono
 internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender) : EmailSenderService {
 
     override fun send(emailDTO: EmailDTO): Mono<SendEmailResponse> {
-        return Mono.create { sink ->
-            try {
-                javaMailSender.send(generateMailMessage(emailDTO))
-                logger.debug("Email sent successfully")
-                sink.success(SendEmailResponse(status = 200))
-            } catch (exception: WrongActionException) {
-                logger.warn("An error has occurred sending email", exception)
-                sink.success(SendEmailResponse(status = 500, cause = exception.message))
-            }
+        return Mono.defer {
+            javaMailSender.send(generateMailMessage(emailDTO))
+            logger.debug("Email sent successfully")
+            Mono.just(SendEmailResponse(status = 200))
+        }.onErrorResume { error ->
+            logger.error("An unexpected error has occurred sending email", error)
+            Mono.just(SendEmailResponse(status = 500, cause = error.message))
         }
     }
 

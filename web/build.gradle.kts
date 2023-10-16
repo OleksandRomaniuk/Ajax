@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.2")
 }
 
 tasks.withType<Test> {

@@ -36,16 +36,8 @@ class UserRepositoryImpl(
     }
 
     override fun deleteById(userId: String): Mono<DeleteResult> {
-        validateAndCleanChatMembersForUser(userId)
         val query = Query().addCriteria(Criteria.where("_id").`is`(userId))
         return reactiveMongoTemplate.remove(query, User::class.java)
     }
-
-
-    fun validateAndCleanChatMembersForUser(userIdToRemove: String) {
-        val query = Query.query(Criteria.where("chatMembers._id").`is`(userIdToRemove))
-        val update = Update().pull("chatMembers", Query(Criteria.where("_id").`is`(userIdToRemove)))
-        reactiveMongoTemplate.updateMulti(query, update, GroupChatRoom::class.java)
-            .subscribe()
-    }
 }
+
