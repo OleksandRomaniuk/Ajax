@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class User(
     @Id
     val id: String,
-    val email: String = "",
-    val password: String = "",
+    val email: String,
+    val password: String,
 )
 
 fun User.toUserDTO(): UserDTO {

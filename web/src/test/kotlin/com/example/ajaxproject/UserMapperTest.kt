@@ -1,4 +1,4 @@
-package com.example.ajaxproject;
+package com.example.ajaxproject
 
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.nats.UserMapper

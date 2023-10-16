@@ -21,6 +21,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
 }
 
 tasks.withType<Test> {

@@ -15,6 +15,7 @@ import com.example.ajaxproject.service.interfaces.UserService
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -65,8 +66,7 @@ class GroupChatServiceImpl (
                         } else {
                             chat.chatMembers += user
                             logger.info("User with ID $userId added to chat ID $chatId")
-                            groupChatRoomRepository.save(chat)
-                                .thenReturn(user)
+                            groupChatRoomRepository.save(chat).thenReturn(user)
                         }
                     }
             }
@@ -86,8 +86,11 @@ class GroupChatServiceImpl (
             .map { toResponseDto(it) }
     }
 
+    @Cacheable("getAllGroupMessages")
     override fun getAllGroupMessages(chatId: String): Flux<GroupChatMessageResponse> {
-        return groupChatMessageRepository.findAllMessagesInChat(chatId).map { toResponseDto(it) }
+        return groupChatMessageRepository.findAllMessagesInChat(chatId)
+            .cache()
+            .map { toResponseDto(it) }
     }
 
     override fun leaveGroupChat(userId: String , chatId: String): Mono<Boolean> {

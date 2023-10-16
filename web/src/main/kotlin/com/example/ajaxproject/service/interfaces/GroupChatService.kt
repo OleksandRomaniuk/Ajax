@@ -3,10 +3,15 @@ package com.example.ajaxproject.service.interfaces
 import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
+import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
+import com.example.ajaxproject.service.GroupChatServiceImpl
+import com.example.ajaxproject.service.GroupChatServiceImpl.Companion
+import org.bson.types.ObjectId
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.*
 
 interface GroupChatService {
 

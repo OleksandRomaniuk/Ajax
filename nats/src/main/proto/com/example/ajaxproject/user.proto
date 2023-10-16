@@ -9,6 +9,10 @@ message User {
   string password = 3;
 }
 
+message UserList {
+  repeated User user = 1;
+}
+
 message CreateUserResponse {
   User user = 1;
 }
@@ -31,11 +35,11 @@ message DeleteUserRequest {
 
 message DeleteUserResponse {}
 
-message UpdateUserRequest {
-  string user_id = 1;
-  User user = 2;
+message GetAllUsersRequest {}
+
+message GetAllUsersResponse {
+    UserList users = 1;
 }
 
-message UpdateUserResponse {
-  User user = 1;
-}
+
+

@@ -4,9 +4,9 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import com.example.ajaxproject.UserOuterClass.DeleteUserRequest
+import com.example.ajaxproject.UserOuterClass.GetByIdUserRequest
 import com.example.ajaxproject.UserOuterClass.CreateUserRequest
 import com.example.ajaxproject.UserOuterClass.CreateUserResponse
-import com.example.ajaxproject.UserOuterClass.GetByIdUserRequest
 import com.example.ajaxproject.UserOuterClass.GetByIdUserResponse
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.nats.UserMapper
@@ -22,13 +22,13 @@ import java.time.Duration
 class NatsUserControllerTest {
 
     @Autowired
-    lateinit var userRepository: UserRepository
-
-    @Autowired
     lateinit var connection: Connection
 
     @Autowired
     lateinit var userMapper: UserMapper
+
+    @Autowired
+    lateinit var userRepository: UserRepository
 
     @Test
     fun generateReplyForDeleteNatsRequest() {
@@ -88,5 +88,4 @@ class NatsUserControllerTest {
         )
         assertThat(actual.user.id).isEqualTo(expected.userId)
     }
-
 }

@@ -29,7 +29,6 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
     }
 
     private fun generateMailMessage(emailDTO: EmailDTO): MimeMessage {
-
         return MimeMessageHelper(javaMailSender.createMimeMessage()).apply {
             setFrom(emailDTO.from)
             setTo(emailDTO.to)

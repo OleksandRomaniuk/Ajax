@@ -2,6 +2,8 @@ package com.example.ajaxproject
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cache.annotation.EnableCaching
+import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
 class AjaxProjectApplication

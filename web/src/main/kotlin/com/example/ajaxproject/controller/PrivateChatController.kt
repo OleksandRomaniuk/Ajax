@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("/api/chat")
 class PrivateChatController(
-    private val privateChatService: PrivateChatService
+     val privateChatService: PrivateChatService
 ) {
 
     @PostMapping("/createRoom")

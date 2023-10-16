@@ -10,7 +10,6 @@ import io.nats.client.Connection
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
-
 @Component
 class CreateUserNatsController(
     private val service: UserService,

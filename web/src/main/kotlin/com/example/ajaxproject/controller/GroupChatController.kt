@@ -1,5 +1,6 @@
 package com.example.ajaxproject.controller
 
+
 import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.request.LeaveChatDTO
@@ -7,6 +8,8 @@ import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
+import org.springframework.http.HttpStatus.CREATED
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,10 +19,11 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
+
 @RestController
 @RequestMapping("/api/chat")
 class GroupChatController(
-   val groupChatService: GroupChatService
+    val groupChatService: GroupChatService
 ) {
     @PostMapping("/create")
     fun createRoom(@RequestBody createChatDto: CreateChatDTO): Mono<GroupChatRoom> {
