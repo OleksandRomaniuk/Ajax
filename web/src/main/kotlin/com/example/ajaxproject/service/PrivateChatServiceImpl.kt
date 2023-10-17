@@ -28,21 +28,24 @@ class PrivateChatServiceImpl(
     }
 
     override fun createPrivateRoom(senderId: String, recipientId: String): Mono<PrivateChatRoom> {
-        return userService.getById(senderId)
-            .then(userService.getById(recipientId))
-            .then(Mono.defer {
-                val roomId = roomIdFormat(senderId, recipientId)
-                privateChatRoomRepository.findChatRoomById(roomId)
-                    .switchIfEmpty(
-                        privateChatRoomRepository.save(
-                            PrivateChatRoom(
-                                id = roomId,
-                                senderId = senderId,
-                                recipientId = recipientId
-                            )
+        val roomId = roomIdFormat(senderId, recipientId)
+        return Mono.zip(
+            userService.getById(senderId),
+            userService.getById(recipientId)
+        ).flatMap {
+            val sender = it.t1
+            val recipient = it.t2
+            privateChatRoomRepository.findChatRoomById(roomId)
+                .switchIfEmpty(
+                    privateChatRoomRepository.save(
+                        PrivateChatRoom(
+                            id = roomId,
+                            senderId = sender.id,
+                            recipientId = recipient.id
                         )
                     )
-            })
+                )
+        }
     }
 
     fun roomIdFormat(id1: String, id2: String): String {
@@ -61,7 +64,7 @@ class PrivateChatServiceImpl(
             .flatMap { room ->
                 val privateChatMessage = PrivateChatMessage(
                     id = ObjectId(),
-                    privateChatRoom = room.id,
+                    privateChatRoomId = room.id,
                     message = privateMessageDTO.message,
                     senderId = privateMessageDTO.senderId
                 )
@@ -91,4 +94,6 @@ class PrivateChatServiceImpl(
             .flatMapMany { Flux.fromIterable(it) }
     }
 }
+
+
 

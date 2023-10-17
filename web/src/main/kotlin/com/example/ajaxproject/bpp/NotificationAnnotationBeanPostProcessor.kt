@@ -5,7 +5,6 @@ import com.example.ajaxproject.dto.request.EmailDTO
 import com.example.ajaxproject.dto.request.Identifiable
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.EmailSenderService
-import com.example.ajaxproject.service.interfaces.GroupChatService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.BeanFactory
@@ -16,7 +15,8 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
+import reactor.core.scheduler.Schedulers
+import reactor.kotlin.core.publisher.toFlux
 import java.lang.reflect.Method
 import java.util.concurrent.ExecutorService
 import kotlin.reflect.KClass
@@ -59,7 +59,6 @@ class NotificationAnnotationBeanPostProcessor(
     }
 }
 
-
 @Suppress("SpreadOperator")
 class NotificationInvocationHandler(
     private val bean: Any,
@@ -81,31 +80,23 @@ class NotificationInvocationHandler(
     }
 
     private fun createNotification(identifiable: Identifiable) {
-
         val groupChatRoomRepository = beanFactory.getBean(GroupChatRoomRepository::class.java)
         val emailSenderService = beanFactory.getBean(EmailSenderService::class.java)
-        beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
+        val sendEmailThreadPool = beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
 
-        val chatMono = groupChatRoomRepository.findChatRoom(identifiable.chatId)
+        val chatMono = groupChatRoomRepository.findChatRoom(identifiable.chatId).cache()
 
-        val userListFlux = chatMono.flatMapMany { chat ->
-            Flux.fromIterable(chat.chatMembers)
-        }
-
-        userListFlux
-            .flatMap { user ->
-                chatMono.map { chat ->
-                    buildEmail(user.email, chat.chatName)
-                }
-            }
-            .flatMap { email ->
+        chatMono
+            .flatMapMany { it.chatMembers.toFlux() }
+            .flatMap { user -> chatMono.map { chat -> Pair(user, chat) } }
+            .filter { (user, _) -> emailSenderService.isValidEmail(user.email) }
+            .flatMap { (user, chat) ->
+                val email = buildEmail(user.email, chat.chatName)
                 emailSenderService.send(email)
             }
-            .subscribe { sendEmailResponse ->
-                logger.info("Email sent. Response status: ${sendEmailResponse.status}")
-            }
-
-        logger.info("Emails sent to users: {}", userListFlux)
+            .doOnComplete { logger.info("Emails sent to all valid users.") }
+            .subscribeOn(Schedulers.fromExecutor(sendEmailThreadPool))
+            .subscribe()
     }
 
     private fun buildEmail(email: String, chatName: String): EmailDTO = EmailDTO(
@@ -114,11 +105,8 @@ class NotificationInvocationHandler(
         subject = "Testing post bean processor",
         body = "New message in chat $chatName"
     )
+
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }
 }
-
-
-
-

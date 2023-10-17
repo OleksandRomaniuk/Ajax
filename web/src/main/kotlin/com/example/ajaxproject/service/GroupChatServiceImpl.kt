@@ -19,7 +19,7 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.*
+import java.util.Date
 
 @Service
 class GroupChatServiceImpl (
@@ -57,21 +57,23 @@ class GroupChatServiceImpl (
 
 
     override fun addUserToChat(chatId: String, userId: String): Mono<User> {
-        return groupChatRoomRepository.findChatRoom(chatId)
-            .flatMap { chat ->
-                userService.getById(userId)
-                    .flatMap { user ->
-                        val existingUser = chat.chatMembers.find { it.id == userId }
-                        if (existingUser != null) {
-                            logger.info("User with ID $userId is already present in chat ID $chatId")
-                            Mono.just(existingUser)
-                        } else {
-                            chat.chatMembers += user
-                            logger.info("User with ID $userId added to chat ID $chatId")
-                            groupChatRoomRepository.save(chat).thenReturn(user)
-                        }
-                    }
+        return Mono.zip(
+            groupChatRoomRepository.findChatRoom(chatId),
+            userService.getById(userId)
+        ).flatMap {
+            val chat = it.t1
+            val user = it.t2
+
+            val existingUser = chat.chatMembers.find { it.id == userId }
+            if (existingUser != null) {
+                logger.info("User with ID $userId is already present in chat ID $chatId")
+                Mono.just(existingUser)
+            } else {
+                chat.chatMembers += user
+                logger.info("User with ID $userId added to chat ID $chatId")
+                groupChatRoomRepository.save(chat).thenReturn(user)
             }
+        }
     }
 
     @Notification
