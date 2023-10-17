@@ -15,5 +15,5 @@ interface PrivateChatService {
 
     fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): Mono<PrivateChatMessage>
 
-    fun getAllPrivateMessages(roomDTO: RoomDTO): Flux<PrivateChatMessage>
+    fun getAllPrivateMessages(roomDTO: RoomDTO): Mono<List<PrivateChatMessage>>
 }

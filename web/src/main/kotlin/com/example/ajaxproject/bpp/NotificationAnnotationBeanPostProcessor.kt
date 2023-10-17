@@ -59,6 +59,7 @@ class NotificationAnnotationBeanPostProcessor(
     }
 }
 
+
 @Suppress("SpreadOperator")
 class NotificationInvocationHandler(
     private val bean: Any,
@@ -98,6 +99,7 @@ class NotificationInvocationHandler(
             .subscribeOn(Schedulers.fromExecutor(sendEmailThreadPool))
             .subscribe()
     }
+
 
     private fun buildEmail(email: String, chatName: String): EmailDTO = EmailDTO(
         from = "ora.romaniuk@gmail.com",

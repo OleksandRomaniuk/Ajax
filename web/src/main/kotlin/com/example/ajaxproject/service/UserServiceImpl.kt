@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
+    private val groupChatRoomRepository: GroupChatRoomRepository
 ) : UserService {
 
     override fun create(userRequest: UserRequest): Mono<User> {
@@ -44,12 +45,13 @@ class UserServiceImpl(
     }
 
     override fun deleteUser(id: String): Mono<DeleteResult> {
-        return userRepository.deleteById(id)
-            .handle { deletedResult, sink ->
+        return groupChatRoomRepository.removeUserFromAllChats(id)
+            .then(userRepository.deleteById(id))
+            .flatMap { deletedResult ->
                 if (deletedResult.deletedCount > 0) {
-                    sink.next(deletedResult)
+                    Mono.just(deletedResult)
                 } else {
-                    sink.error(NotFoundException("User with id $id not found"))
+                    Mono.error(NotFoundException("User with id $id not found"))
                 }
             }
     }

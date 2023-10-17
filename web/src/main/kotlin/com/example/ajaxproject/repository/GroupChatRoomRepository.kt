@@ -10,5 +10,5 @@ interface GroupChatRoomRepository{
 
     fun save(chat: GroupChatRoom): Mono<GroupChatRoom>
 
-    fun removeUserFromAllChats(userId: String)
+    fun removeUserFromAllChats(userId: String): Mono<Unit>
 }

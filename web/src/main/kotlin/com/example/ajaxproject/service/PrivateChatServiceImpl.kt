@@ -23,10 +23,6 @@ class PrivateChatServiceImpl(
     private val userService: UserService
 ) : PrivateChatService {
 
-    companion object {
-        private val logger: Logger = LoggerFactory.getLogger(PrivateChatServiceImpl::class.java)
-    }
-
     override fun createPrivateRoom(senderId: String, recipientId: String): Mono<PrivateChatRoom> {
         val roomId = roomIdFormat(senderId, recipientId)
         return Mono.zip(
@@ -48,12 +44,6 @@ class PrivateChatServiceImpl(
         }
     }
 
-    fun roomIdFormat(id1: String, id2: String): String {
-        val smallerId = minOf(id1, id2)
-        val higherId = maxOf(id1, id2)
-        return "$smallerId-$higherId"
-    }
-
     override fun getPrivateRoom(roomId: String): Mono<PrivateChatRoom> {
         return privateChatRoomRepository.findChatRoomById(roomId)
             .switchIfEmpty(Mono.error(NotFoundException("Room with $roomId not found")))
@@ -73,14 +63,14 @@ class PrivateChatServiceImpl(
             }
     }
 
-    override fun getAllPrivateMessages(roomDTO: RoomDTO): Flux<PrivateChatMessage> {
+    override fun getAllPrivateMessages(roomDTO: RoomDTO): Mono<List<PrivateChatMessage>> {
         return userService.getById(roomDTO.senderId)
-            .then(userService.getById(roomDTO.recipientId))
-            .thenMany(
+            .map { userService.getById(roomDTO.recipientId) }
+            .flatMapMany {
                 privateChatMessageRepository.findAllByPrivateChatRoomId(
                     roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
                 )
-            )
+            }
             .collectList()
             .flatMap { listOfMessage ->
                 if (listOfMessage.isEmpty()) {
@@ -91,9 +81,15 @@ class PrivateChatServiceImpl(
                     Mono.just(listOfMessage)
                 }
             }
-            .flatMapMany { Flux.fromIterable(it) }
+    }
+
+    private fun roomIdFormat(id1: String, id2: String): String {
+        val smallerId = minOf(id1, id2)
+        val higherId = maxOf(id1, id2)
+        return "$smallerId-$higherId"
+    }
+
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(PrivateChatServiceImpl::class.java)
     }
 }
-
-
-

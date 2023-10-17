@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 @Repository
 class GroupChatRoomRepositoryImpl(
@@ -23,11 +24,11 @@ class GroupChatRoomRepositoryImpl(
         return reactiveMongoTemplate.save(chat)
     }
 
-    override fun removeUserFromAllChats(userId: String) {
+    override fun removeUserFromAllChats(userId: String): Mono<Unit> {
         val query = Query(Criteria.where("chatMembers.id").`is`(userId))
         val update = Update().pull("chatMembers", Query(Criteria.where("id").`is`(userId)))
-        reactiveMongoTemplate.updateMulti(query, update, GroupChatRoom::class.java)
-            .subscribe()
+        return reactiveMongoTemplate.updateMulti(query, update, GroupChatRoom::class.java)
+            .then(Unit.toMono())
     }
 }
 

@@ -71,7 +71,7 @@ class GroupChatServiceImpl (
             } else {
                 chat.chatMembers += user
                 logger.info("User with ID $userId added to chat ID $chatId")
-                groupChatRoomRepository.save(chat).thenReturn(user)
+                groupChatRoomRepository.save(chat).map { user }
             }
         }
     }
@@ -110,10 +110,10 @@ class GroupChatServiceImpl (
                 chat.chatMembers = chat.chatMembers.filterNot { it.id == user.id }
                 groupChatRoomRepository.save(chat)
                     .doOnSuccess { logger.info("User with ID $userId left chat ID $chatId") }
-                    .thenReturn(true)
+                    .map { true }
             } else {
                 logger.warn("Admin attempted to leave chat ID $chatId")
-                Mono.error<Boolean?>(WrongActionException("Admin can't leave a chat")).thenReturn(false)
+                Mono.error<Boolean?>(WrongActionException("Admin can't leave a chat")).map { false }
             }
         }
     }
