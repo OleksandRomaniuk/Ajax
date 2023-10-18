@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
@@ -22,7 +21,7 @@ class PrivateChatController(
 
     @PostMapping("/createRoom")
     fun createRoom(@RequestBody roomDTO: RoomDTO): Mono<PrivateChatRoom> =
-        privateChatService.createPrivateRoom(roomDTO.senderId, roomDTO.recipientId).map { it }
+        privateChatService.createPrivateRoom(roomDTO.senderId, roomDTO.recipientId)
 
     @GetMapping("/findRoom/{roomId}")
     fun findRoom(@PathVariable roomId: String): Mono<PrivateChatRoom?> =
@@ -30,9 +29,9 @@ class PrivateChatController(
 
     @PostMapping("/sendMessage")
     fun sendMessage(@RequestBody privateMessageDTO: PrivateMessageDTO): Mono<PrivateChatMessage> =
-        privateChatService.sendPrivateMessage(privateMessageDTO).map { it }
+        privateChatService.sendPrivateMessage(privateMessageDTO)
 
     @GetMapping("/getAllMessages")
     fun getAllMessages(@RequestBody roomDTO: RoomDTO): Mono<List<PrivateChatMessage>> =
-        privateChatService.getAllPrivateMessages(roomDTO).map { it }
+        privateChatService.getAllPrivateMessages(roomDTO)
 }

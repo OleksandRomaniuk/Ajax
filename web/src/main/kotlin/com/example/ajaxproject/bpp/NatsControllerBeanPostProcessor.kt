@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import reactor.core.scheduler.Scheduler
 
 @Component
-class NatsControllerBeanPostProcessor(private val handleMessageScheduler: Scheduler) : BeanPostProcessor {
+class NatsConfigurationBeanPostProcessor(private val handleMessageScheduler: Scheduler) : BeanPostProcessor {
 
     override fun postProcessBeforeInitialization(bean: Any, beanName: String): Any {
         if (bean is NatsController<*, *>) {

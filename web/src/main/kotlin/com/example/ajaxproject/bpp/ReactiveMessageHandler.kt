@@ -9,6 +9,7 @@ class ReactiveMessageHandler(
     private val natsController: NatsController<*, *>,
     private val scheduler: Scheduler
 ) : MessageHandler {
+
     override fun onMessage(msg: Message) {
         natsController.handle(msg)
             .map { it.toByteArray() }
@@ -17,3 +18,4 @@ class ReactiveMessageHandler(
             .subscribe()
     }
 }
+

@@ -18,12 +18,13 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:3.24.3")
     implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
     implementation("com.sun.mail:jakarta.mail:2.0.1")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.2")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
 }
 
 tasks.withType<Test> {

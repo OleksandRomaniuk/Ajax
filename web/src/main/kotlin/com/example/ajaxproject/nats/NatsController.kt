@@ -21,4 +21,3 @@ interface NatsController<ReqT : GeneratedMessageV3, RespT : GeneratedMessageV3> 
         return generateReplyForNatsRequest(request)
     }
 }
-

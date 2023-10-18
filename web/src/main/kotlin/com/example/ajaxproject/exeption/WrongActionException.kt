@@ -1,3 +1,3 @@
 package com.example.ajaxproject.exeption
 
-class WrongActionException constructor(message: String) : RuntimeException( message)
+class WrongActionException(message: String) : RuntimeException(message)

@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class DeleteUserNatsController(
-    private val service: UserService,
+    private val userService: UserService,
     override val connection: Connection
 ) : NatsController<DeleteUserRequest, DeleteUserResponse> {
 
@@ -20,7 +20,7 @@ class DeleteUserNatsController(
     override val parser: Parser<DeleteUserRequest> = DeleteUserRequest.parser()
 
     override fun generateReplyForNatsRequest(request: DeleteUserRequest): Mono<DeleteUserResponse> {
-        return service.deleteUser(request.userId)
+        return userService.deleteUser(request.userId)
             .thenReturn(DeleteUserResponse.getDefaultInstance())
     }
 }

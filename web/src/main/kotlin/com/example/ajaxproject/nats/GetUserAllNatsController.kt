@@ -10,12 +10,11 @@ import io.nats.client.Connection
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
-
 @Component
 class GetUserAllNatsController(
     private val userMapper: UserMapper,
     private val userService: UserService,
-    override val connection: Connection,
+    override val connection: Connection
 ) : NatsController<GetAllUsersRequest, GetAllUsersResponse> {
 
     override val subject: String = GET_ALL_USERS
@@ -28,13 +27,15 @@ class GetUserAllNatsController(
     override val parser: Parser<GetAllUsersRequest> = GetAllUsersRequest.parser()
 
     override fun generateReplyForNatsRequest(request: GetAllUsersRequest): Mono<GetAllUsersResponse> {
-        return userService.getAll(DEFAULT_OFFSET,DEFAULT_LIMIT)
-            .map { userMapper.userToProto(it) }
+        return userService.getAll(DEFAULT_OFFSET , DEFAULT_LIMIT)
             .collectList()
-            .map { users ->
-                val userList = UserList.newBuilder().addAllUser(users).build()
-                GetAllUsersResponse.newBuilder().setUsers(userList).build()
+            .map { userList ->
+                val userProtoList = userList.map { userMapper.userToProto(it) }
+                GetAllUsersResponse.newBuilder()
+                    .setUsers(UserList.newBuilder().addAllUser(userProtoList).build())
+                    .build()
             }
     }
 }
+
 

@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class CreateUserNatsController(
-    private val service: UserService,
+    private val userService: UserService,
     override val connection: Connection,
     private val userMapper: UserMapper
 ) : NatsController<CreateUserRequest, CreateUserResponse> {
@@ -23,7 +23,7 @@ class CreateUserNatsController(
         CreateUserRequest.parser()
 
     override fun generateReplyForNatsRequest(request: CreateUserRequest): Mono<CreateUserResponse> {
-        return service.save(userMapper.protoRequestToUser(request).toUserDTO())
+        return userService.save(userMapper.protoRequestToUser(request).toUserDTO())
             .map { userMapper.userToProtoResponse(it) }
     }
 }
