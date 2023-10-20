@@ -19,5 +19,5 @@ interface GroupChatService {
 
     fun getAllGroupMessages(chatId: String): Mono<List<GroupChatMessageResponse>>
 
-    fun leaveGroupChat(userId: String, chatId: String): Mono<Boolean>
+    fun leaveGroupChat(userId: String, chatId: String): Mono<String>
 }

@@ -47,13 +47,13 @@ class UserServiceImpl(
     override fun deleteUser(id: String): Mono<DeleteResult> {
         return groupChatRoomRepository.removeUserFromAllChats(id)
             .then(userRepository.deleteById(id))
-            .flatMap { deletedResult ->
-                if (deletedResult.deletedCount > 0) {
-                    Mono.just(deletedResult)
-                } else {
-                    Mono.error(NotFoundException("User with id $id not found"))
-                }
+            .handle { deletedResult, sink ->
+            if (deletedResult.deletedCount > 0) {
+                sink.next(deletedResult)
+            } else {
+                sink.error(NotFoundException("User with id $id not found"))
             }
+        }
     }
 
     override fun getAll(page: Int, size: Int): Flux<User> =

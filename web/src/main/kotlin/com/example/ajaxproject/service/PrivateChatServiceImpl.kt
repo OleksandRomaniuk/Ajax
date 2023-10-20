@@ -13,8 +13,10 @@ import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.util.function.component1
+import reactor.kotlin.core.util.function.component2
+
 
 @Service
 class PrivateChatServiceImpl(
@@ -24,15 +26,14 @@ class PrivateChatServiceImpl(
 ) : PrivateChatService {
 
     override fun createPrivateRoom(senderId: String, recipientId: String): Mono<PrivateChatRoom> {
+
         val roomId = roomIdFormat(senderId, recipientId)
-        return Mono.zip(
-            userService.getById(senderId),
-            userService.getById(recipientId)
-        ).flatMap {
-            val sender = it.t1
-            val recipient = it.t2
-            privateChatRoomRepository.findChatRoomById(roomId)
-                .switchIfEmpty(
+        return privateChatRoomRepository.findChatRoomById(roomId)
+            .switchIfEmpty(
+                Mono.zip(
+                    userService.getById(senderId),
+                    userService.getById(recipientId)
+                ).flatMap { (sender, recipient) ->
                     privateChatRoomRepository.save(
                         PrivateChatRoom(
                             id = roomId,
@@ -40,9 +41,10 @@ class PrivateChatServiceImpl(
                             recipientId = recipient.id
                         )
                     )
-                )
-        }
+                }
+            )
     }
+
 
     override fun getPrivateRoom(roomId: String): Mono<PrivateChatRoom> {
         return privateChatRoomRepository.findChatRoomById(roomId)
@@ -64,13 +66,9 @@ class PrivateChatServiceImpl(
     }
 
     override fun getAllPrivateMessages(roomDTO: RoomDTO): Mono<List<PrivateChatMessage>> {
-        return userService.getById(roomDTO.senderId)
-            .map { userService.getById(roomDTO.recipientId) }
-            .flatMapMany {
-                privateChatMessageRepository.findAllByPrivateChatRoomId(
-                    roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
-                )
-            }
+        return privateChatMessageRepository.findAllByPrivateChatRoomId(
+            roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
+        )
             .collectList()
             .flatMap { listOfMessage ->
                 if (listOfMessage.isEmpty()) {
@@ -82,6 +80,7 @@ class PrivateChatServiceImpl(
                 }
             }
     }
+
 
     private fun roomIdFormat(id1: String, id2: String): String {
         val smallerId = minOf(id1, id2)

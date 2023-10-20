@@ -14,8 +14,6 @@ import reactor.core.publisher.Mono
 @Service
 internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender) : EmailSenderService {
 
-    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
-
     override fun send(emailDTO: EmailDTO): Mono<SendEmailResponse> {
         return Mono.defer {
             javaMailSender.send(generateMailMessage(emailDTO))
@@ -31,16 +29,17 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
         return MimeMessageHelper(javaMailSender.createMimeMessage()).apply {
             setFrom(emailDTO.from)
             setTo(emailDTO.to)
-            emailDTO.subject.let { setSubject(it) }
+            setSubject(emailDTO.subject)
             setText(emailDTO.body, true)
         }.mimeMessage
     }
 
     override fun isValidEmail(email: String): Boolean {
-        return email.matches(emailRegex.toRegex())
+        return EMAIL_REGEX.matches(email)
     }
 
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(EmailSenderServiceImpl::class.java)
+        private val EMAIL_REGEX: Regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$".toRegex()
     }
 }

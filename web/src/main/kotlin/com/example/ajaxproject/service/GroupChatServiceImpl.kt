@@ -4,7 +4,7 @@ import com.example.ajaxproject.config.Notification
 import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
-import com.example.ajaxproject.exeption.WrongActionException
+import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
@@ -19,7 +19,9 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.Date
+import reactor.kotlin.core.util.function.component1
+import reactor.kotlin.core.util.function.component2
+import java.util.*
 
 @Service
 class GroupChatServiceImpl (
@@ -51,8 +53,7 @@ class GroupChatServiceImpl (
             .flatMapMany { chatRoom ->
                 Flux.fromIterable(chatRoom.chatMembers)
             }
-            .collectList()
-            .doOnSuccess { _ -> logger.info("Retrieved chat members for chat ID: $chatId") }
+            .collectList().doOnSuccess { _ -> logger.info("Retrieved chat members for chat ID: {}", chatId) }
     }
 
 
@@ -60,21 +61,19 @@ class GroupChatServiceImpl (
         return Mono.zip(
             groupChatRoomRepository.findChatRoom(chatId),
             userService.getById(userId)
-        ).flatMap {
-            val chat = it.t1
-            val user = it.t2
-
+        ).flatMap { (chat, user) ->
             val existingUser = chat.chatMembers.find { it.id == userId }
             if (existingUser != null) {
-                logger.info("User with ID $userId is already present in chat ID $chatId")
+                logger.info("User with ID {} is already present in chat ID {}", userId, chat)
                 Mono.just(existingUser)
             } else {
                 chat.chatMembers += user
-                logger.info("User with ID $userId added to chat ID $chatId")
-                groupChatRoomRepository.save(chat).map { user }
+                logger.info("User with ID {} added to chat with ID {}", userId, chat)
+                groupChatRoomRepository.save(chat).thenReturn(user)
             }
         }
     }
+
 
     @Notification
     override fun sendMessageToGroup(groupChatDto: GroupChatDto): Mono<GroupChatMessageResponse> {
@@ -86,8 +85,9 @@ class GroupChatServiceImpl (
             date = Date()
         )
         return groupChatMessageRepository.save(chatMessage)
-            .doOnSuccess { logger.info("Message sent to group chat ID: ${groupChatDto.chatId}") }
+            .doOnSuccess { logger.info("Message sent to group chat ID: {}", groupChatDto.chatId) }
             .map { toResponseDto(it) }
+            .cache()
     }
 
     @Cacheable("getAllGroupMessages")
@@ -95,28 +95,32 @@ class GroupChatServiceImpl (
         return groupChatMessageRepository.findAllMessagesInChat(chatId)
             .map { toResponseDto(it) }
             .collectList()
-            .cache()
     }
 
+    fun findChatRoom(id: String): Mono<GroupChatRoom> {
+        return groupChatRoomRepository.findChatRoom(id)
+            .switchIfEmpty(Mono.error(NotFoundException("ChatRoom not found")))
+    }
 
-    override fun leaveGroupChat(userId: String , chatId: String): Mono<Boolean> {
+    override fun leaveGroupChat(userId: String, chatId: String): Mono<String> {
         return Mono.zip(
-            groupChatRoomRepository.findChatRoom(chatId),
+            findChatRoom(chatId),
             userService.getById(userId)
-        ).flatMap {
-            val chat = it.t1
-            val user = it.t2
-            if (chat.adminId != user.id) {
+        ).flatMap { (chat, user) ->
+            if (chat.adminId == user.id) {
+                logger.warn("Admin attempted to leave chat ID {}", chatId)
+                Mono.just("Admin cannot leave chat")
+            } else {
                 chat.chatMembers = chat.chatMembers.filterNot { it.id == user.id }
                 groupChatRoomRepository.save(chat)
-                    .doOnSuccess { logger.info("User with ID $userId left chat ID $chatId") }
-                    .map { true }
-            } else {
-                logger.warn("Admin attempted to leave chat ID $chatId")
-                Mono.error<Boolean?>(WrongActionException("Admin can't leave a chat")).map { false }
+                    .map { "User left chat" }
+                    .onErrorResume { error ->
+                        Mono.just("Failed to leave chat: ${error.message}")
+                    }
             }
-        }
+        }.doOnSuccess { logger.info(it) }
     }
+
 
     fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
         return GroupChatMessageResponse(

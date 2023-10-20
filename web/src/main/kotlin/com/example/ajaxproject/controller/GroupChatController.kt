@@ -46,7 +46,7 @@ class GroupChatController(
     }
 
     @PostMapping("/leaveChat")
-    fun leaveChat(@RequestBody leaveChatDTO: LeaveChatDTO): Mono<Boolean> {
+    fun leaveChat(@RequestBody leaveChatDTO: LeaveChatDTO): Mono<String> {
         return groupChatService.leaveGroupChat(leaveChatDTO.userId, leaveChatDTO.chatId)
     }
 }

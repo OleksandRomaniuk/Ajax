@@ -1,20 +1,20 @@
 package com.example.ajaxproject.nats
 
 import com.example.ajaxproject.NatsSubject.GET_ALL_USERS
+import com.example.ajaxproject.UserOuterClass.GetAllUsersRequest
 import com.example.ajaxproject.UserOuterClass.GetAllUsersResponse
 import com.example.ajaxproject.UserOuterClass.UserList
-import com.example.ajaxproject.UserOuterClass.GetAllUsersRequest
-import com.example.ajaxproject.service.interfaces.UserService
+import com.example.ajaxproject.repository.UserRepository
 import com.google.protobuf.Parser
 import io.nats.client.Connection
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
-
 
 @Component
 class GetUserAllNatsController(
     private val userMapper: UserMapper,
-    private val userService: UserService,
+    private val userRepository: UserRepository,
     override val connection: Connection,
 ) : NatsController<GetAllUsersRequest, GetAllUsersResponse> {
 
@@ -28,13 +28,14 @@ class GetUserAllNatsController(
     override val parser: Parser<GetAllUsersRequest> = GetAllUsersRequest.parser()
 
     override fun generateReplyForNatsRequest(request: GetAllUsersRequest): Mono<GetAllUsersResponse> {
-        return userService.getAll(DEFAULT_OFFSET,DEFAULT_LIMIT)
+        return userRepository.findAll(PageRequest.of(DEFAULT_OFFSET, DEFAULT_LIMIT))
             .map { userMapper.userToProto(it) }
-            .collectList()
-            .map { users ->
-                val userList = UserList.newBuilder().addAllUser(users).build()
-                GetAllUsersResponse.newBuilder().setUsers(userList).build()
+            .reduce(UserList.newBuilder(), UserList.Builder::addUser)
+            .map { usersListBuilder ->
+                GetAllUsersResponse.newBuilder().setUsers(usersListBuilder).build()
             }
     }
 }
+
+
 

@@ -89,11 +89,10 @@ class NotificationInvocationHandler(
 
         chatMono
             .flatMapMany { it.chatMembers.toFlux() }
-            .flatMap { user -> chatMono.map { chat -> Pair(user, chat) } }
-            .filter { (user, _) -> emailSenderService.isValidEmail(user.email) }
-            .flatMap { (user, chat) ->
-                val email = buildEmail(user.email, chat.chatName)
-                emailSenderService.send(email)
+            .filter { user -> emailSenderService.isValidEmail(user.email) }
+            .flatMap { user ->
+                chatMono.map { chat -> buildEmail(user.email, chat.chatName) }
+                    .flatMap { email -> emailSenderService.send(email) }
             }
             .doOnComplete { logger.info("Emails sent to all valid users.") }
             .subscribeOn(Schedulers.fromExecutor(sendEmailThreadPool))

@@ -21,14 +21,11 @@ class GetUserByIdNatsController(
     override val parser: Parser<GetByIdUserRequest> = GetByIdUserRequest.parser()
 
     override fun generateReplyForNatsRequest(request: GetByIdUserRequest): Mono<GetByIdUserResponse> {
-        val parkingId = request.userId
 
-        return userService.getById(parkingId)
-            .map { userMapper.userToProto(it) }
+        return userService.getById(request.userId)
             .map {
-                GetByIdUserResponse.newBuilder()
-                    .setUser(it)
-                    .build()
+                val protoUser = userMapper.userToProto(it)
+                GetByIdUserResponse.newBuilder().setUser(protoUser).build()
             }
     }
 }
