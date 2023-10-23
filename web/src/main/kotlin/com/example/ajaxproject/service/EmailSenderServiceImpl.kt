@@ -10,19 +10,24 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 @Service
 internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender) : EmailSenderService {
 
     override fun send(emailDTO: EmailDTO): Mono<SendEmailResponse> {
-        return Mono.defer {
+        return Mono.fromCallable {
             javaMailSender.send(generateMailMessage(emailDTO))
-            logger.debug("Email sent successfully")
-            Mono.just(SendEmailResponse(status = 200))
-        }.onErrorResume { error ->
-            logger.error("An unexpected error has occurred sending email", error)
-            Mono.just(SendEmailResponse(status = 500, cause = error.message))
+            SendEmailResponse(status = 200)
         }
+            .subscribeOn(Schedulers.boundedElastic())
+            .doOnSuccess {
+                logger.debug("Email sent successfully")
+            }
+            .onErrorResume { error ->
+                logger.error("An unexpected error has occurred sending email", error)
+                Mono.just(SendEmailResponse(status = 500, cause = error.message))
+            }
     }
 
     private fun generateMailMessage(emailDTO: EmailDTO): MimeMessage {

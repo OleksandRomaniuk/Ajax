@@ -33,6 +33,6 @@ class PrivateChatController(
         privateChatService.sendPrivateMessage(privateMessageDTO)
 
     @GetMapping("/getAllMessages")
-    fun getAllMessages(@RequestBody roomDTO: RoomDTO): Mono<List<PrivateChatMessage>> =
+    fun getAllMessages(@RequestBody roomDTO: RoomDTO): Flux<PrivateChatMessage> =
         privateChatService.getAllPrivateMessages(roomDTO)
 }

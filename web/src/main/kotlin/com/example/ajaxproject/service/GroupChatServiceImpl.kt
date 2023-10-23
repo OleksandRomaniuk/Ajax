@@ -118,7 +118,7 @@ class GroupChatServiceImpl (
                         Mono.just("Failed to leave chat: ${error.message}")
                     }
             }
-        }.doOnSuccess { logger.info(it) }
+        }
     }
 
 

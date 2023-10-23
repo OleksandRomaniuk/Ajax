@@ -13,6 +13,7 @@ import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.util.function.component1
 import reactor.kotlin.core.util.function.component2
@@ -65,21 +66,16 @@ class PrivateChatServiceImpl(
             }
     }
 
-    override fun getAllPrivateMessages(roomDTO: RoomDTO): Mono<List<PrivateChatMessage>> {
+    override fun getAllPrivateMessages(roomDTO: RoomDTO): Flux<PrivateChatMessage> {
         return privateChatMessageRepository.findAllByPrivateChatRoomId(
             roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
         )
-            .collectList()
-            .flatMap { listOfMessage ->
-                if (listOfMessage.isEmpty()) {
-                    logger.warn("Empty chat list")
-                    Mono.error(NotFoundException("Message between users not found"))
-                } else {
-                    logger.info("List of all messages for chat")
-                    Mono.just(listOfMessage)
-                }
-            }
+            .switchIfEmpty(
+                Flux.error { NotFoundException("Message between users not found") }
+
+            )
     }
+
 
 
     private fun roomIdFormat(id1: String, id2: String): String {

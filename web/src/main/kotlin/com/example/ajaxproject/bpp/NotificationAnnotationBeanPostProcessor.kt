@@ -99,7 +99,6 @@ class NotificationInvocationHandler(
             .subscribe()
     }
 
-
     private fun buildEmail(email: String, chatName: String): EmailDTO = EmailDTO(
         from = "ora.romaniuk@gmail.com",
         to = email,
