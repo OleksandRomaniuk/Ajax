@@ -20,7 +20,6 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
             javaMailSender.send(generateMailMessage(emailDTO))
             SendEmailResponse(status = 200)
         }
-            .subscribeOn(Schedulers.boundedElastic())
             .doOnSuccess {
                 logger.debug("Email sent successfully")
             }
@@ -28,6 +27,7 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
                 logger.error("An unexpected error has occurred sending email", error)
                 Mono.just(SendEmailResponse(status = 500, cause = error.message))
             }
+            .subscribeOn(Schedulers.boundedElastic())
     }
 
     private fun generateMailMessage(emailDTO: EmailDTO): MimeMessage {
