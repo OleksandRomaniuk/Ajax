@@ -1,6 +1,9 @@
 package com.example.ajaxproject.dto.request
 
-data class RoomDTO(
-    val senderId: String,
-    val recipientId: String
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class RoomDTO @JsonCreator constructor(
+    @JsonProperty("senderId") val senderId: String,
+    @JsonProperty("recipientId") val recipientId: String
 )

@@ -7,6 +7,7 @@ import com.example.ajaxproject.model.PrivateChatMessage
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.repository.PrivateChatMessageRepository
 import com.example.ajaxproject.repository.PrivateChatRoomRepository
+import com.example.ajaxproject.repository.RedisPrivateChatRoomRepository
 import com.example.ajaxproject.service.interfaces.PrivateChatService
 import com.example.ajaxproject.service.interfaces.UserService
 import org.bson.types.ObjectId
@@ -23,6 +24,7 @@ import reactor.kotlin.core.util.function.component2
 class PrivateChatServiceImpl(
     private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val privateChatMessageRepository: PrivateChatMessageRepository,
+    private val redisPrivateChatRoomRepository: RedisPrivateChatRoomRepository,
     private val userService: UserService
 ) : PrivateChatService {
 
@@ -43,13 +45,16 @@ class PrivateChatServiceImpl(
                         )
                     )
                 }
-            )
+            ).doOnSuccess { room -> redisPrivateChatRoomRepository.save(room).subscribe() }
     }
 
-
     override fun getPrivateRoom(roomId: String): Mono<PrivateChatRoom> {
-        return privateChatRoomRepository.findChatRoomById(roomId)
-            .switchIfEmpty(Mono.error(NotFoundException("Room with $roomId not found")))
+        return redisPrivateChatRoomRepository.findById(roomId)
+            .switchIfEmpty(
+                privateChatRoomRepository.findChatRoomById(roomId)
+                    .flatMap { redisPrivateChatRoomRepository.save(it) }
+            )
+            .switchIfEmpty(Mono.error(NoSuchElementException("Can't get room by id $roomId")))
     }
 
     override fun sendPrivateMessage(privateMessageDTO: PrivateMessageDTO): Mono<PrivateChatMessage> {
@@ -75,8 +80,6 @@ class PrivateChatServiceImpl(
 
             )
     }
-
-
 
     private fun roomIdFormat(id1: String, id2: String): String {
         val smallerId = minOf(id1, id2)

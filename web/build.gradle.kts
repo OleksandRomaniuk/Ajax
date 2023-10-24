@@ -23,7 +23,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.2")
+    implementation("io.nats:jnats:2.16.14")
 }
 
 tasks.withType<Test> {
