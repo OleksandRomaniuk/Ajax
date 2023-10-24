@@ -1,4 +1,4 @@
-package com.example.ajaxproject.bpp
+package com.example.ajaxproject.config
 
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -33,7 +33,7 @@ class RedisConfiguration {
         objectMapper: ObjectMapper
     ): ReactiveRedisTemplate<String, PrivateChatRoom> {
 
-        val serializer = Jackson2JsonRedisSerializer(objectMapper,PrivateChatRoom::class.java)
+        val serializer = Jackson2JsonRedisSerializer(objectMapper, PrivateChatRoom::class.java)
 
         val configuration =
             RedisSerializationContext.newSerializationContext<String, PrivateChatRoom>(StringRedisSerializer())

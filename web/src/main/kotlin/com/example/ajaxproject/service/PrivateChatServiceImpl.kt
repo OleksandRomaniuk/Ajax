@@ -45,7 +45,7 @@ class PrivateChatServiceImpl(
                         )
                     )
                 }
-            ).doOnSuccess { room -> redisPrivateChatRoomRepository.save(room).subscribe() }
+            ).flatMap { room -> redisPrivateChatRoomRepository.save(room) }
     }
 
     override fun getPrivateRoom(roomId: String): Mono<PrivateChatRoom> {
