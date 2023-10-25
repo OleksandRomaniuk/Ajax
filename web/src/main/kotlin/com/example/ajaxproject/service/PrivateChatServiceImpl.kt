@@ -76,8 +76,6 @@ class PrivateChatServiceImpl(
             )
     }
 
-
-
     private fun roomIdFormat(id1: String, id2: String): String {
         val smallerId = minOf(id1, id2)
         val higherId = maxOf(id1, id2)

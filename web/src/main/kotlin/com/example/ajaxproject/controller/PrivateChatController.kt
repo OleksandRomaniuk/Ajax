@@ -25,8 +25,8 @@ class PrivateChatController(
         privateChatService.createPrivateRoom(roomDTO.senderId, roomDTO.recipientId)
 
     @GetMapping("/findRoom/{roomId}")
-    fun findRoom(@PathVariable roomId: String): Mono<PrivateChatRoom?> =
-        privateChatService.getPrivateRoom(roomId).map { it }
+    fun findRoom(@PathVariable roomId: String): Mono<PrivateChatRoom> =
+        privateChatService.getPrivateRoom(roomId)
 
     @PostMapping("/sendMessage")
     fun sendMessage(@RequestBody privateMessageDTO: PrivateMessageDTO): Mono<PrivateChatMessage> =

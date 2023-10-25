@@ -30,10 +30,6 @@ class GroupChatServiceImpl (
     private val groupChatMessageRepository: GroupChatMessageRepository
 ) : GroupChatService {
 
-    companion object {
-        private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
-    }
-
     override fun createGroupRoom(createChatDto: CreateChatDTO): Mono<GroupChatRoom> {
         return userService.getById(createChatDto.adminId)
             .flatMap { user ->
@@ -48,14 +44,12 @@ class GroupChatServiceImpl (
             }
     }
 
-    override fun getAllChatMembers(chatId: String): Mono<List<User>> {
+    override fun getAllChatMembers(chatId: String): Flux<User> {
         return groupChatRoomRepository.findChatRoom(chatId)
             .flatMapMany { chatRoom ->
                 Flux.fromIterable(chatRoom.chatMembers)
             }
-            .collectList().doOnSuccess { _ -> logger.info("Retrieved chat members for chat ID: {}", chatId) }
     }
-
 
     override fun addUserToChat(chatId: String, userId: String): Mono<User> {
         return Mono.zip(
@@ -64,16 +58,15 @@ class GroupChatServiceImpl (
         ).flatMap { (chat, user) ->
             val existingUser = chat.chatMembers.find { it.id == userId }
             if (existingUser != null) {
-                logger.info("User with ID {} is already present in chat ID {}", userId, chat)
+                logger.info("User with ID {} is already present in chat ID {}", userId, chatId)
                 Mono.just(existingUser)
             } else {
                 chat.chatMembers += user
-                logger.info("User with ID {} added to chat with ID {}", userId, chat)
+                logger.info("User with ID {} added to chat with ID {}", userId, chatId)
                 groupChatRoomRepository.save(chat).thenReturn(user)
             }
         }
     }
-
 
     @Notification
     override fun sendMessageToGroup(groupChatDto: GroupChatDto): Mono<GroupChatMessageResponse> {
@@ -121,6 +114,9 @@ class GroupChatServiceImpl (
         }
     }
 
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(GroupChatServiceImpl::class.java)
+    }
 
     fun toResponseDto(chatMessage: GroupChatMessage): GroupChatMessageResponse {
         return GroupChatMessageResponse(

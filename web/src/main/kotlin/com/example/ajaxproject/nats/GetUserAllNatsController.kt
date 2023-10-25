@@ -20,11 +20,6 @@ class GetUserAllNatsController(
 
     override val subject: String = GET_ALL_USERS
 
-    private companion object {
-        const val DEFAULT_OFFSET = 0
-        const val DEFAULT_LIMIT = 25
-    }
-
     override val parser: Parser<GetAllUsersRequest> = GetAllUsersRequest.parser()
 
     override fun generateReplyForNatsRequest(request: GetAllUsersRequest): Mono<GetAllUsersResponse> {
@@ -34,5 +29,10 @@ class GetUserAllNatsController(
             .map { usersListBuilder ->
                 GetAllUsersResponse.newBuilder().setUsers(usersListBuilder).build()
             }
+    }
+
+    private companion object {
+        const val DEFAULT_OFFSET = 0
+        const val DEFAULT_LIMIT = 25
     }
 }

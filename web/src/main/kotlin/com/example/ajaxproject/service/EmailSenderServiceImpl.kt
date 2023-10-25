@@ -18,11 +18,9 @@ internal class EmailSenderServiceImpl(private val javaMailSender: JavaMailSender
     override fun send(emailDTO: EmailDTO): Mono<SendEmailResponse> {
         return Mono.fromCallable {
             javaMailSender.send(generateMailMessage(emailDTO))
-            SendEmailResponse(status = 200)
         }
-            .doOnSuccess {
-                logger.debug("Email sent successfully")
-            }
+            .doOnSuccess { logger.debug("Email sent successfully") }
+            .thenReturn(SendEmailResponse(status = 200))
             .onErrorResume { error ->
                 logger.error("An unexpected error has occurred sending email", error)
                 Mono.just(SendEmailResponse(status = 500, cause = error.message))

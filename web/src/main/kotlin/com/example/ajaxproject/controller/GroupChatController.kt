@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
@@ -26,7 +27,7 @@ class GroupChatController(
     }
 
     @GetMapping("/{chatId}/users")
-    fun getAllChatUsers(@PathVariable chatId: String): Mono<List<User>> {
+    fun getAllChatUsers(@PathVariable chatId: String): Flux<User> {
         return groupChatService.getAllChatMembers(chatId)
     }
 
