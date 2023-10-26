@@ -17,7 +17,6 @@ import reactor.test.StepVerifier
 @SpringBootTest
 class PrivateRoomRepositoryIT {
 
-
     @Qualifier("cacheablePrivateRoomRepository")
     @Autowired
     private lateinit var privateChatRoomRepository: PrivateChatRoomRepository
