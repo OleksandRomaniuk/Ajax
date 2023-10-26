@@ -5,6 +5,7 @@ import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.exeption.NotFoundException
+import com.example.ajaxproject.exeption.WrongActionException
 import com.example.ajaxproject.model.GroupChatMessage
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
@@ -27,7 +28,7 @@ import java.util.*
 class GroupChatServiceImpl (
     private val groupChatRoomRepository: GroupChatRoomRepository,
     private val userService: UserService,
-    private val groupChatMessageRepository: GroupChatMessageRepository
+    private val groupChatMessageRepository: GroupChatMessageRepository,
 ) : GroupChatService {
 
     override fun createGroupRoom(createChatDto: CreateChatDTO): Mono<GroupChatRoom> {
@@ -51,22 +52,20 @@ class GroupChatServiceImpl (
             }
     }
 
-    override fun addUserToChat(chatId: String, userId: String): Mono<User> {
+    override fun addUserToChat(chatId: String, userId: String): Mono<GroupChatRoom> {
         return Mono.zip(
-            groupChatRoomRepository.findChatRoom(chatId),
+            findChatRoom(chatId),
             userService.getById(userId)
-        ).flatMap { (chat, user) ->
-            val existingUser = chat.chatMembers.find { it.id == userId }
-            if (existingUser != null) {
-                logger.info("User with ID {} is already present in chat ID {}", userId, chatId)
-                Mono.just(existingUser)
-            } else {
+        )
+            .filter { (chat, _) -> chat.chatMembers.none { it.id == userId } }
+            .flatMap { (chat, user) ->
                 chat.chatMembers += user
                 logger.info("User with ID {} added to chat with ID {}", userId, chatId)
-                groupChatRoomRepository.save(chat).thenReturn(user)
+                groupChatRoomRepository.save(chat)
             }
-        }
+            .switchIfEmpty(Mono.error(WrongActionException("User is already present in chat")))
     }
+
 
     @Notification
     override fun sendMessageToGroup(groupChatDto: GroupChatDto): Mono<GroupChatMessageResponse> {

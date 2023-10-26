@@ -32,7 +32,7 @@ class GroupChatController(
     }
 
     @PostMapping("/{chatId}/addUser/{userId}")
-    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: String): Mono<User> {
+    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: String): Mono<GroupChatRoom> {
         return groupChatService.addUserToChat(chatId, userId)
     }
 

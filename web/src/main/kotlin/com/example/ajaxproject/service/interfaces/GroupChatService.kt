@@ -14,7 +14,7 @@ interface GroupChatService {
 
     fun getAllChatMembers(chatId: String): Flux<User>
 
-    fun addUserToChat(chatId: String, userId: String): Mono<User>
+    fun addUserToChat(chatId: String, userId: String): Mono<GroupChatRoom>
 
     fun sendMessageToGroup(groupChatDto: GroupChatDto): Mono<GroupChatMessageResponse>
 
