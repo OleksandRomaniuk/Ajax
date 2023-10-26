@@ -1,9 +1,10 @@
-package com.example.ajaxproject.dto.request
+package com.example.ajaxproject.dto.responce
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class RoomDTO @JsonCreator constructor(
+data class PrivateChatRoomResponse @JsonCreator constructor(
+    @JsonProperty("id") val id: String,
     @JsonProperty("senderId") val senderId: String,
     @JsonProperty("recipientId") val recipientId: String
 )

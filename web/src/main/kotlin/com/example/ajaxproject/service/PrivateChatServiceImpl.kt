@@ -1,59 +1,52 @@
 package com.example.ajaxproject.service
 
 import com.example.ajaxproject.dto.request.PrivateMessageDTO
-import com.example.ajaxproject.dto.request.RoomDTO
+import com.example.ajaxproject.dto.request.PrivateChatRoomRequest
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.model.PrivateChatMessage
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.repository.PrivateChatMessageRepository
 import com.example.ajaxproject.repository.PrivateChatRoomRepository
-import com.example.ajaxproject.repository.RedisPrivateChatRoomRepository
 import com.example.ajaxproject.service.interfaces.PrivateChatService
 import com.example.ajaxproject.service.interfaces.UserService
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.util.function.component1
 import reactor.kotlin.core.util.function.component2
 
-
 @Service
 class PrivateChatServiceImpl(
-    private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val privateChatMessageRepository: PrivateChatMessageRepository,
-    private val redisPrivateChatRoomRepository: RedisPrivateChatRoomRepository,
+    @Qualifier("cacheablePrivateRoomRepository") private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val userService: UserService
 ) : PrivateChatService {
 
     override fun createPrivateRoom(senderId: String, recipientId: String): Mono<PrivateChatRoom> {
 
         val roomId = roomIdFormat(senderId, recipientId)
-        return privateChatRoomRepository.findChatRoomById(roomId)
+        return privateChatRoomRepository.findPrivateChatRoomById(roomId)
             .switchIfEmpty(
                 Mono.zip(
                     userService.getById(senderId),
                     userService.getById(recipientId)
                 ).flatMap { (sender, recipient) ->
-                    privateChatRoomRepository.save(
-                        PrivateChatRoom(
-                            id = roomId,
-                            senderId = sender.id,
-                            recipientId = recipient.id
-                        )
+                    val newRoom = PrivateChatRoom(
+                        id = roomId,
+                        senderId = sender.id,
+                        recipientId = recipient.id
                     )
+                    privateChatRoomRepository.save(newRoom)
                 }
-            ).flatMap { room -> redisPrivateChatRoomRepository.save(room) }
+            )
     }
 
     override fun getPrivateRoom(roomId: String): Mono<PrivateChatRoom> {
-        return redisPrivateChatRoomRepository.findById(roomId)
-            .switchIfEmpty(
-                privateChatRoomRepository.findChatRoomById(roomId)
-                    .flatMap { redisPrivateChatRoomRepository.save(it) }
-            )
+        return privateChatRoomRepository.findPrivateChatRoomById(roomId)
             .switchIfEmpty(Mono.error(NoSuchElementException("Can't get room by id $roomId")))
     }
 
@@ -71,9 +64,9 @@ class PrivateChatServiceImpl(
             }
     }
 
-    override fun getAllPrivateMessages(roomDTO: RoomDTO): Flux<PrivateChatMessage> {
+    override fun getAllPrivateMessages(privateChatRoomRequest: PrivateChatRoomRequest): Flux<PrivateChatMessage> {
         return privateChatMessageRepository.findAllByPrivateChatRoomId(
-            roomIdFormat(roomDTO.senderId, roomDTO.recipientId)
+            roomIdFormat(privateChatRoomRequest.senderId, privateChatRoomRequest.recipientId)
         )
             .switchIfEmpty(
                 Flux.error { NotFoundException("Message between users not found") }

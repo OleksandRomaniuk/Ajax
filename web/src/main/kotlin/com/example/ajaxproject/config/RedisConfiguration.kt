@@ -2,10 +2,12 @@ package com.example.ajaxproject.config
 
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
@@ -16,30 +18,26 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 class RedisConfiguration {
 
     @Bean
-    fun reactiveRedisConnectionFactory(): ReactiveRedisConnectionFactory {
-        return LettuceConnectionFactory()
-    }
-
-    @Bean
-    fun objectMapper(): ObjectMapper {
-        val objectMapper = ObjectMapper()
-        objectMapper.registerModule(JavaTimeModule())
-        return objectMapper
+    fun reactiveRedisConnectionFactory(
+        @Value("localhost") host: String,
+        @Value("6379") port: String,
+    ): ReactiveRedisConnectionFactory {
+        val config = RedisStandaloneConfiguration(host, port.toInt())
+        val factory = LettuceConnectionFactory(config)
+        factory.afterPropertiesSet()
+        return factory
     }
 
     @Bean
     fun reactiveRedisTemplate(
-        reactiveRedisConnectionFactory: ReactiveRedisConnectionFactory,
-        objectMapper: ObjectMapper
+        @Qualifier("reactiveRedisConnectionFactory") connectionFactory: ReactiveRedisConnectionFactory
     ): ReactiveRedisTemplate<String, PrivateChatRoom> {
-
+        val objectMapper = ObjectMapper().findAndRegisterModules()
         val serializer = Jackson2JsonRedisSerializer(objectMapper, PrivateChatRoom::class.java)
-
-        val configuration =
-            RedisSerializationContext.newSerializationContext<String, PrivateChatRoom>(StringRedisSerializer())
-                .value(serializer)
-                .build()
-
-        return ReactiveRedisTemplate(reactiveRedisConnectionFactory, configuration)
+        val context = RedisSerializationContext
+            .newSerializationContext<String, PrivateChatRoom>(StringRedisSerializer())
+            .value(serializer)
+            .build()
+        return ReactiveRedisTemplate(connectionFactory, context)
     }
 }
