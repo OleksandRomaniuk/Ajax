@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
-class GetUserAllNatsController(
+class GetAllUsersNatsController(
     private val userMapper: UserMapper,
     private val userRepository: UserRepository,
     override val connection: Connection,
