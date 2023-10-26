@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class PrivateChatMessage(
     @Id
     val id: ObjectId,
-    val privateChatRoom: PrivateChatRoom,
+    val privateChatRoomId: String,
     val senderId: String,
     val message: String,
 )

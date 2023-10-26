@@ -15,5 +15,6 @@ spring:
         smtp:
           starttls:
             required: true
+
 nats:
   url: nats://localhost:4222

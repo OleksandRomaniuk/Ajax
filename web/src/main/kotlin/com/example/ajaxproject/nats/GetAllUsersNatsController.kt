@@ -1,39 +1,38 @@
 package com.example.ajaxproject.nats
 
-import com.example.ajaxproject.GetAllUsersRequest
-import com.example.ajaxproject.GetAllUsersResponse
 import com.example.ajaxproject.NatsSubject.GET_ALL_USERS
-import com.example.ajaxproject.User
-import com.example.ajaxproject.model.toProtoUser
-import com.example.ajaxproject.service.interfaces.UserService
+import com.example.ajaxproject.UserOuterClass.GetAllUsersRequest
+import com.example.ajaxproject.UserOuterClass.GetAllUsersResponse
+import com.example.ajaxproject.UserOuterClass.UserList
+import com.example.ajaxproject.repository.UserRepository
 import com.google.protobuf.Parser
 import io.nats.client.Connection
-
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
 
 @Component
 class GetAllUsersNatsController(
+    private val userMapper: UserMapper,
+    private val userRepository: UserRepository,
     override val connection: Connection,
-    private val userService: UserService,
 ) : NatsController<GetAllUsersRequest, GetAllUsersResponse> {
 
-    override val subject = GET_ALL_USERS
+    override val subject: String = GET_ALL_USERS
+
     override val parser: Parser<GetAllUsersRequest> = GetAllUsersRequest.parser()
 
-    override fun handle(request: GetAllUsersRequest): GetAllUsersResponse = runCatching {
-        buildSuccessResponse(userService.getAllUsers().map { it.toProtoUser() })
-    }.getOrElse { exception ->
-        buildFailureResponse(exception.javaClass.simpleName, exception.toString())
+    override fun generateReplyForNatsRequest(request: GetAllUsersRequest): Mono<GetAllUsersResponse> {
+        return userRepository.findAll(PageRequest.of(DEFAULT_OFFSET, DEFAULT_LIMIT))
+            .map { userMapper.userToProto(it) }
+            .reduce(UserList.newBuilder(), UserList.Builder::addUser)
+            .map { usersListBuilder ->
+                GetAllUsersResponse.newBuilder().setUsers(usersListBuilder).build()
+            }
     }
 
-    private fun buildSuccessResponse(usersList: List<User>): GetAllUsersResponse =
-        GetAllUsersResponse.newBuilder().apply {
-            successBuilder.usersBuilder.addAllUser(usersList)
-        }.build()
-
-    private fun buildFailureResponse(exception: String, message: String): GetAllUsersResponse =
-        GetAllUsersResponse.newBuilder().apply {
-            failureBuilder
-                .setMessage("users find failed by $exception: $message")
-        }.build()
+    private companion object {
+        const val DEFAULT_OFFSET = 0
+        const val DEFAULT_LIMIT = 25
+    }
 }

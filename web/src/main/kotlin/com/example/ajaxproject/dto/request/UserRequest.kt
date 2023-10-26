@@ -1,7 +1,6 @@
 package com.example.ajaxproject.dto.request
 
-data class UserDTO(
-    val id: String,
+data class UserRequest(
     val email: String,
     val password: String,
 )

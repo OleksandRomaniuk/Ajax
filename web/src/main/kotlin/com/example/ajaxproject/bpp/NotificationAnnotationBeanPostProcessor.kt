@@ -11,32 +11,35 @@ import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.config.BeanPostProcessor
 import org.springframework.cglib.proxy.InvocationHandler
 import org.springframework.cglib.proxy.Proxy
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
+import reactor.core.scheduler.Schedulers
+import reactor.kotlin.core.publisher.toFlux
 import java.lang.reflect.Method
 import java.util.concurrent.ExecutorService
 import kotlin.reflect.KClass
-import kotlin.reflect.full.memberFunctions
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 class NotificationAnnotationBeanPostProcessor(
     private val beanFactory: BeanFactory
 ) : BeanPostProcessor {
 
     private val serviceBeans = mutableMapOf<String, KClass<*>>()
+    private val beanAnnotatedMethods = mutableMapOf<String, List<Method>>()
 
     override fun postProcessBeforeInitialization(bean: Any, beanName: String): Any? {
-
         val beanClass = bean::class
         if (beanClass.java.isAnnotationPresent(Service::class.java)) {
-            val hasNotificationAnnotation = beanClass.memberFunctions.any { beanMethod ->
-                beanMethod.annotations.any { it is Notification }
-            }
-            if (hasNotificationAnnotation) {
+            val annotatedMethods = findAnnotatedMethods(beanClass.java)
+            if (annotatedMethods.isNotEmpty()) {
                 serviceBeans[beanName] = beanClass
+                beanAnnotatedMethods[beanName] = annotatedMethods
             }
         }
-        return super.postProcessBeforeInitialization(bean, beanName)
+        return bean
     }
 
     override fun postProcessAfterInitialization(bean: Any, beanName: String): Any? {
@@ -44,54 +47,65 @@ class NotificationAnnotationBeanPostProcessor(
             Proxy.newProxyInstance(
                 bean::class.java.classLoader,
                 bean::class.java.interfaces,
-                NotificationInvocationHandler(bean, beanFactory)
+                NotificationInvocationHandler(bean, beanFactory, beanAnnotatedMethods[beanName] ?: emptyList())
             )
         } else {
             bean
         }
     }
+
+    private fun findAnnotatedMethods(beanClass: Class<*>): List<Method> {
+        return beanClass.methods.filter { it.isAnnotationPresent(Notification::class.java) }
+    }
 }
+
+
 @Suppress("SpreadOperator")
 class NotificationInvocationHandler(
     private val bean: Any,
-    private val beanFactory: BeanFactory
+    private val beanFactory: BeanFactory,
+    private val annotatedMethods: List<Method>
 ) : InvocationHandler {
     override fun invoke(proxy: Any, method: Method, args: Array<out Any>?): Any? {
         val result = method.invoke(bean, *args.orEmpty())
 
-        if (args?.any { it is Identifiable } == true) {
-            createNotification(args.find { it is Identifiable } as Identifiable)
+        for (annotatedMethod in annotatedMethods) {
+            if (method.name == annotatedMethod.name) {
+                val identifiableArg = args?.find { it is Identifiable } as? Identifiable
+                if (identifiableArg != null) {
+                    createNotification(identifiableArg)
+                }
+            }
         }
         return result
     }
 
     private fun createNotification(identifiable: Identifiable) {
-
         val groupChatRoomRepository = beanFactory.getBean(GroupChatRoomRepository::class.java)
-        val chat = groupChatRoomRepository.findChatRoom(identifiable.chatId)
-        val chatName = chat.chatName
-        val userList = chat.chatMembers
-
         val emailSenderService = beanFactory.getBean(EmailSenderService::class.java)
+        val sendEmailThreadPool = beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
 
-        val executorService = beanFactory.getBean("sendEmailThreadPool", ExecutorService::class.java)
+        val chatMono = groupChatRoomRepository.findChatRoom(identifiable.chatId).cache()
 
-        userList.asSequence()
-            .map { user -> buildEmail(user.email, chatName) }
-            .forEach { email ->
-                executorService.submit {
-                    emailSenderService.send(email)
-                }
+        chatMono
+            .flatMapMany { it.chatMembers.toFlux() }
+            .filter { user -> emailSenderService.isValidEmail(user.email) }
+            .flatMap { user ->
+                chatMono.map { chat -> buildEmail(user.email, chat.chatName) }
+                    .flatMap { email -> emailSenderService.send(email) }
             }
-
-        logger.info("Emails sent to users: {}", userList)
+            .doOnComplete { logger.info("Emails sent to all valid users.") }
+            .subscribeOn(Schedulers.fromExecutor(sendEmailThreadPool))
+            .subscribe()
     }
-    private fun buildEmail(email: String , chatName: String): EmailDTO = EmailDTO(
+
+    private fun buildEmail(email: String, chatName: String): EmailDTO = EmailDTO(
         from = "ora.romaniuk@gmail.com",
         to = email,
         subject = "Testing post bean processor",
         body = "New message in chat $chatName"
     )
+
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(NotificationAnnotationBeanPostProcessor::class.java)
     }

@@ -1,64 +1,53 @@
 package com.example.ajaxproject.controller
 
-import com.example.ajaxproject.dto.request.CreateChatDto
+import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
+import com.example.ajaxproject.dto.request.LeaveChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
-import com.example.ajaxproject.dto.responce.OffsetPaginateResponse
 import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api/chat")
-class GroupChatController @Autowired constructor(
-    private val groupChatService: GroupChatService
+class GroupChatController(
+    val groupChatService: GroupChatService
 ) {
-
     @PostMapping("/create")
-    fun createRoom(@RequestBody createChatDto: CreateChatDto): ResponseEntity<GroupChatRoom> {
-        return ResponseEntity.ok(groupChatService.createGroupRoom(createChatDto))
+    fun createRoom(@RequestBody createChatDto: CreateChatDTO): Mono<GroupChatRoom> {
+        return groupChatService.createGroupRoom(createChatDto)
     }
 
     @GetMapping("/{chatId}/users")
-    fun getAllChatUsers(@PathVariable chatId: String): ResponseEntity<List<User>> {
-        return ResponseEntity.ok(groupChatService.getAllChatMembers(chatId))
+    fun getAllChatUsers(@PathVariable chatId: String): Flux<User> {
+        return groupChatService.getAllChatMembers(chatId)
     }
 
     @PostMapping("/{chatId}/addUser/{userId}")
-    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: String): ResponseEntity<List<User>> {
-        return ResponseEntity.ok(groupChatService.addUserToChat(chatId, userId))
+    fun addUserToChat(@PathVariable chatId: String, @PathVariable userId: String): Mono<GroupChatRoom> {
+        return groupChatService.addUserToChat(chatId, userId)
     }
 
     @PostMapping("/sendGroupMessage")
-    fun sendMessage(@RequestBody groupChatDTO: GroupChatDto): ResponseEntity<GroupChatMessageResponse> {
-        return ResponseEntity.ok(groupChatService.sendMessageToGroup(groupChatDTO))
+    fun sendMessage(@RequestBody groupChatDTO: GroupChatDto): Mono<GroupChatMessageResponse> {
+        return groupChatService.sendMessageToGroup(groupChatDTO)
     }
 
     @GetMapping("/getAllMessages/{chatId}")
-    fun getAllMessages(@PathVariable chatId: String): ResponseEntity<List<GroupChatMessageResponse>> {
-        return ResponseEntity.ok(groupChatService.getAllGroupMessages(chatId))
+    fun getAllMessages(@PathVariable chatId: String): Mono<List<GroupChatMessageResponse>> {
+        return groupChatService.getAllGroupMessages(chatId)
     }
 
     @PostMapping("/leaveChat")
-    fun leaveChat(@RequestBody chatDto: GroupChatDto): ResponseEntity<Boolean> {
-        return ResponseEntity.ok(groupChatService.leaveGroupChat(chatDto.chatId, chatDto.senderId))
+    fun leaveChat(@RequestBody leaveChatDTO: LeaveChatDTO): Mono<String> {
+        return groupChatService.leaveGroupChat(leaveChatDTO.userId, leaveChatDTO.chatId)
     }
-
-    @GetMapping("/messages")
-    fun getMessagesByChatRoomId(
-        @RequestParam chatRoomId: String,
-        @RequestParam(defaultValue = "0") offset: Int,
-        @RequestParam(defaultValue = "50") limit: Int
-    ): OffsetPaginateResponse = groupChatService.getMessagesByChatRoomIdWithPagination(chatRoomId, limit, offset)
-
-
 }

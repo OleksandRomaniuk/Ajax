@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document("private-chat-room")
 data class PrivateChatRoom(
     @Id
-    val id: String = "",
+    val id: String,
     val senderId: String,
     val recipientId: String,
 )
