@@ -28,6 +28,9 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.2")
     implementation("io.nats:jnats:2.16.14")
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("io.projectreactor.kafka:reactor-kafka")
+    implementation("io.confluent:kafka-protobuf-serializer:7.4.0")
 }
 
 tasks.withType<Test> {
