@@ -1,4 +1,4 @@
-package com.example.ajaxproject.repository
+package com.example.ajaxproject.repository.mongo
 
 import com.example.ajaxproject.model.PrivateChatMessage
 import reactor.core.publisher.Flux

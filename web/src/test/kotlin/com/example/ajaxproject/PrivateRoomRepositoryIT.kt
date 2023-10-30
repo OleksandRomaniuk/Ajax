@@ -4,6 +4,7 @@ import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.model.mongo.MongoPrivateChatRoom
 import com.example.ajaxproject.model.mongo.toDomain
 import com.example.ajaxproject.repository.PrivateChatRoomRepository
+import com.example.ajaxproject.repository.cacheable.CacheableRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,9 +18,8 @@ import reactor.test.StepVerifier
 @SpringBootTest
 class PrivateRoomRepositoryIT {
 
-    @Qualifier("cacheablePrivateRoomRepository")
     @Autowired
-    private lateinit var privateChatRoomRepository: PrivateChatRoomRepository
+    private lateinit var privateChatRoomRepository: CacheableRepository
 
     @Autowired
     private lateinit var mongoTemplate: ReactiveMongoTemplate

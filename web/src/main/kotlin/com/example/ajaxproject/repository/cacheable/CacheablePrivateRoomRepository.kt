@@ -11,13 +11,13 @@ import reactor.core.publisher.Mono
 class CacheablePrivateRoomRepository(
     @Qualifier("mongoPrivateRoomRepository") private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val privateChatRoomRedisRepository: PrivateChatRoomRedisRepository
-) : PrivateChatRoomRepository {
+) : CacheableRepository {
 
     override fun save(privateChatRoom: PrivateChatRoom): Mono<PrivateChatRoom> {
         return privateChatRoomRepository.save(privateChatRoom).flatMap { privateChatRoomRedisRepository.save(it) }
     }
 
-    override fun findPrivateChatRoomById(chatRoomId: String): Mono<PrivateChatRoom> {
+    override fun findById(chatRoomId: String): Mono<PrivateChatRoom> {
         return privateChatRoomRedisRepository.findById(chatRoomId)
             .switchIfEmpty(
                 privateChatRoomRepository.findPrivateChatRoomById(chatRoomId)
