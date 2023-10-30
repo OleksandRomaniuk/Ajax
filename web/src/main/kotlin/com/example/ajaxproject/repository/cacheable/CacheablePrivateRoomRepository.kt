@@ -8,22 +8,29 @@ import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 
 @Repository
-class CacheablePrivateRoomRepository(
+class CacheablePrivateRoomRepository<T>(
     @Qualifier("mongoPrivateRoomRepository") private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val privateChatRoomRedisRepository: PrivateChatRoomRedisRepository
-) : CacheableRepository {
+) : CacheableRepository<T> {
 
-    override fun save(privateChatRoom: PrivateChatRoom): Mono<PrivateChatRoom> {
-        return privateChatRoomRepository.save(privateChatRoom).flatMap { privateChatRoomRedisRepository.save(it) }
+    override fun save(entity: T): Mono<T> {
+        if (entity is PrivateChatRoom) {
+            val room = entity as PrivateChatRoom
+            return privateChatRoomRepository.save(room)
+                .flatMap { privateChatRoomRedisRepository.save(it) }
+                .thenReturn(entity)
+        }
+        return Mono.error(IllegalArgumentException("Invalid entity type"))
     }
 
-    override fun findById(chatRoomId: String): Mono<PrivateChatRoom> {
-        return privateChatRoomRedisRepository.findById(chatRoomId)
+    override fun findById(id: String): Mono<T> {
+        return privateChatRoomRedisRepository.findById(id)
             .switchIfEmpty(
-                privateChatRoomRepository.findPrivateChatRoomById(chatRoomId)
+                privateChatRoomRepository.findPrivateChatRoomById(id)
                     .flatMap { privateChatRoomRedisRepository.save(it) }
                     .switchIfEmpty(
-                        Mono.error(NoSuchElementException("Can't get room by id $chatRoomId"))
+                        Mono.error(NoSuchElementException("Can't get entity by id $id"))
                     ))
+            .map { it as T }
     }
 }

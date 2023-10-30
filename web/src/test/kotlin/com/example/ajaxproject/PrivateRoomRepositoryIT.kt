@@ -19,7 +19,7 @@ import reactor.test.StepVerifier
 class PrivateRoomRepositoryIT {
 
     @Autowired
-    private lateinit var privateChatRoomRepository: CacheableRepository
+    private lateinit var cacheableRepository: CacheableRepository<PrivateChatRoom>
 
     @Autowired
     private lateinit var mongoTemplate: ReactiveMongoTemplate
@@ -34,7 +34,7 @@ class PrivateRoomRepositoryIT {
         val newRoom = PrivateChatRoom(id = roomId, senderId = "senderId", recipientId = "recipientId")
 
         // WHEN
-        val resultMono = privateChatRoomRepository.save(newRoom)
+        val resultMono = cacheableRepository.save(newRoom)
 
         // THEN
         StepVerifier.create(resultMono)
@@ -56,7 +56,7 @@ class PrivateRoomRepositoryIT {
         val newRoom = PrivateChatRoom(id = roomId, senderId = "senderId", recipientId = "recipientId")
 
         // WHEN
-        privateChatRoomRepository.save(newRoom).block()
+        cacheableRepository.save(newRoom).block()
 
         // THEN
         val cachedRoom = redisTemplate.opsForValue().get(roomId).block()

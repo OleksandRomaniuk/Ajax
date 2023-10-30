@@ -21,7 +21,7 @@ import reactor.kotlin.core.util.function.component2
 @Service
 class PrivateChatServiceImpl(
     private val privateChatMessageRepository: PrivateChatMessageRepository,
-    private val privateChatRoomRepository: CacheableRepository,
+    private val privateChatRoomRepository: CacheableRepository<PrivateChatRoom>,
     private val userService: UserService
 ) : PrivateChatService {
 
