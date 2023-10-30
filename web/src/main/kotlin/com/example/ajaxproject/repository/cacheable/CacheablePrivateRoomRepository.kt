@@ -8,29 +8,24 @@ import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 
 @Repository
-class CacheablePrivateRoomRepository<T>(
+class CacheablePrivateRoomRepository(
     @Qualifier("mongoPrivateRoomRepository") private val privateChatRoomRepository: PrivateChatRoomRepository,
     private val privateChatRoomRedisRepository: PrivateChatRoomRedisRepository
-) : CacheableRepository<T> {
+) : CacheableRepository<PrivateChatRoom> {
 
-    override fun save(entity: T): Mono<T> {
-        if (entity is PrivateChatRoom) {
-            val room = entity as PrivateChatRoom
-            return privateChatRoomRepository.save(room)
+    override fun save(entity: PrivateChatRoom): Mono<PrivateChatRoom> {
+        return privateChatRoomRepository.save(entity)
                 .flatMap { privateChatRoomRedisRepository.save(it) }
-                .thenReturn(entity)
-        }
-        return Mono.error(IllegalArgumentException("Invalid entity type"))
     }
 
-    override fun findById(id: String): Mono<T> {
+    override fun findById(id: String): Mono<PrivateChatRoom> {
         return privateChatRoomRedisRepository.findById(id)
             .switchIfEmpty(
                 privateChatRoomRepository.findPrivateChatRoomById(id)
                     .flatMap { privateChatRoomRedisRepository.save(it) }
                     .switchIfEmpty(
-                        Mono.error(NoSuchElementException("Can't get entity by id $id"))
-                    ))
-            .map { it as T }
+                        Mono.error(NoSuchElementException("Can't get User by id $id"))
+                    )
+            )
     }
 }

@@ -3,12 +3,10 @@ package com.example.ajaxproject
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.model.mongo.MongoPrivateChatRoom
 import com.example.ajaxproject.model.mongo.toDomain
-import com.example.ajaxproject.repository.PrivateChatRoomRepository
 import com.example.ajaxproject.repository.cacheable.CacheableRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.redis.core.ReactiveRedisTemplate
@@ -28,7 +26,7 @@ class PrivateRoomRepositoryIT {
     private lateinit var redisTemplate: ReactiveRedisTemplate<String, PrivateChatRoom>
 
     @Test
-    fun `should create private chat room`() {
+    fun `should create private chat room and cache on save`() {
         // GIVEN
         val roomId = "room-id-${System.nanoTime()}"
         val newRoom = PrivateChatRoom(id = roomId, senderId = "senderId", recipientId = "recipientId")
@@ -47,18 +45,8 @@ class PrivateRoomRepositoryIT {
         Assertions.assertEquals(roomId, actualFromDb.id)
         Assertions.assertEquals(newRoom.senderId, actualFromDb.senderId)
         Assertions.assertEquals(newRoom.recipientId, actualFromDb.recipientId)
-    }
 
-    @Test
-    fun `should retrieve private chat room by id from Redis`() {
-        // GIVEN
-        val roomId = "room-id-${System.nanoTime()}"
-        val newRoom = PrivateChatRoom(id = roomId, senderId = "senderId", recipientId = "recipientId")
-
-        // WHEN
-        cacheableRepository.save(newRoom).block()
-
-        // THEN
+        // AND THEN
         val cachedRoom = redisTemplate.opsForValue().get(roomId).block()
 
         Assertions.assertNotNull(cachedRoom)
