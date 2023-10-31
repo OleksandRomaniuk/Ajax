@@ -1,9 +1,9 @@
 package com.example.ajaxproject
 
+import com.example.ajaxproject.UserOuterClass.User
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.model.mongo.MongoPrivateChatRoom
 import com.example.ajaxproject.model.mongo.toDomain
-import com.example.ajaxproject.repository.PrivateChatRoomRepository
 import com.example.ajaxproject.repository.cacheable.CacheableRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

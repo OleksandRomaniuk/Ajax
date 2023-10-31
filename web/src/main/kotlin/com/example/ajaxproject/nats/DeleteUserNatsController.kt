@@ -1,6 +1,6 @@
 package com.example.ajaxproject.nats
 
-import com.example.ajaxproject.NatsSubject.DELETE_USER_BY_ID
+import com.example.ajaxproject.NatsSubject.UserRequest
 import com.example.ajaxproject.UserOuterClass.DeleteUserRequest
 import com.example.ajaxproject.UserOuterClass.DeleteUserResponse
 import com.example.ajaxproject.service.interfaces.UserService
@@ -15,7 +15,7 @@ class DeleteUserNatsController(
     override val connection: Connection
 ) : NatsController<DeleteUserRequest, DeleteUserResponse> {
 
-    override val subject: String = DELETE_USER_BY_ID
+    override val subject: String = UserRequest.DELETE_USER_BY_ID
 
     override val parser: Parser<DeleteUserRequest> = DeleteUserRequest.parser()
 

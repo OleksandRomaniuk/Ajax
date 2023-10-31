@@ -1,6 +1,6 @@
 package com.example.ajaxproject.nats
 
-import com.example.ajaxproject.NatsSubject.ADD_USER
+import com.example.ajaxproject.NatsSubject.UserRequest
 import com.example.ajaxproject.UserOuterClass.CreateUserRequest
 import com.example.ajaxproject.UserOuterClass.CreateUserResponse
 import com.example.ajaxproject.model.toUserDTO
@@ -17,7 +17,7 @@ class CreateUserNatsController(
     private val userMapper: UserMapper
 ) : NatsController<CreateUserRequest, CreateUserResponse> {
 
-    override val subject: String = ADD_USER
+    override val subject: String = UserRequest.ADD_USER
 
     override val parser: Parser<CreateUserRequest> =
         CreateUserRequest.parser()

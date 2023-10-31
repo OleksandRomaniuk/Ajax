@@ -34,7 +34,7 @@ class UserController @Autowired constructor(
         userService.updateUser(userResponse.copy(id = id))
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: String): Mono<DeleteResult> = userService.deleteUser(id)
+    fun deleteUser(@PathVariable id: String): Mono<User> = userService.deleteUser(id)
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

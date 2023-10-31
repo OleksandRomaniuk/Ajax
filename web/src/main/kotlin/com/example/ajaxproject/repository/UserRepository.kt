@@ -1,7 +1,6 @@
 package com.example.ajaxproject.repository
 
 import com.example.ajaxproject.model.User
-import com.mongodb.client.result.DeleteResult
 import org.springframework.data.domain.Pageable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -16,5 +15,5 @@ interface UserRepository{
 
     fun findByEmail(email: String): Mono<User>
 
-    fun deleteById(userId: String): Mono<DeleteResult>
+    fun deleteById(userId: String): Mono<User>
 }

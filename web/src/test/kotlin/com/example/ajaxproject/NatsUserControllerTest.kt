@@ -40,7 +40,7 @@ class NatsUserControllerTest {
             .build()
 
         connection.requestWithTimeout(
-            NatsSubject.DELETE_USER_BY_ID,
+            NatsSubject.UserRequest.DELETE_USER_BY_ID,
             request.toByteArray(),
             Duration.ofSeconds(10)
         ).get().data
@@ -59,7 +59,7 @@ class NatsUserControllerTest {
         val actual = CreateUserResponse.parseFrom(
             connection
                 .requestWithTimeout(
-                    NatsSubject.ADD_USER,
+                    NatsSubject.UserRequest.ADD_USER,
                     expected.toByteArray(),
                     Duration.ofSeconds(10)
                 )
@@ -79,7 +79,7 @@ class NatsUserControllerTest {
         val actual = GetByIdUserResponse.parseFrom(
             connection
                 .requestWithTimeout(
-                    NatsSubject.GET_USER_BY_ID,
+                    NatsSubject.UserRequest.GET_USER_BY_ID,
                     expected.toByteArray(),
                     Duration.ofSeconds(10)
                 )
