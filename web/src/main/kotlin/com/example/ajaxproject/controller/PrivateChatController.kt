@@ -1,9 +1,10 @@
 package com.example.ajaxproject.controller
 
+import com.example.ajaxproject.dto.request.PrivateChatRoomRequest
 import com.example.ajaxproject.dto.request.PrivateMessageDTO
-import com.example.ajaxproject.dto.request.RoomDTO
+import com.example.ajaxproject.dto.responce.PrivateChatRoomResponse
 import com.example.ajaxproject.model.PrivateChatMessage
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.model.toResponse
 import com.example.ajaxproject.service.interfaces.PrivateChatService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,18 +22,19 @@ class PrivateChatController(
 ) {
 
     @PostMapping("/createRoom")
-    fun createRoom(@RequestBody roomDTO: RoomDTO): Mono<PrivateChatRoom> =
-        privateChatService.createPrivateRoom(roomDTO.senderId, roomDTO.recipientId)
+    fun createRoom(@RequestBody privateRoomRequest: PrivateChatRoomRequest): Mono<PrivateChatRoomResponse> =
+        privateChatService.createPrivateRoom(privateRoomRequest.senderId, privateRoomRequest.recipientId)
+            .map { it.toResponse() }
 
     @GetMapping("/findRoom/{roomId}")
-    fun findRoom(@PathVariable roomId: String): Mono<PrivateChatRoom> =
-        privateChatService.getPrivateRoom(roomId)
+    fun findRoom(@PathVariable roomId: String): Mono<PrivateChatRoomResponse> =
+        privateChatService.getPrivateRoom(roomId).map { it.toResponse() }
 
     @PostMapping("/sendMessage")
     fun sendMessage(@RequestBody privateMessageDTO: PrivateMessageDTO): Mono<PrivateChatMessage> =
         privateChatService.sendPrivateMessage(privateMessageDTO)
 
     @GetMapping("/getAllMessages")
-    fun getAllMessages(@RequestBody roomDTO: RoomDTO): Flux<PrivateChatMessage> =
-        privateChatService.getAllPrivateMessages(roomDTO)
+    fun getAllMessages(@RequestBody privateChatRoomRequest: PrivateChatRoomRequest): Flux<PrivateChatMessage> =
+        privateChatService.getAllPrivateMessages(privateChatRoomRequest)
 }

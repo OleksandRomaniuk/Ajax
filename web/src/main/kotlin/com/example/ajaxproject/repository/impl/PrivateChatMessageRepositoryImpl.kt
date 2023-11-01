@@ -1,7 +1,7 @@
 package com.example.ajaxproject.repository.impl
 
 import com.example.ajaxproject.model.PrivateChatMessage
-import com.example.ajaxproject.repository.PrivateChatMessageRepository
+import com.example.ajaxproject.repository.mongo.PrivateChatMessageRepository
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query

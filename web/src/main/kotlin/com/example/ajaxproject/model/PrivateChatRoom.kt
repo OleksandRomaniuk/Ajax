@@ -1,12 +1,35 @@
 package com.example.ajaxproject.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import com.example.ajaxproject.dto.responce.PrivateChatRoomResponse
+import com.example.ajaxproject.model.mongo.MongoPrivateChatRoom
+import com.example.ajaxproject.model.redis.RedisPrivateChatRoom
 
-@Document("private-chat-room")
 data class PrivateChatRoom(
-    @Id
     val id: String,
     val senderId: String,
-    val recipientId: String,
+    val recipientId: String
 )
+
+fun PrivateChatRoom.toResponse(): PrivateChatRoomResponse {
+    return PrivateChatRoomResponse(
+        id = this.id,
+        senderId = this.senderId,
+        recipientId = this.recipientId
+    )
+}
+
+fun PrivateChatRoom.toRedis(): RedisPrivateChatRoom {
+    return RedisPrivateChatRoom(
+        id = this.id,
+        senderId = this.senderId,
+        recipientId = this.recipientId
+    )
+}
+
+fun PrivateChatRoom.toMongo(): MongoPrivateChatRoom {
+    return MongoPrivateChatRoom(
+        id = this.id,
+        senderId = this.senderId,
+        recipientId = this.recipientId
+    )
+}

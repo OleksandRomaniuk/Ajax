@@ -47,7 +47,7 @@ class NotificationAnnotationBeanPostProcessor(
             Proxy.newProxyInstance(
                 bean::class.java.classLoader,
                 bean::class.java.interfaces,
-                NotificationInvocationHandler(bean, beanFactory, beanAnnotatedMethods[beanName] ?: emptyList())
+                NotificationInvocationHandler(bean, beanFactory, beanAnnotatedMethods[beanName].orEmpty())
             )
         } else {
             bean
