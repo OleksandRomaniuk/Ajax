@@ -1,6 +1,6 @@
 package com.example.ajaxproject.nats
 
-import com.example.ajaxproject.NatsSubject.GET_USER_BY_ID
+import com.example.ajaxproject.NatsSubject.UserRequest
 import com.example.ajaxproject.UserOuterClass.GetByIdUserRequest
 import com.example.ajaxproject.UserOuterClass.GetByIdUserResponse
 import com.example.ajaxproject.service.interfaces.UserService
@@ -16,7 +16,7 @@ class GetUserByIdNatsController(
     override val connection: Connection,
 ) : NatsController<GetByIdUserRequest, GetByIdUserResponse> {
 
-    override val subject: String = GET_USER_BY_ID
+    override val subject: String = UserRequest.GET_USER_BY_ID
 
     override val parser: Parser<GetByIdUserRequest> = GetByIdUserRequest.parser()
 

@@ -1,9 +1,7 @@
 spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/ajax
+
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
@@ -15,14 +13,17 @@ spring:
         smtp:
           starttls:
             required: true
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ajax
 
-            redis:
-              port: "6379"
-              host: "localhost"
-              ttl:
-                minutes: 5
-              key:
-                prefix: key
+    redis:
+      host: redis
+
+  kafka:
+    bootstrap-servers: kafka://localhost:9092
+    properties:
+      schema.registry.url: http://schema-registry:8081
 
 nats:
   url: nats://localhost:4222

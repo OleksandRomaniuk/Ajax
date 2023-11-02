@@ -1,14 +1,11 @@
 package com.example.ajaxproject.repository.impl
 
-import com.example.ajaxproject.model.GroupChatRoom
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.repository.UserRepository
-import com.mongodb.client.result.DeleteResult
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -35,9 +32,9 @@ class UserRepositoryImpl(
         return reactiveMongoTemplate.findOne(userQuery, User::class.java)
     }
 
-    override fun deleteById(userId: String): Mono<DeleteResult> {
+    override fun deleteById(userId: String): Mono<User> {
         val query = Query().addCriteria(Criteria.where("_id").`is`(userId))
-        return reactiveMongoTemplate.remove(query, User::class.java)
+        return reactiveMongoTemplate.findAndRemove(query, User::class.java)
     }
 }
 

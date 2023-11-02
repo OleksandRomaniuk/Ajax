@@ -3,11 +3,12 @@ package com.example.ajaxproject.service
 import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.dto.request.UserRequest
 import com.example.ajaxproject.exeption.NotFoundException
+import com.example.ajaxproject.kafka.UserKafkaProducer
 import com.example.ajaxproject.model.User
+import com.example.ajaxproject.nats.UserMapper
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
-import com.mongodb.client.result.DeleteResult
 import org.bson.types.ObjectId
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -17,7 +18,9 @@ import reactor.core.publisher.Mono
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val groupChatRoomRepository: GroupChatRoomRepository
+    private val groupChatRoomRepository: GroupChatRoomRepository,
+    private val userKafkaProducer: UserKafkaProducer,
+    private val userMapper: UserMapper
 ) : UserService {
 
     override fun create(userRequest: UserRequest): Mono<User> {
@@ -44,16 +47,13 @@ class UserServiceImpl(
             }
     }
 
-    override fun deleteUser(id: String): Mono<DeleteResult> {
+    override fun deleteUser(id: String): Mono<User> {
         return groupChatRoomRepository.removeUserFromAllChats(id)
             .then(userRepository.deleteById(id))
-            .handle { deletedResult, sink ->
-            if (deletedResult.deletedCount > 0) {
-                sink.next(deletedResult)
-            } else {
-                sink.error(NotFoundException("User with id $id not found"))
+            .doOnNext {
+                userKafkaProducer.sendUserDeleteEventToKafka(userMapper.userToProto(it))
             }
-        }
+            .switchIfEmpty(Mono.error(NotFoundException("User not found")))
     }
 
     override fun getAll(page: Int, size: Int): Flux<User> =

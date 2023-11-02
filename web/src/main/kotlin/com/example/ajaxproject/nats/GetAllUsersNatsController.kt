@@ -1,6 +1,6 @@
 package com.example.ajaxproject.nats
 
-import com.example.ajaxproject.NatsSubject.GET_ALL_USERS
+import com.example.ajaxproject.NatsSubject.UserRequest
 import com.example.ajaxproject.UserOuterClass.GetAllUsersRequest
 import com.example.ajaxproject.UserOuterClass.GetAllUsersResponse
 import com.example.ajaxproject.UserOuterClass.UserList
@@ -18,7 +18,7 @@ class GetAllUsersNatsController(
     override val connection: Connection,
 ) : NatsController<GetAllUsersRequest, GetAllUsersResponse> {
 
-    override val subject: String = GET_ALL_USERS
+    override val subject: String = UserRequest.GET_ALL_USERS
 
     override val parser: Parser<GetAllUsersRequest> = GetAllUsersRequest.parser()
 

@@ -1,5 +1,6 @@
 package com.example.ajaxproject
 
+import com.example.ajaxproject.UserOuterClass.User
 import com.example.ajaxproject.model.PrivateChatRoom
 import com.example.ajaxproject.model.mongo.MongoPrivateChatRoom
 import com.example.ajaxproject.model.mongo.toDomain
