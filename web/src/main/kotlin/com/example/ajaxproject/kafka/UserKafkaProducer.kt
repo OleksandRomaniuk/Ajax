@@ -1,7 +1,7 @@
 package com.example.ajaxproject.kafka
 
-import com.example.ajaxproject.UserDeleteEvent
-import com.example.ajaxproject.UserEvent
+import com.example.ajaxproject.UserDeletedEvent
+import com.example.ajaxproject.KafkaTopic
 import com.example.ajaxproject.UserOuterClass.User
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.springframework.stereotype.Component
@@ -11,15 +11,15 @@ import reactor.kotlin.core.publisher.toMono
 
 @Component
 class UserKafkaProducer(
-    private val kafkaSenderUserDeleteEvent: KafkaSender<String, UserDeleteEvent>
+    private val kafkaSenderUserDeleteEvent: KafkaSender<String, UserDeletedEvent>
 ) {
     fun sendUserDeleteEventToKafka(protoUser: User) {
-        val userDeleteEvent = UserDeleteEvent.newBuilder().apply {
+        val userDeleteEvent = UserDeletedEvent.newBuilder().apply {
             user = protoUser
         }.build()
         val senderRecord = SenderRecord.create(
             ProducerRecord(
-                UserEvent.createUserEventKafkaTopic(UserEvent.DELETE),
+                KafkaTopic.User.DELETE,
                 protoUser.id,
                 userDeleteEvent
             ),

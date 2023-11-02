@@ -1,6 +1,6 @@
 package com.example.ajaxproject.config
 
-import com.example.ajaxproject.UserDeleteEvent
+import com.example.ajaxproject.UserDeletedEvent
 import com.google.protobuf.GeneratedMessageV3
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -18,7 +18,7 @@ class KafkaConfiguration(
 ) {
 
     @Bean
-    fun kafkaSenderUserDeleteEvent(): KafkaSender<String, UserDeleteEvent> =
+    fun kafkaSenderUserDeleteEvent(): KafkaSender<String, UserDeletedEvent> =
         createKafkaSender(producerProperties())
 
     private fun <T : GeneratedMessageV3> createKafkaSender(properties: MutableMap<String, Any>):
