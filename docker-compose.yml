@@ -65,6 +65,7 @@ services:
       context: .
     ports:
       - "8080:8080"
+      - "9091:9091"
     depends_on:
       nats:
         condition: service_started
