@@ -19,10 +19,10 @@ class UserUpdatedNatsServiceImpl(
 
     private val dispatcher = connection.createDispatcher()
 
-    override fun subscribeToEvents(userId: String): Flux<UserUpdatedEvent> =
+    override fun subscribeToEvents(userId: String, eventType: String): Flux<UserUpdatedEvent> =
         Flux.create { sink ->
             dispatcher.apply {
-                subscribe(KafkaTopic.User.NATS_UPDATE)
+                subscribe(  "USER_PREFIX.$userId.$eventType")
                 { message ->
                     val parsedData = parser.parseFrom(message.data)
                     sink.next(parsedData)
