@@ -1,8 +1,8 @@
 package com.example.ajaxproject.kafka
 
-import com.example.ajaxproject.UserDeletedEvent
+import com.example.ajax.User
 import com.example.ajaxproject.KafkaTopic
-import com.example.ajaxproject.UserOuterClass.User
+import com.pubsub.user.UserDeletedEvent
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.springframework.stereotype.Component
 import reactor.kafka.sender.KafkaSender

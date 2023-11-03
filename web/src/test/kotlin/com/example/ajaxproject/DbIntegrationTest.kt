@@ -23,7 +23,7 @@ annotation class DbIntegrationTest {
 
     @ComponentScan(
         value = [
-            "com.example.ajaxproject"
+            "com.example"
         ]
     )
     class DbIntegrationTestComponentScan
