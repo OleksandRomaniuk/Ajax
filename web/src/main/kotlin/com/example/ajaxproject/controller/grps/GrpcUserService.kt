@@ -1,6 +1,7 @@
 package com.example.ajaxproject.controller.grps
 
 import com.example.ajax.User
+import com.example.ajax.UserList
 import com.example.ajaxproject.nats.UserMapper
 import com.example.ajaxproject.service.interfaces.UserService
 import com.reqreply.user.DeleteUserRequest
@@ -19,18 +20,6 @@ class GrpcUserService(
     private val userService: UserService,
     private val userMapper: UserMapper
 ) : ReactorUserServiceGrpc.UserServiceImplBase() {
-
-    override fun getAll(request: Mono<GetAllUsersRequest>): Mono<GetAllUsersResponse> {
-        return userService.getAll(DEFAULT_LIMIT, DEFAULT_OFFSET)
-            .collectList()
-            .map { users -> buildSuccessResponseGetAll(users.map { userMapper.userToProto(it) }) }
-            .onErrorResume { exception ->
-                buildFailureResponseGetAll(
-                    exception.javaClass.simpleName,
-                    exception.toString()
-                ).toMono()
-            }
-    }
 
     override fun getById(request: Mono<GetByIdUserRequest>): Mono<GetByIdUserResponse> {
         return request.flatMap { handleGetById(it) }
@@ -51,6 +40,19 @@ class GrpcUserService(
                     ).toMono()
                 }
         }
+    }
+
+    override fun getAll(request: Mono<GetAllUsersRequest>): Mono<GetAllUsersResponse> {
+        return userService.getAll(DEFAULT_LIMIT, DEFAULT_OFFSET).map { userMapper.userToProto(it) }
+            .reduce(UserList.newBuilder(), UserList.Builder::addUser).map { usersListBuilder ->
+                GetAllUsersResponse.newBuilder().apply {
+                    successBuilder.addAllUser(usersListBuilder.build().userList)
+                }.build()
+            }.onErrorResume { exception ->
+                buildFailureResponseGetAll(
+                    exception.javaClass.simpleName, exception.toString()
+                ).toMono()
+            }
     }
 
     private fun buildFailureDeleteResponse(exception: String, message: String): DeleteUserResponse =
@@ -84,10 +86,6 @@ class GrpcUserService(
             failureBuilder.setMessage("User find by id failed by $exception: $message")
         }.build()
 
-    private fun buildSuccessResponseGetAll(user: List<User>): GetAllUsersResponse =
-        GetAllUsersResponse.newBuilder().apply {
-            successBuilder.addAllUser(user)
-        }.build()
 
     private companion object {
         const val DEFAULT_OFFSET = 0
