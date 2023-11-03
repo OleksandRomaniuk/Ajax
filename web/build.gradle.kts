@@ -8,8 +8,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":nats"))
-
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
@@ -21,12 +19,19 @@ dependencies {
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.2")
     implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
     implementation("com.sun.mail:jakarta.mail:2.0.1")
+
     implementation("net.devh:grpc-spring-boot-starter:2.15.0.RELEASE")
     implementation("net.devh:grpc-server-spring-boot-starter:2.15.0.RELEASE")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.nats:jnats:2.16.14")
+    implementation(project(":nats"))
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test:3.5.11")
-    testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

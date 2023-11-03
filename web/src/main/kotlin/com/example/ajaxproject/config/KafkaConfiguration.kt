@@ -1,7 +1,7 @@
 package com.example.ajaxproject.config
 
-import com.example.ajaxproject.UserDeletedEvent
 import com.google.protobuf.GeneratedMessageV3
+import com.pubsub.user.UserDeletedEvent
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
