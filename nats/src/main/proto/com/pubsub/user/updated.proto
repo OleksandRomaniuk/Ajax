@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.pubsub.user;
+
+option java_multiple_files = true;
+
+import "com/example/ajax/user.proto";
+
+message UserUpdatedEvent {
+  example.ajax.User user = 1;
+}
