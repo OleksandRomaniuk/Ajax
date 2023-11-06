@@ -11,5 +11,7 @@ object KafkaTopic {
         const val DELETE = "$SERVICE_NAME.output.pubsub.$SUBDOMAIN.delete"
 
         const val UPDATE = "$SERVICE_NAME.output.pubsub.$SUBDOMAIN.update"
+
+        const val NATS_UPDATE = "$SERVICE_NAME.output.pubsub.$SUBDOMAIN.nats_update"
     }
 }

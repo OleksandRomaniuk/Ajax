@@ -35,9 +35,10 @@ class GrpcUserService(
         return request.flatMap {
             userService.deleteUser(it.userId).map { buildSuccessDeleteResponse() }
                 .onErrorResume { exception ->
-                    buildFailureDeleteResponse(
-                        exception.javaClass.simpleName, exception.toString()
-                    ).toMono()
+                    DeleteUserResponse.newBuilder().apply {
+                        failureBuilder.setMessage("Deleting user failed by " +
+                                "${exception.javaClass.simpleName}: ${exception.message}")
+                    }.build().toMono()
                 }
         }
     }
@@ -55,11 +56,6 @@ class GrpcUserService(
             }
     }
 
-    private fun buildFailureDeleteResponse(exception: String, message: String): DeleteUserResponse =
-        DeleteUserResponse.newBuilder().apply {
-            failureBuilder.setMessage("Deleting user failed by $exception: $message")
-        }.build()
-
     private fun buildSuccessDeleteResponse(): DeleteUserResponse = DeleteUserResponse
         .newBuilder().apply {
             successBuilder.build()
@@ -69,12 +65,10 @@ class GrpcUserService(
         userService.getById(request.userId)
             .map { buildSuccessResponseGetById(userMapper.userToProto(it)) }
 
-
     private fun buildFailureResponseGetAll(exception: String, message: String): GetAllUsersResponse =
         GetAllUsersResponse.newBuilder().apply {
             failureBuilder.setMessage("User find all failed by $exception: $message")
         }.build()
-
 
     private fun buildSuccessResponseGetById(user: User): GetByIdUserResponse =
         GetByIdUserResponse.newBuilder().apply {
@@ -85,7 +79,6 @@ class GrpcUserService(
         GetByIdUserResponse.newBuilder().apply {
             failureBuilder.setMessage("User find by id failed by $exception: $message")
         }.build()
-
 
     private companion object {
         const val DEFAULT_OFFSET = 0
