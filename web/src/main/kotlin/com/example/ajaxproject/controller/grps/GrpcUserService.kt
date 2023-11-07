@@ -68,8 +68,8 @@ class GrpcUserService(
             userService.getById(it.userId)
                 .flatMapMany { user ->
                     userEventNatsService.subscribeToEvents(it.userId, KafkaTopic.User.UPDATE)
-                        .map { buildSuccessResponseStreamById(it.user) }
-                        .startWith(buildSuccessResponseStreamById(userMapper.userToProto(user)))
+                        .map { buildSuccessResponseStream(it.user) }
+                        .startWith(buildSuccessResponseStream(userMapper.userToProto(user)))
                 }
                 .onErrorResume { exception ->
                     StreamResponse.newBuilder().apply {
@@ -82,7 +82,7 @@ class GrpcUserService(
                 }
         }
 
-    private fun buildSuccessResponseStreamById(user: User): StreamResponse =
+    private fun buildSuccessResponseStream(user: User): StreamResponse =
         StreamResponse.newBuilder().apply {
             successBuilder.setUser(user)
         }.build()
