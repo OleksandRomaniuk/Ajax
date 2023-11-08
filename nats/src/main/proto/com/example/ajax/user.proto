@@ -9,3 +9,7 @@ message User {
   string email = 2;
   string password = 3;
 }
+
+message UserList {
+  repeated User user = 1;
+}

@@ -3,12 +3,14 @@ package com.example.ajaxproject.service
 import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.dto.request.UserRequest
 import com.example.ajaxproject.exeption.NotFoundException
-import com.example.ajaxproject.kafka.UserKafkaProducer
+import com.example.ajaxproject.kafka.UserKafkaDeleteProducer
+import com.example.ajaxproject.kafka.UserKafkaUpdateProducer
 import com.example.ajaxproject.model.User
 import com.example.ajaxproject.nats.UserMapper
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
+import com.example.ajaxproject.utils.doMonoOnNext
 import org.bson.types.ObjectId
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -19,7 +21,8 @@ import reactor.core.publisher.Mono
 class UserServiceImpl(
     private val userRepository: UserRepository,
     private val groupChatRoomRepository: GroupChatRoomRepository,
-    private val userKafkaProducer: UserKafkaProducer,
+    private val userKafkaUpdateProducer: UserKafkaUpdateProducer,
+    private val userKafkaDeleteProducer: UserKafkaDeleteProducer,
     private val userMapper: UserMapper
 ) : UserService {
 
@@ -44,16 +47,17 @@ class UserServiceImpl(
                     password = userResponse.password
                 )
                 userRepository.save(updatedUser)
+            }.doMonoOnNext {
+                userKafkaUpdateProducer.sendUserUpdatedEventToKafka(userMapper.userToProto(it))
             }
     }
 
     override fun deleteUser(id: String): Mono<User> {
         return groupChatRoomRepository.removeUserFromAllChats(id)
-            .then(userRepository.deleteById(id))
+            .then(userRepository.deleteById(id)).switchIfEmpty(Mono.error(NotFoundException("User not found")))
             .doOnNext {
-                userKafkaProducer.sendUserDeleteEventToKafka(userMapper.userToProto(it))
+                userKafkaDeleteProducer.sendUserDeletedEventToKafka(userMapper.userToProto(it))
             }
-            .switchIfEmpty(Mono.error(NotFoundException("User not found")))
     }
 
     override fun getAll(page: Int, size: Int): Flux<User> =

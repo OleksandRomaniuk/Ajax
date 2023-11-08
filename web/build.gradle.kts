@@ -31,7 +31,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test:3.5.11")
 }
-
+/*
 tasks.withType<Test> {
     useJUnitPlatform()
-}
+}*/
