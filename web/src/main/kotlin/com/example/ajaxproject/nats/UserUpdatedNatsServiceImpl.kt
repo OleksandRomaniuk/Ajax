@@ -1,7 +1,7 @@
 package com.example.ajaxproject.nats
 
 import com.example.ajax.User
-import com.example.ajaxproject.KafkaTopic
+import com.example.ajaxproject.UserEvent
 import com.google.protobuf.Parser
 import com.pubsub.user.UserUpdatedEvent
 import io.nats.client.Connection
@@ -19,10 +19,10 @@ class UserUpdatedNatsServiceImpl(
 
     private val dispatcher = connection.createDispatcher()
 
-    override fun subscribeToEvents(userId: String, eventType: String): Flux<UserUpdatedEvent> =
+    override fun subscribeToEvents(userId: String): Flux<UserUpdatedEvent> =
         Flux.create { sink ->
             dispatcher.apply {
-                subscribe(  "USER_PREFIX.$userId.$eventType")
+                subscribe(UserEvent.createUserEventNatsSubject(userId, UserEvent.UPDATED))
                 { message ->
                     val parsedData = parser.parseFrom(message.data)
                     sink.next(parsedData)
@@ -32,7 +32,7 @@ class UserUpdatedNatsServiceImpl(
         }
 
     override fun publishEvent(updatedUser: User) {
-        val updateEventSubject = KafkaTopic.User.NATS_UPDATE
+        val updateEventSubject = UserEvent.createUserEventNatsSubject(updatedUser.id, UserEvent.UPDATED)
         val eventMessage = updatedUser.mapToUserUpdatedEvent()
         connection.publish(updateEventSubject, eventMessage.toByteArray())
         logger.info("Published event {} to subject {}", eventMessage, updateEventSubject)

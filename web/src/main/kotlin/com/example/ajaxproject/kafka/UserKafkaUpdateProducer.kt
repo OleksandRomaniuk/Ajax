@@ -1,7 +1,8 @@
 package com.example.ajaxproject.kafka
 
 import com.example.ajax.User
-import com.example.ajaxproject.KafkaTopic
+import com.example.ajaxproject.UserEvent
+import com.example.ajaxproject.nats.UserEventNatsService
 import com.example.ajaxproject.nats.mapToUserUpdatedEvent
 import com.pubsub.user.UserUpdatedEvent
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -25,13 +26,13 @@ class UserKafkaUpdateProducer(
             }
             .thenReturn(Unit)
             .doOnNext {
-                logger.info("Sent event {} to topic {}", it, KafkaTopic.User.UPDATE)
+                logger.info("Sent event {} to topic {}", it, UserEvent.UPDATED)
             }
 
     private fun buildKafkaUpdatedMessage(event: UserUpdatedEvent) =
         SenderRecord.create(
             ProducerRecord(
-                KafkaTopic.User.UPDATE,
+                UserEvent.createUserEventKafkaTopic(UserEvent.UPDATED),
                 event.user.id,
                 event
             ),

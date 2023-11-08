@@ -9,7 +9,7 @@ interface UserEventNatsService<EventT : GeneratedMessageV3> {
 
     val parser: Parser<EventT>
 
-    fun subscribeToEvents(userId: String ,eventType: String): Flux<EventT>
+    fun subscribeToEvents(userId: String): Flux<EventT>
 
     fun publishEvent(updatedUser: User)
 }

@@ -2,7 +2,7 @@ package com.example.ajaxproject.controller.grps
 
 import com.example.ajax.User
 import com.example.ajax.UserList
-import com.example.ajaxproject.KafkaTopic
+import com.example.ajaxproject.UserEvent
 import com.example.ajaxproject.nats.UserEventNatsService
 import com.example.ajaxproject.nats.UserMapper
 import com.example.ajaxproject.service.interfaces.UserService
@@ -67,7 +67,7 @@ class GrpcUserService(
         request.flatMapMany {
             userService.getById(it.userId)
                 .flatMapMany { user ->
-                    userEventNatsService.subscribeToEvents(it.userId, KafkaTopic.User.UPDATE)
+                    userEventNatsService.subscribeToEvents(it.userId)
                         .map { buildSuccessResponseStream(it.user) }
                         .startWith(buildSuccessResponseStream(userMapper.userToProto(user)))
                 }

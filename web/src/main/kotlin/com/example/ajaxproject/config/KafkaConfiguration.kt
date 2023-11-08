@@ -1,6 +1,7 @@
 package com.example.ajaxproject.config
 
-import com.example.ajaxproject.KafkaTopic.User
+import com.example.ajaxproject.UserEvent
+import com.example.ajaxproject.UserEvent.UPDATED
 import com.google.protobuf.GeneratedMessageV3
 import com.pubsub.user.UserDeletedEvent
 import com.pubsub.user.UserUpdatedEvent
@@ -40,7 +41,7 @@ class KafkaConfiguration(
         )
         return createKafkaReceiver(
             consumerProperties(customProperties),
-            User.UPDATE,
+            UserEvent.createUserEventKafkaTopic(UPDATED),
             "user-group"
         )
     }

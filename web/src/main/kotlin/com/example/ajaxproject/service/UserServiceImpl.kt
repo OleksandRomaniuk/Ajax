@@ -10,6 +10,7 @@ import com.example.ajaxproject.nats.UserMapper
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.repository.UserRepository
 import com.example.ajaxproject.service.interfaces.UserService
+import com.example.ajaxproject.utils.doMonoOnNext
 import org.bson.types.ObjectId
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -74,6 +75,4 @@ class UserServiceImpl(
             password = userDTO.password,
         )
     }
-
-    fun <T : Any> Mono<T>.doMonoOnNext(onNext: (T) -> Mono<*>): Mono<T> = flatMap { onNext(it).thenReturn(it) }
 }

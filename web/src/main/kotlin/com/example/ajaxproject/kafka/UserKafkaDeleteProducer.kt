@@ -1,7 +1,7 @@
 package com.example.ajaxproject.kafka
 
 import com.example.ajax.User
-import com.example.ajaxproject.KafkaTopic
+import com.example.ajaxproject.UserEvent
 import com.pubsub.user.UserDeletedEvent
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.Logger
@@ -21,14 +21,14 @@ class UserKafkaDeleteProducer(
         }.build()
         val senderRecord = SenderRecord.create(
             ProducerRecord(
-                KafkaTopic.User.DELETE,
+                UserEvent.UPDATED,
                 protoUser.id,
                 userDeleteEvent
             ),
             null
         )
         kafkaSenderUserDeletedEvent.send(senderRecord.toMono()).subscribe()
-        logger.info("Sent event {} to topic {}", userDeleteEvent, KafkaTopic.User.DELETE)
+        logger.info("Sent event {} to topic {}", userDeleteEvent, UserEvent.DELETE)
     }
 
     companion object {
