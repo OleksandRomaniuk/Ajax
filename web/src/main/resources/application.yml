@@ -35,6 +35,6 @@ nats:
 
 grpc:
   server:
-    port: 9091
+    port: 9094
     security:
       enabled: false

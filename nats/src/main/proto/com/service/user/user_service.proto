@@ -1,0 +1,21 @@
+package com.service.user;
+
+import "com/reqreply/user/get_all.proto";
+import "com/reqreply/user/get_by_id.proto";
+import "com/reqreply/user/delete.proto";
+import "com/reqreply/user/edit_by_id.proto";
+
+service UserService {
+
+  rpc getAll(reqreply.user.GetAllUsersRequest)
+      returns (reqreply.user.GetAllUsersResponse);
+
+  rpc getById(reqreply.user.GetByIdUserRequest)
+      returns (reqreply.user.GetByIdUserResponse);
+
+  rpc delete(reqreply.user.DeleteUserRequest)
+      returns (reqreply.user.DeleteUserResponse);
+
+  rpc stream(reqreply.user.StreamRequest)
+      returns (stream reqreply.user.StreamResponse);
+}
