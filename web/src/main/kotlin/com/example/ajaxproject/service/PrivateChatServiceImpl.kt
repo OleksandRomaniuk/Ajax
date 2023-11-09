@@ -3,8 +3,8 @@ package com.example.ajaxproject.service
 import com.example.ajaxproject.dto.request.PrivateMessageDTO
 import com.example.ajaxproject.dto.request.PrivateChatRoomRequest
 import com.example.ajaxproject.exeption.NotFoundException
-import com.example.ajaxproject.model.PrivateChatMessage
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatMessage
+import com.example.ajaxproject.domain.PrivateChatRoom
 import com.example.ajaxproject.repository.mongo.PrivateChatMessageRepository
 import com.example.ajaxproject.repository.cacheable.CacheableRepository
 import com.example.ajaxproject.service.interfaces.PrivateChatService

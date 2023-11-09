@@ -1,37 +1,69 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
+    java
     id("org.springframework.boot") version "3.1.3"
     id("io.spring.dependency-management") version "1.1.3"
-    id("io.gitlab.arturbosch.detekt") version "1.23.1"
-    kotlin("jvm")
-    kotlin("plugin.spring") version "1.9.0"
-    kotlin("plugin.allopen") version "1.9.0"
+    id("com.google.protobuf") version "0.9.4"
+
+    kotlin("jvm") version "1.9.10"
+    kotlin("plugin.spring") version "1.9.10"
+    kotlin("plugin.allopen") version "1.9.10"
+}
+
+group = "com.example.ajaxproject"
+version = "0.0.1-SNAPSHOT"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis:3.1.5")
-    implementation("org.springframework.kafka:spring-kafka:3.0.12")
-    implementation("io.projectreactor.kafka:reactor-kafka:1.3.21")
-    implementation("io.confluent:kafka-schema-registry-maven-plugin:7.5.1")
-    implementation("io.confluent:kafka-protobuf-serializer:7.5.1")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.2")
-    implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
-    implementation("com.sun.mail:jakarta.mail:2.0.1")
 
-    implementation("net.devh:grpc-spring-boot-starter:2.15.0.RELEASE")
-    implementation("net.devh:grpc-server-spring-boot-starter:2.15.0.RELEASE")
-
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive:3.1.3")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-webflux:3.1.4")
+    implementation("org.springframework.boot:spring-boot-devtools")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+    implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    implementation("cglib:cglib:3.3.0")
     implementation("io.nats:jnats:2.16.14")
-    implementation(project(":nats"))
+    implementation("com.google.protobuf:protobuf-java:3.24.2")
+    implementation("com.google.protobuf:protobuf-java-util:3.20.1")
+    implementation ("io.grpc:grpc-stub:1.40.1")
 
+    testImplementation("io.projectreactor:reactor-test:3.5.10")
+    testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test:3.5.11")
+    testImplementation("org.springframework.security:spring-security-test")
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs += "-Xjsr305=strict"
+        jvmTarget = "17"
+    }
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    languageVersion = "1.9"
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+tasks {
+    bootJar {
+        enabled = false
+    }
 }

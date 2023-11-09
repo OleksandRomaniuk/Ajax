@@ -6,9 +6,9 @@ import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.exeption.WrongActionException
-import com.example.ajaxproject.model.GroupChatMessage
-import com.example.ajaxproject.model.GroupChatRoom
-import com.example.ajaxproject.model.User
+import com.example.ajaxproject.domain.GroupChatMessage
+import com.example.ajaxproject.domain.GroupChatRoom
+import com.example.ajaxproject.domain.User
 import com.example.ajaxproject.repository.GroupChatMessageRepository
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.service.interfaces.GroupChatService

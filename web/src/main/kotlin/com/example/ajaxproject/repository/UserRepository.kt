@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository
 
-import com.example.ajaxproject.model.User
+import com.example.ajaxproject.domain.User
 import org.springframework.data.domain.Pageable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono

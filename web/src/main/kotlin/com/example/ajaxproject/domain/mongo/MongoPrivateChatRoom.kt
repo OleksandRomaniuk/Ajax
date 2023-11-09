@@ -1,6 +1,6 @@
-package com.example.ajaxproject.model.mongo
+package com.example.ajaxproject.domain.mongo
 
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatRoom
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 

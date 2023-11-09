@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository.cacheable
 
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatRoom
 import com.example.ajaxproject.repository.PrivateChatRoomRepository
 import com.example.ajaxproject.repository.redis.PrivateChatRoomRedisRepository
 import org.springframework.beans.factory.annotation.Qualifier

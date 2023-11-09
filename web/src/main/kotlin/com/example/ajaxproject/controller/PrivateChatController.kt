@@ -3,8 +3,8 @@ package com.example.ajaxproject.controller
 import com.example.ajaxproject.dto.request.PrivateChatRoomRequest
 import com.example.ajaxproject.dto.request.PrivateMessageDTO
 import com.example.ajaxproject.dto.responce.PrivateChatRoomResponse
-import com.example.ajaxproject.model.PrivateChatMessage
-import com.example.ajaxproject.model.toResponse
+import com.example.ajaxproject.domain.PrivateChatMessage
+import com.example.ajaxproject.domain.toResponse
 import com.example.ajaxproject.service.interfaces.PrivateChatService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

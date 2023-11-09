@@ -2,7 +2,7 @@ package com.example.ajaxproject.service.interfaces
 
 import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.dto.request.UserRequest
-import com.example.ajaxproject.model.User
+import com.example.ajaxproject.domain.User
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 

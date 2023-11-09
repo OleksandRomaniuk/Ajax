@@ -4,8 +4,8 @@ import com.example.ajaxproject.dto.request.CreateChatDTO
 import com.example.ajaxproject.dto.request.GroupChatDto
 import com.example.ajaxproject.dto.request.LeaveChatDTO
 import com.example.ajaxproject.dto.responce.GroupChatMessageResponse
-import com.example.ajaxproject.model.GroupChatRoom
-import com.example.ajaxproject.model.User
+import com.example.ajaxproject.domain.GroupChatRoom
+import com.example.ajaxproject.domain.User
 import com.example.ajaxproject.service.interfaces.GroupChatService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

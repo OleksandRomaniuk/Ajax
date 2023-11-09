@@ -1,8 +1,8 @@
-package com.example.ajaxproject.model
+package com.example.ajaxproject.domain
 
 import com.example.ajaxproject.dto.responce.PrivateChatRoomResponse
-import com.example.ajaxproject.model.mongo.MongoPrivateChatRoom
-import com.example.ajaxproject.model.redis.RedisPrivateChatRoom
+import com.example.ajaxproject.domain.mongo.MongoPrivateChatRoom
+import com.example.ajaxproject.domain.redis.RedisPrivateChatRoom
 
 data class PrivateChatRoom(
     val id: String,

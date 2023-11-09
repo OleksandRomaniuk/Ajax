@@ -1,8 +1,8 @@
 package com.example.ajaxproject.repository.redis
 
-import com.example.ajaxproject.model.PrivateChatRoom
-import com.example.ajaxproject.model.redis.toDomain
-import com.example.ajaxproject.model.toRedis
+import com.example.ajaxproject.domain.PrivateChatRoom
+import com.example.ajaxproject.domain.redis.toDomain
+import com.example.ajaxproject.domain.toRedis
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono

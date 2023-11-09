@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository
 
-import com.example.ajaxproject.model.GroupChatRoom
+import com.example.ajaxproject.domain.GroupChatRoom
 import reactor.core.publisher.Mono
 
 

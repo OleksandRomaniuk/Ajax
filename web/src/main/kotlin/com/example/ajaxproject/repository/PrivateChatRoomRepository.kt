@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository
 
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatRoom
 import reactor.core.publisher.Mono
 
 interface PrivateChatRoomRepository{

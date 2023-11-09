@@ -3,7 +3,7 @@ package com.example.ajaxproject.nats
 import com.example.ajax.User
 import com.example.ajaxproject.NatsSubject.UserRequest
 
-import com.example.ajaxproject.model.toUserDTO
+import com.example.ajaxproject.domain.toUserDTO
 import com.example.ajaxproject.service.interfaces.UserService
 import com.google.protobuf.Parser
 import com.reqreply.user.CreateUserRequest

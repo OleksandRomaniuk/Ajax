@@ -1,4 +1,4 @@
-package com.example.ajaxproject.model
+package com.example.ajaxproject.domain
 
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id

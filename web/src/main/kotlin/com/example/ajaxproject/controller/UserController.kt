@@ -2,9 +2,8 @@ package com.example.ajaxproject.controller
 
 import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.dto.request.UserRequest
-import com.example.ajaxproject.model.User
+import com.example.ajaxproject.domain.User
 import com.example.ajaxproject.service.interfaces.UserService
-import com.mongodb.client.result.DeleteResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping

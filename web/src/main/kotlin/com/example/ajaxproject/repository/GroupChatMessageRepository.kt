@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository
 
-import com.example.ajaxproject.model.GroupChatMessage
+import com.example.ajaxproject.domain.GroupChatMessage
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 

@@ -1,6 +1,6 @@
 package com.example.ajaxproject.config
 
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatRoom
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value

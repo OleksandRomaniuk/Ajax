@@ -1,9 +1,9 @@
 package com.example.ajaxproject.repository.mongo
 
-import com.example.ajaxproject.model.PrivateChatRoom
-import com.example.ajaxproject.model.mongo.MongoPrivateChatRoom
-import com.example.ajaxproject.model.mongo.toDomain
-import com.example.ajaxproject.model.toMongo
+import com.example.ajaxproject.domain.PrivateChatRoom
+import com.example.ajaxproject.domain.mongo.MongoPrivateChatRoom
+import com.example.ajaxproject.domain.mongo.toDomain
+import com.example.ajaxproject.domain.toMongo
 import com.example.ajaxproject.repository.PrivateChatRoomRepository
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.findOne

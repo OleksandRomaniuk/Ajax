@@ -4,7 +4,7 @@ import com.example.ajaxproject.dto.request.UserDTO
 import com.example.ajaxproject.dto.request.UserRequest
 import com.example.ajaxproject.exeption.NotFoundException
 import com.example.ajaxproject.kafka.UserKafkaProducer
-import com.example.ajaxproject.model.User
+import com.example.ajaxproject.domain.User
 import com.example.ajaxproject.nats.UserMapper
 import com.example.ajaxproject.repository.GroupChatRoomRepository
 import com.example.ajaxproject.repository.UserRepository

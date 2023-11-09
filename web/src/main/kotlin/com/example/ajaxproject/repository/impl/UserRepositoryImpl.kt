@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository.impl
 
-import com.example.ajaxproject.model.User
+import com.example.ajaxproject.domain.User
 import com.example.ajaxproject.repository.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate

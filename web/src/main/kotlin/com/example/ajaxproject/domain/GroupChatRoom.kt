@@ -1,4 +1,4 @@
-package com.example.ajaxproject.model
+package com.example.ajaxproject.domain
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository.impl
 
-import com.example.ajaxproject.model.GroupChatMessage
+import com.example.ajaxproject.domain.GroupChatMessage
 import com.example.ajaxproject.repository.GroupChatMessageRepository
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria

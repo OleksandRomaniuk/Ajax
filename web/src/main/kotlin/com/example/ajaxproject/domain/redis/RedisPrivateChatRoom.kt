@@ -1,6 +1,6 @@
-package com.example.ajaxproject.model.redis
+package com.example.ajaxproject.domain.redis
 
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatRoom
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class RedisPrivateChatRoom(

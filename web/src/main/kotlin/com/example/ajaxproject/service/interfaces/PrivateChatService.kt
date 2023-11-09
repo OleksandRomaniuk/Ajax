@@ -2,8 +2,8 @@ package com.example.ajaxproject.service.interfaces
 
 import com.example.ajaxproject.dto.request.PrivateChatRoomRequest
 import com.example.ajaxproject.dto.request.PrivateMessageDTO
-import com.example.ajaxproject.model.PrivateChatMessage
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatMessage
+import com.example.ajaxproject.domain.PrivateChatRoom
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 

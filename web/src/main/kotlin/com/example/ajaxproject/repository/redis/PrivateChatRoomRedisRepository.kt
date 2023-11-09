@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository.redis
 
-import com.example.ajaxproject.model.PrivateChatRoom
+import com.example.ajaxproject.domain.PrivateChatRoom
 import reactor.core.publisher.Mono
 
 interface PrivateChatRoomRedisRepository {

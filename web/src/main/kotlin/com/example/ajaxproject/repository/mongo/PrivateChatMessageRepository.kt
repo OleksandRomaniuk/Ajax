@@ -1,6 +1,6 @@
 package com.example.ajaxproject.repository.mongo
 
-import com.example.ajaxproject.model.PrivateChatMessage
+import com.example.ajaxproject.domain.PrivateChatMessage
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
