@@ -1,10 +1,11 @@
-rootProject.name = "AjaxProject"
+rootProject.name = "Ajax"
 
 include(
     "web",
-    "nats",
-    "user-subdomain",
-    "private-chat-subdomain",
-    "group-chat-subdomain",
-    "util-subdomain",
+    "internal-api",
+    "web:group-chat-subdomain",
+    "web:private-chat-subdomain",
+    "web:user-subdomain",
+    "web:util",
+    "web:message-subdomain",
 )
