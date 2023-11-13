@@ -17,11 +17,11 @@ class KafkaConfiguration(
 ) : CoreKafkaConfiguration(bootstrapServers, schemaRegistryUrl) {
 
     @Bean
-    fun kafkaSenderDeviceUpdatedEvent(): KafkaSender<String, UserUpdatedEvent> =
+    fun kafkaSenderUserUpdatedEvent(): KafkaSender<String, UserUpdatedEvent> =
         createKafkaSender(baseProducerProperties())
 
     @Bean
-    fun kafkaReceiverDeviceUpdatedEvent(): KafkaReceiver<String, UserUpdatedEvent> {
+    fun kafkaReceiverUserUpdatedEvent(): KafkaReceiver<String, UserUpdatedEvent> {
         val customProperties: MutableMap<String, Any> = mutableMapOf(
             KafkaProtobufDeserializerConfig.SPECIFIC_PROTOBUF_VALUE_TYPE to UserUpdatedEvent::class.java.name
         )
