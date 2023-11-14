@@ -16,14 +16,14 @@ import org.springframework.test.context.ContextConfiguration
     classes = [
         MongoRepositoriesAutoConfiguration::class,
         RedisAutoConfiguration::class,
-        DbIntegrationTestComponentScan::class,
+        DbIntegrationTest.DbIntegrationTestComponentScan::class,
     ]
 )
 annotation class DbIntegrationTest {
 
     @ComponentScan(
         value = [
-            "com.example"
+            "com.example.ajax"
         ]
     )
     class DbIntegrationTestComponentScan

@@ -4,7 +4,7 @@ import com.example.ajax.application.port.UserKafkaProducerOutPort
 import com.example.ajax.application.port.UserRepositoryOutPort
 import com.example.ajax.application.port.UserServiceInPort
 import com.example.ajax.domain.User
-import com.example.ajax.exception.NotFoundException
+import com.example.ajax.domain.exception.NotFoundException
 import com.example.ajax.extention.doMonoOnNext
 import org.bson.types.ObjectId
 import org.springframework.data.domain.PageRequest

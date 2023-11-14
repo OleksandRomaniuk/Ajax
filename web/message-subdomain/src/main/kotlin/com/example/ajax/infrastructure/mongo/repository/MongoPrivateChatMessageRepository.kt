@@ -21,7 +21,6 @@ class MongoPrivateChatMessageRepository(
         val query = Query(Criteria.where("сhatRoomId").`is`(chatRoomId))
         return reactiveMongoTemplate.find(query, ChatMessageEntity::class.java)
             .map { privateChatMessageMapper.mapToDomain(it) }
-
     }
 
     override fun save(privateChatMessage: ChatMessage): Mono<ChatMessage> =

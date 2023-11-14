@@ -2,7 +2,7 @@ package com.example.ajax.application.svc
 
 import com.example.ajax.application.port.ChatMessageServiceInPort
 import com.example.ajax.domain.ChatMessage
-import com.example.ajax.exception.NotFoundException
+import com.example.ajax.domain.exception.NotFoundException
 import com.example.ajax.application.port.Notification
 import com.example.ajax.application.port.ChatMessageRepositoryOutPort
 import org.bson.types.ObjectId

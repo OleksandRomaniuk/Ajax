@@ -1,4 +1,4 @@
-package com.example.ajax.application.port
+package com.example.ajax.infrastructure.cacheable
 
 import reactor.core.publisher.Mono
 

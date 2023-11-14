@@ -13,7 +13,8 @@ import reactor.core.publisher.Mono
 
 @Repository
 class MongoPrivateRoomRepository(
-    private val mongoTemplate: ReactiveMongoTemplate, private val privateChatRoomMapper: PrivateChatRoomMapper
+    private val mongoTemplate: ReactiveMongoTemplate,
+    private val privateChatRoomMapper: PrivateChatRoomMapper
 ) : PrivateChatRoomRepositoryOutPort {
 
     override fun findPrivateChatRoomById(chatRoomId: String): Mono<PrivateChatRoom> {

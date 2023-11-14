@@ -3,7 +3,7 @@ package com.example.ajax.infrastructure.bpp
 import com.example.ajax.infrastructure.dto.Identifiable
 import com.example.ajax.infrastructure.email.EmailSenderServiceOutPort
 import com.example.ajax.infrastructure.email.dto.EmailRequest
-import com.example.ajax.application.GroupChatRoomRepositoryOutPort
+import com.example.ajax.application.port.GroupChatRoomRepositoryOutPort
 import com.example.ajax.application.port.Notification
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -1,6 +1,6 @@
 package com.example.ajax.infrastructure.rest
 
-import com.example.ajax.application.port.PrivateChatRoomServiceInPortOutPort
+import com.example.ajax.application.port.PrivateChatRoomServiceInPort
 import com.example.ajax.domain.PrivateChatRoom
 import com.example.ajax.infrastructure.dto.PrivateChatRoomRequest
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("/api/chat")
 class PrivateChatController(
-    val privateChatService: PrivateChatRoomServiceInPortOutPort
+    val privateChatService: PrivateChatRoomServiceInPort
 ) {
 
     @PostMapping("/createRoom")

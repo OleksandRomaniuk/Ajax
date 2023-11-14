@@ -1,19 +1,19 @@
 package com.example.ajax.application.svc
 
 import com.example.ajax.application.port.UserServiceInPort
-import com.example.ajax.application.port.PrivateChatRoomServiceInPortOutPort
+import com.example.ajax.application.port.PrivateChatRoomServiceInPort
 import com.example.ajax.domain.PrivateChatRoom
-import com.example.ajax.application.port.CacheableRepository
+import com.example.ajax.infrastructure.cacheable.CacheableRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.util.function.component1
 import reactor.kotlin.core.util.function.component2
 
 @Service
-class PrivateChatRoomOutPort(
+class PrivateChatRoomService(
     private val privateChatRoomRepository: CacheableRepository<PrivateChatRoom>,
     private val userServiceInPort: UserServiceInPort
-) : PrivateChatRoomServiceInPortOutPort {
+) : PrivateChatRoomServiceInPort {
 
     override fun createPrivateRoom(senderId: String, recipientId: String): Mono<PrivateChatRoom> {
 

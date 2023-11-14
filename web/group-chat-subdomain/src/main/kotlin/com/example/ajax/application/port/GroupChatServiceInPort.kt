@@ -1,4 +1,4 @@
-package com.example.ajax.application
+package com.example.ajax.application.port
 
 import com.example.ajax.domain.GroupChatRoom
 import com.example.ajax.domain.User

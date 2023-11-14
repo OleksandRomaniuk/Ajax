@@ -1,12 +1,12 @@
 package com.example.ajax.application.svc
 
 import com.example.ajax.application.port.UserServiceInPort
-import com.example.ajax.application.GroupChatRoomRepositoryOutPort
-import com.example.ajax.application.GroupChatServiceInPort
+import com.example.ajax.application.port.GroupChatRoomRepositoryOutPort
+import com.example.ajax.application.port.GroupChatServiceInPort
 import com.example.ajax.domain.GroupChatRoom
 import com.example.ajax.domain.User
-import com.example.ajax.exception.NotFoundException
-import com.example.ajax.exception.WrongActionException
+import com.example.ajax.domain.exception.NotFoundException
+import com.example.ajax.domain.exception.WrongActionException
 import org.bson.types.ObjectId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

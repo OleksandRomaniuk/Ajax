@@ -1,7 +1,7 @@
 package com.example.ajax.infrastructure.mongo.repository
 
 import com.example.ajax.domain.GroupChatRoom
-import com.example.ajax.application.GroupChatRoomRepositoryOutPort
+import com.example.ajax.application.port.GroupChatRoomRepositoryOutPort
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query

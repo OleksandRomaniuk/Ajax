@@ -1,4 +1,4 @@
-package com.example.ajax.exception
+package com.example.ajax.domain.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

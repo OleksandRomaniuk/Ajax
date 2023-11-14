@@ -10,11 +10,13 @@ import reactor.core.scheduler.Schedulers
 
 @Configuration
 class NatsConfiguration {
+
     @Bean
-    fun natsConnection(@Value("nats://localhost:4222") natsUrl: String): Connection = Nats.connect(natsUrl)
+    fun natsConnection(@Value("\${nats.url}") natsUrl: String): Connection = Nats.connect(natsUrl)
 
     @Bean
     fun handleMessageScheduler(): Scheduler {
         return Schedulers.boundedElastic()
     }
 }
+

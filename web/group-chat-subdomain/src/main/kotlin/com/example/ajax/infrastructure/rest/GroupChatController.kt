@@ -1,6 +1,6 @@
 package com.example.ajax.infrastructure.rest
 
-import com.example.ajax.application.GroupChatServiceInPort
+import com.example.ajax.application.port.GroupChatServiceInPort
 import com.example.ajax.domain.GroupChatRoom
 import com.example.ajax.domain.User
 import com.example.ajax.infrastructure.rest.dto.CreateChatRequest
