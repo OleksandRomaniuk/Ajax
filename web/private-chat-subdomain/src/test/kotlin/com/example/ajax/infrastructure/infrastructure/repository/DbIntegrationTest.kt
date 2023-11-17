@@ -1,6 +1,6 @@
-package com.example.ajax.infrastructure.redis
+package com.example.ajax.infrastructure.infrastructure.repository
 
-import com.example.ajax.infrastructure.redis.DbIntegrationTest.DbIntegrationTestComponentScan
+import com.example.ajax.infrastructure.infrastructure.repository.DbIntegrationTest.DbIntegrationTestComponentScan
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
@@ -16,14 +16,14 @@ import org.springframework.test.context.ContextConfiguration
     classes = [
         MongoRepositoriesAutoConfiguration::class,
         RedisAutoConfiguration::class,
-        DbIntegrationTest.DbIntegrationTestComponentScan::class,
+        DbIntegrationTestComponentScan::class,
     ]
 )
 annotation class DbIntegrationTest {
 
     @ComponentScan(
         value = [
-            "com.example.ajax"
+            "com.example.ajax.infrastructure",
         ]
     )
     class DbIntegrationTestComponentScan

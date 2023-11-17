@@ -1,4 +1,4 @@
-package com.example.ajax.infrastructure.redis.repository
+package com.example.ajax.infrastructure.repository
 
 import com.example.ajax.application.port.PrivateChatRoomRepositoryOutPort
 import com.example.ajax.domain.PrivateChatRoom
