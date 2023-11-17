@@ -1,4 +1,4 @@
-package com.example.ajax.infrastructure.entity
+package com.example.ajax.infrastructure.redis.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

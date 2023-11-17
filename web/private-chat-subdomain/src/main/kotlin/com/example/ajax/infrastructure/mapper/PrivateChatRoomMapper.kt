@@ -3,7 +3,7 @@ package com.example.ajax.infrastructure.mapper
 import com.example.ajax.infrastructure.configuration.mapper.EntityMapper
 import com.example.ajax.domain.PrivateChatRoom
 import com.example.ajax.infrastructure.mongo.entity.PrivateChatRoomEntity
-import com.example.ajax.infrastructure.entity.RedisPrivateChatRoom
+import com.example.ajax.infrastructure.redis.entity.RedisPrivateChatRoom
 import org.springframework.stereotype.Component
 
 @Component
