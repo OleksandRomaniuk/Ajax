@@ -6,7 +6,7 @@ plugins {
 }
 
 allprojects {
-    group = "com.example.ajaxproject"
+    group = "com.example.ajax"
     version = "0.0.1-SNAPSHOT"
 
     repositories {
@@ -46,4 +46,15 @@ subprojects {
     java {
         sourceCompatibility = JavaVersion.VERSION_17
     }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs += "-Xjsr305=strict"
+        jvmTarget = "17"
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
 }
