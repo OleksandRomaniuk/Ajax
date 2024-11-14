@@ -1,0 +1,40 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: ora.romaniuk@gmail.com
+    password: fjxi gawn pgjl huxy
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            required: true
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ajax
+
+    redis:
+      host: localhost
+      key:
+        prefix:
+          device-key-
+      ttl:
+        minutes: 5
+
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+
+nats:
+  url: "nats://localhost:4222"
+
+grpc:
+  server:
+    port: 9094
+    security:
+      enabled: false

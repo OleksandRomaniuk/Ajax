@@ -1,0 +1,29 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/ajax
+
+    redis:
+      host: redis
+      key:
+        prefix:
+          device-key-
+      ttl:
+        minutes: 5
+
+  kafka:
+    bootstrap-servers: http://kafka:29092
+    properties:
+      schema.registry.url: http://schema-registry:8081
+
+nats:
+  url: "nats://nats:4222"
+
+grpc:
+  server:
+    port: 9091
+    security:
+      enabled: false

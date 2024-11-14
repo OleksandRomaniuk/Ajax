@@ -1,31 +1,39 @@
 name: Build and Test
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "*" ]
-
-  workflow_dispatch:
+    branches:
+      - '*'
 
 jobs:
-  checks:
+  cheks:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: Start MongoDB container
+        run: |
+          docker run -d --name mongo -p 27017:27017 \
+            -e MONGO_INITDB_DATABASE=ajax \
+            mongo:latest
+
+      - name: Start NATS container
+        run: docker run -d --name nats -p 4222:4222 nats:latest
+
+      - name: Start Redis container
+        run: docker run -d --name redis -p 6379:6379 redis:latest
+
+      - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'oracle'
           java-version: '17'
+          cache: gradle
 
-      - name: Start mongodb
-        run: docker run -d --name mongo -p 27017:27017 mongo:latest
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Build with Gradle
+      - name: Compile and run checks
         run: ./gradlew build
